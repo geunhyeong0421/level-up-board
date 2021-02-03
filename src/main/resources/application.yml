@@ -1,6 +1,13 @@
 spring:
+  profiles:
+    include: oauth
+
+  session:
+    store-type: jdbc
+
   datasource:
-    url: jdbc:h2:tcp://localhost/~/levelupboard
+#    url: jdbc:h2:tcp://localhost/~/levelupboard;MODE=MySQL
+    url: jdbc:h2:mem:testdb;MODE=MySQL
     username: sa
     passwrod:
     driver-class-name: org.h2.Driver
@@ -13,9 +20,6 @@ spring:
 #        show_sql: true
         format_sql: true
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-
-  profiles:
-    include: oauth
 
 logging.level:
   org.hibernate.SQL: debug
