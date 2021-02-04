@@ -1,7 +1,4 @@
 spring:
-  profiles:
-    include: oauth
-
 #  session:
 #    store-type: jdbc
 
@@ -18,12 +15,23 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
-#        show_sql: true
+        #        show_sql: true
         format_sql: true
         dialect: org.hibernate.dialect.MySQL57Dialect
 #        storage_engin: innodb
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: test
+            client-secret: test
+            scope:
+              - profile
+              - email
 
 logging.level:
   org.hibernate.SQL: debug
 #  org.hibernate.type: trace
+
