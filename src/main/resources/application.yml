@@ -7,7 +7,6 @@ spring:
 
   datasource:
     hikari:
-#      jdbc-url: jdbc:h2:tcp://localhost/~/levelupboard;MODE=MYSQL
       jdbc-url: jdbc:h2:mem:testdb;MODE=MYSQL
       username: sa
       passwrod:
@@ -21,9 +20,15 @@ spring:
 #        show_sql: true
         format_sql: true
         dialect: org.hibernate.dialect.MySQL57Dialect
-#        storage_engin: innodb
+#        storage_engine: innodb
 
 
 logging.level:
   org.hibernate.SQL: debug
 #  org.hibernate.type: trace
+
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: false
