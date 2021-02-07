@@ -1,11 +1,10 @@
 {{>layout/header}}
 
-<h1>게시판(Lv.4)</h1>
+<h1>게시판(Lv.5)</h1>
 <div class="col-md-12">
     <!--로그인 기능 영역-->
     <div class="row">
         <div class="col-md-6">
-            <a href="/posts/new" role="button" class="btn btn-dark">글 등록</a>
             {{#loginUserName}}
                 Logged in as: <span id="user">{{loginUserName}}</span>
                 <a href="/logout" class="btn btn-info active" role="button">
@@ -25,15 +24,20 @@
         </div>
     </div>
     <br>
+    <div class="row">
+        <div class="col-md-6">
+            <a href="/posts/new" role="button" class="btn btn-dark">글 등록</a>
+        </div>
+    </div>
     <!--목록 출력 영역-->
     <table class="table table-horizontal table-bordered">
         <thead class="thead-strong">
         <tr>
-            <th>게시글번호</th>
+            <th>번호</th>
             <th>제목</th>
             <th>작성자</th>
             <th>작성일</th>
-            <th>최종수정일</th>
+            <th>수정일</th>
         </tr>
         </thead>
         <tbody id="tbody">

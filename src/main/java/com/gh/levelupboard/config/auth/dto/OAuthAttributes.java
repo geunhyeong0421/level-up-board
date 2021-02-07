@@ -5,12 +5,10 @@ import com.gh.levelupboard.domain.user.Role;
 import com.gh.levelupboard.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.util.Map;
 
 @Getter
-@ToString
 public class OAuthAttributes {
 
     private Map<String, Object> attributes;

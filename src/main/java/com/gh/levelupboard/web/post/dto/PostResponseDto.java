@@ -11,14 +11,18 @@ public class PostResponseDto {
     private Long id;
     private String title;
     private String content;
+    private Long userId;
     private String writer;
     private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
     public PostResponseDto(Post entity) {
         id = entity.getId();
         title = entity.getTitle();
         content = entity.getContent();
-        writer = entity.getWriter();
+        userId = entity.getUser().getId();
+        writer = entity.getUser().getName();
         createdDate = entity.getCreatedDate();
+        modifiedDate = entity.getModifiedDate();
     }
 }

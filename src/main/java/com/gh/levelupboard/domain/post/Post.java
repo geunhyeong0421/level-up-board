@@ -1,6 +1,7 @@
 package com.gh.levelupboard.domain.post;
 
 import com.gh.levelupboard.domain.BaseTimeEntity;
+import com.gh.levelupboard.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,14 +17,20 @@ public class Post extends BaseTimeEntity {
     @Column(name = "post_id")
     private Long id;
 
+    @Column(nullable = false)
     private String title;
+    @Column(nullable = false)
     private String content;
-    private String writer;
 
-    public Post(String title, String content, String writer) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+
+    public Post(String title, String content, User user) {
         this.title = title;
         this.content = content;
-        this.writer = writer;
+        this.user = user;
     }
 
     public void update(String title, String content) {

@@ -15,9 +15,22 @@ var index = {
         });
     },
     save : function() {
+        var title = $('#title').val().trim();
+        if(!title) {
+            alert('제목을 입력해 주세요.');
+            $('#title').val("").focus();
+            return;
+        }
+        var content = $('#content').val().trim();
+        if(!content) {
+            alert('내용을 입력해 주세요.');
+            $('#content').val("").focus();
+            return;
+        }
+
         var data = {
-            title: $('#title').val(),
-            writer: $('#writer').val(),
+            title: title,
+            userId: $('#userId').val(),
             content: $('#content').val()
         };
 
@@ -35,8 +48,21 @@ var index = {
         });
     },
     update : function() {
+        var title = $('#title').val().trim();
+        if(!title) {
+            alert('제목을 입력해 주세요.');
+            $('#title').val("").focus();
+            return;
+        }
+        var content = $('#content').val().trim();
+        if(!content) {
+            alert('내용을 입력해 주세요.');
+            $('#content').val("").focus();
+            return;
+        }
+
         var data = {
-            title: $('#title').val(),
+            title: title,
             content: $('#content').val()
         };
 

@@ -2,6 +2,8 @@ package com.gh.levelupboard.service.post;
 
 import com.gh.levelupboard.domain.post.Post;
 import com.gh.levelupboard.domain.post.PostRepository;
+import com.gh.levelupboard.domain.user.User;
+import com.gh.levelupboard.domain.user.UserRepository;
 import com.gh.levelupboard.web.post.dto.PostListResponseDto;
 import com.gh.levelupboard.web.post.dto.PostResponseDto;
 import com.gh.levelupboard.web.post.dto.PostSaveRequestDto;
@@ -18,10 +20,15 @@ import java.util.stream.Collectors;
 @Service
 public class PostService {
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public Long add(PostSaveRequestDto requestDto) {
-        return postRepository.save(requestDto.toEntity()).getId();
+        Long userId = requestDto.getUserId();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이용자가 없습니다. id=" + userId));
+
+        return postRepository.save(requestDto.toEntity(user)).getId();
     }
 
     @Transactional
@@ -42,7 +49,7 @@ public class PostService {
     }
 
     public PostResponseDto get(Long id) {
-        Post entity = postRepository.findById(id)
+        Post entity = postRepository.findByIdFetch(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
         return new PostResponseDto(entity);
     }

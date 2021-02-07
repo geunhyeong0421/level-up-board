@@ -31,15 +31,18 @@ public class PostController {
 
     // 게시글 등록 화면
     @GetMapping("/posts/new")
-    public String postsNew() {
+    public String postsNew(Model model, @LoginUser SessionUser user) {
+        model.addAttribute("user", user);
         return "posts-new";
     }
 
     // 게시글 조회 화면
     @GetMapping("/posts/{id}")
-    public String posts(@PathVariable Long id, Model model) {
+    public String posts(@PathVariable Long id, Model model, @LoginUser SessionUser user) {
         PostResponseDto dto = postService.get(id);
         model.addAttribute("post", dto);
+        model.addAttribute("isMyPost", dto.getUserId().equals(user.getId()));
+
         return "posts";
     }
 

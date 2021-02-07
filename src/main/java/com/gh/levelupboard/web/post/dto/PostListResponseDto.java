@@ -14,10 +14,10 @@ public class PostListResponseDto {
     private LocalDateTime modifiedDate;
 
     public PostListResponseDto(Post entity) {
-        this.id = entity.getId();
-        this.title = entity.getTitle();
-        this.writer = entity.getWriter();
-        this.createdDate = entity.getCreatedDate();
-        this.modifiedDate = entity.getModifiedDate();
+        id = entity.getId();
+        title = entity.getTitle();
+        writer = entity.getUser().getName();
+        createdDate = entity.getCreatedDate();
+        modifiedDate = entity.getModifiedDate();
     }
 }
