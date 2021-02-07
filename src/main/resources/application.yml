@@ -2,9 +2,6 @@ spring:
   profiles:
     include: oauth
 
-#  session:
-#    store-type: jdbc
-
   datasource:
     hikari:
       jdbc-url: jdbc:h2:mem:testdb;MODE=MYSQL
@@ -17,15 +14,12 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
-#        show_sql: true
         format_sql: true
         dialect: org.hibernate.dialect.MySQL57Dialect
-#        storage_engine: innodb
 
 
 logging.level:
   org.hibernate.SQL: debug
-#  org.hibernate.type: trace
 
 
 decorator:
