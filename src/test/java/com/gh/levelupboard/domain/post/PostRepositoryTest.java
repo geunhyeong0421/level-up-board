@@ -1,72 +1,78 @@
 package com.gh.levelupboard.domain.post;
 
+import com.gh.levelupboard.domain.board.Board;
 import com.gh.levelupboard.domain.user.LoginType;
 import com.gh.levelupboard.domain.user.Role;
 import com.gh.levelupboard.domain.user.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
-@Transactional
-@SpringBootTest
+@DataJpaTest
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class PostRepositoryTest {
 
     @Autowired
-    PostRepository postRepository;
+    private PostRepository postRepository;
     @Autowired
-    EntityManager em;
+    private TestEntityManager em;
 
-    User user;
+    private static final String TEST_USER_NAME = "김테스트";
+    private static final String TEST_BOARD_NAME = "테스트 게시판";
+    private User testUser;
+    private Board testBoard;
 
     @PostConstruct
-    public void setup() {
-        user = User.builder()
+    public void setUp() {
+        testUser = User.builder()
                 .loginType(LoginType.GOOGLE)
                 .loginId("1234")
-                .name("test")
+                .name(TEST_USER_NAME)
                 .email("test@gmail.com")
                 .picture(null)
                 .role(Role.USER)
                 .build();
+        testBoard = new Board(TEST_BOARD_NAME);
     }
 
 
     @Test
     public void saveTest() throws Exception {
-    /**
-     * GenerationType.IDENTITY 설정으로 인해 persist()와 동시에 쿼리가 날라간다..
-     */
         //given
-        em.persist(user); // 영속성 컨텍스트에 포함되면서 pk인 id값 생성과 insert 쿼리 발생
+        em.persist(testUser);
+        em.persist(testBoard);
         String title = "title";
         String content = "content";
 
         //when
-        Post savedPost = postRepository.save(new Post(title, content, user));
+        Post savedPost = postRepository.save(new Post(title, content, testUser, testBoard));
 
         //then
         assertThat(savedPost.getTitle()).isEqualTo(title);
         assertThat(savedPost.getContent()).isEqualTo(content);
+        assertThat(savedPost.getUser().getName()).isEqualTo(TEST_USER_NAME);
+        assertThat(savedPost.getBoard().getName()).isEqualTo(TEST_BOARD_NAME);
     }
 
 
     @Test
     public void findAllDescTest() throws Exception {
-    /**
-     * GenerationType.IDENTITY 설정으로 인해 persist()와 동시에 쿼리가 날라간다..
-     */
         //given
-        em.persist(user);
-        postRepository.save(new Post("title1", "content1", user));
-        postRepository.save(new Post("title2", "content2", user));
-        postRepository.save(new Post("title3", "content3", user));
+        em.persist(testUser);
+        em.persist(testBoard);
+        postRepository.save(new Post("자유1", "content1", testUser));
+        postRepository.save(new Post("테스트1", "content2", testUser, testBoard));
+        postRepository.save(new Post("자유2", "content3", testUser));
+        postRepository.save(new Post("테스트2", "content4", testUser, testBoard));
 
         //when
         List<Post> postList = postRepository.findAllDesc(); // 등록 순서의 역순으로 조회
@@ -74,7 +80,10 @@ class PostRepositoryTest {
         //then
         assertThat(postList)
                 .extracting("title")
-                .containsExactly("title3", "title2", "title1");
+                .containsExactly("테스트2", "자유2", "테스트1", "자유1");
+        assertThat(postList)
+                .extracting("content")
+                .containsExactly("content4", "content3", "content2", "content1");
     }
 
 

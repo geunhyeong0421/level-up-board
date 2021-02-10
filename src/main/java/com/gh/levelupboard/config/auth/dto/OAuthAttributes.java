@@ -31,20 +31,20 @@ public class OAuthAttributes {
 
     public static OAuthAttributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
         if ("naver".equals(registrationId)) {
-            return ofNaver("id", attributes);
+            return ofNaver(registrationId, "id", attributes);
         }
         if ("kakao".equals(registrationId)) {
-            return ofKakao("id", attributes);
+            return ofKakao(registrationId, "id", attributes);
         }
-        return ofGoogle(userNameAttributeName, attributes);
+        return ofGoogle(registrationId, userNameAttributeName, attributes);
     }
 
-    private static OAuthAttributes ofKakao(String userNameAttributeName, Map<String, Object> attributes) {
+    private static OAuthAttributes ofKakao(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
             Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
             Map<String, Object> profile = (Map<String, Object>) account.get("profile");
 
         return OAuthAttributes.builder()
-                .registrationId("kakao")
+                .registrationId(registrationId)
                 .name((String) profile.get("nickname"))
                 .email((String) account.get("email"))
                 .picture((String) profile.get("profile_image_url"))
@@ -53,11 +53,11 @@ public class OAuthAttributes {
                 .build();
     }
 
-    private static OAuthAttributes ofNaver(String userNameAttributeName, Map<String, Object> attributes) {
+    private static OAuthAttributes ofNaver(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
         return OAuthAttributes.builder()
-                .registrationId("naver")
+                .registrationId(registrationId)
                 .name((String) response.get("name"))
                 .email((String) response.get("email"))
                 .picture((String) response.get("profile_image"))
@@ -66,9 +66,9 @@ public class OAuthAttributes {
                 .build();
     }
 
-    private static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
+    private static OAuthAttributes ofGoogle(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
         return OAuthAttributes.builder()
-                .registrationId("google")
+                .registrationId(registrationId)
                 .name((String) attributes.get("name"))
                 .email((String) attributes.get("email"))
                 .picture((String) attributes.get("picture"))

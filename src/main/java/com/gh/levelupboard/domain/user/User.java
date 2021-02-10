@@ -1,13 +1,12 @@
 package com.gh.levelupboard.domain.user;
 
 import com.gh.levelupboard.domain.BaseTimeEntity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
+@Builder
+@AllArgsConstructor
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -34,16 +33,6 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private Role role;
 
-
-    @Builder
-    public User(LoginType loginType, String loginId, String name, String email, String picture, Role role) {
-        this.loginType = loginType;
-        this.loginId = loginId;
-        this.name = name;
-        this.email = email;
-        this.picture = picture;
-        this.role = role;
-    }
 
     public User update(String name, String email, String picture) {
         this.name = name;
