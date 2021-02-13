@@ -1,7 +1,10 @@
 {{>layouts/header}}
 
+
+<!-- body -->
 <div class="container-fluid">
     <div class="row">
+        <!-- 게시판(사이드바) -->
         <div class="col-sm-2 py-3" style="background-color:#e9ecef">
             <h3>게시판(Lv.7)</h3>
             <ul class="nav flex-column">
@@ -16,6 +19,7 @@
                 </li>
             </ul>
         </div>
+        <!-- 게시글(주요 컨텐츠) -->
         <div class="col-sm-10 py-3">
             <a href="/posts/new" role="button" class="btn btn-primary mb-2">글쓰기</a>
             <!--목록 출력 영역-->
@@ -36,7 +40,7 @@
                         <td><a href="/posts/{{id}}">{{title}}</a></td>
                         <td>{{writer}}</td>
                         <td>{{createdDate}}</td>
-                        <td>0</td>
+                        <td>{{hit}}</td>
                     </tr>
                 {{/posts}}
                 </tbody>
@@ -44,5 +48,7 @@
         </div>
     </div>
 </div>
+<!-- /body -->
+
 
 {{>layouts/footer}}

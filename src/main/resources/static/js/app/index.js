@@ -89,8 +89,8 @@ var index = {
             url: '/api/v1/posts/' + id,
             dataType: 'json',
             contentType: 'application/json; charset=utf-8'
-        }).done(function(result) {
-            alert(result + '번 게시글이 삭제되었습니다.');
+        }).done(function() {
+            alert('글이 삭제되었습니다.');
             window.location.href = '/';
         }).fail(function(error) {
             alert(JSON.stringify(error))

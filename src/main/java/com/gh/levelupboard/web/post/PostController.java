@@ -23,7 +23,7 @@ public class PostController {
 
     @GetMapping("/")
     public String index(Model model, @LoginUser SessionUser user) {
-        if (user != null) { model.addAttribute("user", user); }
+        if (user != null) { model.addAttribute("loginUser", user); }
         model.addAttribute("posts", postService.getListDesc());
         return "index";
     }
@@ -31,7 +31,7 @@ public class PostController {
     // 게시글 등록 화면
     @GetMapping("/posts/new")
     public String postsNew(Model model, @LoginUser SessionUser user) {
-        model.addAttribute("user", user);
+        model.addAttribute("loginUser", user);
         return "posts/create";
     }
 
@@ -39,7 +39,7 @@ public class PostController {
     @GetMapping("/posts/{id}/edit")
     public String postsEdit(Model model, @LoginUser SessionUser user,
                             @PathVariable Long id) {
-        model.addAttribute("user", user);
+        model.addAttribute("loginUser", user);
 
         PostResponseDto dto = postService.get(id);
         model.addAttribute("post", dto);
@@ -50,7 +50,7 @@ public class PostController {
     @GetMapping("/posts/{id}")
     public String posts(Model model, @LoginUser SessionUser user,
                         @PathVariable Long id) {
-        model.addAttribute("user", user);
+        model.addAttribute("loginUser", user);
 
         PostResponseDto dto = postService.get(id);
         model.addAttribute("post", dto);

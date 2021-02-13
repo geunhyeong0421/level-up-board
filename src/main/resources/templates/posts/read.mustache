@@ -1,37 +1,77 @@
 {{>layouts/header}}
 
-<div class="container">
-    <form>
-        <div class="form-group">
-            <label for="id">번호</label>
-            <input type="text" class="form-control" id="id" value="{{post.id}}" readonly>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- 게시판(사이드바) -->
+        <div class="col-sm-2 py-3" style="background-color:#e9ecef">
+            <h3>게시판(Lv.7)</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">전체글 보기</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">자유게시판</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">공지사항</a>
+                </li>
+            </ul>
         </div>
-        <div class="form-group">
-            <label for="createdDate">작성일</label>
-            <input type="text" class="form-control" id="createdDate" value="{{post.createdDate}}" readonly>
+        <div class="col-sm-10 py-3" id="top">
+            <div class="d-flex mb-3">
+                {{#isMyPost}}
+                    <a href="/posts/{{post.id}}/edit" role="button" class="btn btn-info mr-1">수정</a>
+                    <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
+                {{/isMyPost}}
+                <a href="/" role="button" class="btn btn-secondary ml-auto">목록</a>
+            </div>
+            <!-- 제목 -->
+            <h2>{{post.title}}</h2>
+            <div class="d-flex">
+                <!-- 작성자 프로필 사진 -->
+                {{#loginUser.picture}}
+                    <img src="{{loginUser.picture}}" class="rounded-circle mr-2" height="75" width="75" alt="profile_picture">
+                {{/loginUser.picture}}
+                {{^loginUser.picture}}
+                    <img src="/images/blank_profile_picture.png" class="rounded-circle mr-2" height="75" width="75" alt="blank_profile">
+                {{/loginUser.picture}}
+                <div>
+                    <div class="font-weight-bold">
+                        <!-- 작성자 이름 -->
+                        {{loginUser.name}}
+                    </div>
+                    <div class="text-muted">
+                        <span class="mr-2">
+                            <!-- 작성일 -->
+                            {{post.createdDate}}
+                        </span>
+                        <span>
+                            <!-- 조회수 -->
+                            조회 0
+                        </span>
+                    </div>
+                    <div class="text-muted">
+                        <!-- 최종 수정일 -->
+                        {{post.modifiedDate}}에 수정됨
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <textarea style="width:100%; border:0" rows="10" readonly>{{post.content}}
+            </textarea>
+            <input type="hidden" id="id" value="{{post.id}}">
+            <hr>
+            <div class="d-flex ">
+                <a href="/" role="button" class="btn btn-secondary mr-auto">목록</a>
+                <a href="#top" role="button" class="btn btn-secondary">위로</a>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="modifiedDate">최종 수정일</label>
-            <input type="text" class="form-control" id="modifiedDate" value="{{post.modifiedDate}}" readonly>
-        </div>
-        <div class="form-group">
-            <label for="writer">작성자</label>
-            <input type="text" class="form-control" id="writer" value="{{post.writer}}" readonly>
-        </div>
-        <div class="form-group">
-            <label for="title">제목</label>
-            <input type="text" class="form-control" id="title" value="{{post.title}}" readonly>
-        </div>
-        <div class="form-group">
-            <label for="content">내용</label>
-            <textarea class="form-control" id="content" readonly>{{post.content}}</textarea>
-        </div>
-    </form>
-    <a href="/" role="button" class="btn btn-secondary">목록</a>
-    {{#isMyPost}}
-        <a href="/posts/{{post.id}}/edit" role="button" class="btn btn-info">수정</a>
-        <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
-    {{/isMyPost}}
+        <!-- /.col-sm-10 -->
+    </div>
+    <!-- /.row -->
 </div>
+<!-- /.container-fluid -->
+
 
 {{>layouts/footer}}
