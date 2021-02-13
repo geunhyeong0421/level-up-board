@@ -11,13 +11,13 @@ public class PostListResponseDto {
     private String title;
     private String writer;
     private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
+    private int hit;
 
     public PostListResponseDto(Post entity) {
         id = entity.getId();
         title = entity.getTitle();
         writer = entity.getUser().getName();
         createdDate = entity.getCreatedDate();
-        modifiedDate = entity.getModifiedDate();
+        hit = 0;
     }
 }

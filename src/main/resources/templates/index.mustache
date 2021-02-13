@@ -1,57 +1,48 @@
-{{>layout/header}}
+{{>layouts/header}}
 
-<h1>게시판(Lv.5)</h1>
-<div class="col-md-12">
-    <!--로그인 기능 영역-->
+<div class="container-fluid">
     <div class="row">
-        <div class="col-md-6">
-            {{#loginUserName}}
-                Logged in as: <span id="user">{{loginUserName}}</span>
-                <a href="/logout" class="btn btn-info active" role="button">
-                    Logout
-                </a>
-            {{/loginUserName}}
-            {{^loginUserName}}
-                <a href="/oauth2/authorization/google" class="btn btn-primary active" role="button">
-                    구글 로그인
-                </a>
-                <a href="/oauth2/authorization/naver" class="btn btn-success active" role="button">
-                    네이버 로그인
-                </a>
-                <a href="/oauth2/authorization/kakao"><img src="/images/kakao_login_medium_narrow.png" title="카카오 계정으로 로그인합니다"></a>
-            {{/loginUserName}}
-
+        <div class="col-sm-2 py-3" style="background-color:#e9ecef">
+            <h3>게시판(Lv.7)</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">전체글 보기</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">자유게시판</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">공지사항</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-10 py-3">
+            <a href="/posts/new" role="button" class="btn btn-primary mb-2">글쓰기</a>
+            <!--목록 출력 영역-->
+            <table class="table table-sm table-hover table-bordered text-center">
+                <thead>
+                <tr>
+                    <th width="10%">번호</th>
+                    <th width="40%">제목</th>
+                    <th width="20%">작성자</th>
+                    <th width="20%">작성일</th>
+                    <th width="10%">조회</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                {{#posts}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td><a href="/posts/{{id}}">{{title}}</a></td>
+                        <td>{{writer}}</td>
+                        <td>{{createdDate}}</td>
+                        <td>0</td>
+                    </tr>
+                {{/posts}}
+                </tbody>
+            </table>
         </div>
     </div>
-    <br>
-    <div class="row">
-        <div class="col-md-6">
-            <a href="/posts/new" role="button" class="btn btn-dark">글 등록</a>
-        </div>
-    </div>
-    <!--목록 출력 영역-->
-    <table class="table table-horizontal table-bordered">
-        <thead class="thead-strong">
-        <tr>
-            <th>번호</th>
-            <th>제목</th>
-            <th>작성자</th>
-            <th>작성일</th>
-            <th>수정일</th>
-        </tr>
-        </thead>
-        <tbody id="tbody">
-        {{#posts}}
-            <tr>
-                <td>{{id}}</td>
-                <td><a href="/posts/{{id}}">{{title}}</a></td>
-                <td>{{writer}}</td>
-                <td>{{createdDate}}</td>
-                <td>{{modifiedDate}}</td>
-            </tr>
-        {{/posts}}
-        </tbody>
-    </table>
 </div>
 
-{{>layout/footer}}
+{{>layouts/footer}}

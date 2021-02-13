@@ -24,7 +24,7 @@ var index = {
         var content = $('#content').val().trim();
         if(!content) {
             alert('내용을 입력해 주세요.');
-            $('#content').val("").focus();
+            $('#content').focus();
             return;
         }
 
@@ -57,7 +57,7 @@ var index = {
         var content = $('#content').val().trim();
         if(!content) {
             alert('내용을 입력해 주세요.');
-            $('#content').val("").focus();
+            $('#content').focus();
             return;
         }
 
