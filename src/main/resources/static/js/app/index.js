@@ -66,7 +66,7 @@ var index = {
             content: $('#content').val()
         };
 
-        var id = $('#id').val();
+        var id = $('#post-id').val();
 
         $.ajax({
             type: 'PUT',
@@ -82,7 +82,7 @@ var index = {
         });
     },
     delete : function() {
-        var id = $('#id').val();
+        var id = $('#post-id').val();
 
         $.ajax({
             type: 'DELETE',

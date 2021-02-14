@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public class PostListResponseDto {
+
     private Long id;
     private String title;
     private String writer;
@@ -18,6 +19,6 @@ public class PostListResponseDto {
         title = entity.getTitle();
         writer = entity.getUser().getName();
         createdDate = entity.getCreatedDate();
-        hit = 0;
+        hit = entity.getHit();
     }
 }

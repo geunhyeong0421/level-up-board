@@ -17,20 +17,16 @@ public class User extends BaseTimeEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private LoginType loginType;
 
-    @Column(nullable = false)
     private String loginId;
 
-    @Column(nullable = false)
     private String name;
 
     private String email;
     private String picture;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Role role;
 
 

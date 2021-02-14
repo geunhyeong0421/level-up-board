@@ -2,7 +2,6 @@ package com.gh.levelupboard.domain.board;
 
 import com.gh.levelupboard.domain.BaseTimeEntity;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,16 +16,9 @@ public class Board extends BaseTimeEntity {
     @Column(name = "board_id")
     private Long id;
 
-    @Column(nullable = false)
     private String name;
 
     public Board(String name) {
-        this.name = name;
-    }
-
-
-    // 게시판 이름 변경
-    public void changeName(String name) {
         this.name = name;
     }
 

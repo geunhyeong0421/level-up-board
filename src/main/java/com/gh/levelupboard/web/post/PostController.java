@@ -22,7 +22,7 @@ public class PostController {
     public void login() {}
 
     @GetMapping("/")
-    public String index(Model model, @LoginUser SessionUser user) {
+    public String home(Model model, @LoginUser SessionUser user) {
         if (user != null) { model.addAttribute("loginUser", user); }
         model.addAttribute("posts", postService.getListDesc());
         return "index";
@@ -30,14 +30,14 @@ public class PostController {
 
     // 게시글 등록 화면
     @GetMapping("/posts/new")
-    public String postsNew(Model model, @LoginUser SessionUser user) {
+    public String createPost(Model model, @LoginUser SessionUser user) {
         model.addAttribute("loginUser", user);
         return "posts/create";
     }
 
     // 게시글 수정 화면
     @GetMapping("/posts/{id}/edit")
-    public String postsEdit(Model model, @LoginUser SessionUser user,
+    public String editPost(Model model, @LoginUser SessionUser user,
                             @PathVariable Long id) {
         model.addAttribute("loginUser", user);
 
@@ -48,7 +48,7 @@ public class PostController {
 
     // 게시글 조회 화면
     @GetMapping("/posts/{id}")
-    public String posts(Model model, @LoginUser SessionUser user,
+    public String readPost(Model model, @LoginUser SessionUser user,
                         @PathVariable Long id) {
         model.addAttribute("loginUser", user);
 

@@ -46,7 +46,7 @@ class PostRepositoryTest {
 
 
     @Test
-    public void saveTest() throws Exception {
+    public void saveTest() {
         //given
         em.persist(testUser);
         em.persist(testBoard);
@@ -54,7 +54,7 @@ class PostRepositoryTest {
         String content = "content";
 
         //when
-        Post savedPost = postRepository.save(new Post(title, content, testUser, testBoard));
+        Post savedPost = postRepository.save(new Post(testBoard, testUser, title, content));
 
         //then
         assertThat(savedPost.getTitle()).isEqualTo(title);
@@ -65,14 +65,14 @@ class PostRepositoryTest {
 
 
     @Test
-    public void findAllDescTest() throws Exception {
+    public void findAllDescTest() {
         //given
         em.persist(testUser);
         em.persist(testBoard);
-        postRepository.save(new Post("자유1", "content1", testUser));
-        postRepository.save(new Post("테스트1", "content2", testUser, testBoard));
-        postRepository.save(new Post("자유2", "content3", testUser));
-        postRepository.save(new Post("테스트2", "content4", testUser, testBoard));
+        postRepository.save(new Post(testUser, "자유1", "content1"));
+        postRepository.save(new Post(testBoard, testUser, "테스트1", "content2"));
+        postRepository.save(new Post(testUser, "자유2", "content3"));
+        postRepository.save(new Post(testBoard, testUser, "테스트2", "content4"));
 
         //when
         List<Post> postList = postRepository.findAllDesc(); // 등록 순서의 역순으로 조회

@@ -83,18 +83,18 @@ class PostApiControllerTest {
     }
 
     @AfterEach
-    public void tearDown() throws Exception {
+    public void tearDown() {
         postRepository.deleteAll();
     }
 
 
     @Test
     @WithMockUser(roles = "USER")
-    public void Post_등록된다() throws Exception {
+    public void addPostTest() throws Exception {
         //given
         String title = "title";
         String content = "content";
-        PostSaveRequestDto requestDto = new PostSaveRequestDto(title, content, testUser.getId());
+        PostSaveRequestDto requestDto = new PostSaveRequestDto(testUser.getId(), title, content);
 
         String url = "http://localhost:" + port + "/api/v1/posts";
 
@@ -111,9 +111,9 @@ class PostApiControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void Post_수정된다() throws Exception {
+    public void modifyPostTest() throws Exception {
         //given
-        Post savedPost = postRepository.save(new Post("title", "content", testUser));
+        Post savedPost = postRepository.save(new Post(testUser, "title", "content"));
         Long postId = savedPost.getId();
 
         String expectedTitle = "title2";
@@ -136,9 +136,9 @@ class PostApiControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void Post_삭제된다() throws Exception {
+    public void removePostTest() throws Exception {
         //given
-        Post savedPost = postRepository.save(new Post("title", "content", testUser));
+        Post savedPost = postRepository.save(new Post(testUser, "title", "content"));
         Long postId = savedPost.getId();
 
         String url = "http://localhost:" + port + "/api/v1/posts/" + postId;

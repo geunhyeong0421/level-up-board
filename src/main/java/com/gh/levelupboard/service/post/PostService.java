@@ -1,62 +1,28 @@
 package com.gh.levelupboard.service.post;
 
-import com.gh.levelupboard.domain.post.Post;
-import com.gh.levelupboard.domain.post.PostRepository;
-import com.gh.levelupboard.domain.user.User;
-import com.gh.levelupboard.domain.user.UserRepository;
 import com.gh.levelupboard.web.post.dto.PostListResponseDto;
 import com.gh.levelupboard.web.post.dto.PostResponseDto;
 import com.gh.levelupboard.web.post.dto.PostSaveRequestDto;
 import com.gh.levelupboard.web.post.dto.PostUpdateRequestDto;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Transactional(readOnly = true)
-@RequiredArgsConstructor
-@Service
-public class PostService {
-    private final PostRepository postRepository;
-    private final UserRepository userRepository;
+public interface PostService {
 
-    @Transactional
-    public Long add(PostSaveRequestDto requestDto) {
-        Long userId = requestDto.getUserId();
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 이용자가 없습니다. id=" + userId));
+    // 게시글 등록
+    Long add(PostSaveRequestDto requestDto);
 
-        return postRepository.save(requestDto.toEntity(user)).getId();
-    }
+    // 게시글 수정
+    Long modify(Long id, PostUpdateRequestDto requestDto);
 
-    @Transactional
-    public Long modify(Long id, PostUpdateRequestDto requestDto) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+    // 게시글 삭제
+    Long remove(Long id);
 
-        post.update(requestDto.getTitle(), requestDto.getContent());
-        return id;
-    }
+    // 게시글 조회
+    PostResponseDto get(Long id);
+    PostResponseDto get(Long id, boolean isMyPost);
 
-    @Transactional
-    public Long remove(Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
-        postRepository.delete(post);
-        return id;
-    }
+    // 게시글 목록 조회
+    List<PostListResponseDto> getListDesc();
 
-    public PostResponseDto get(Long id) {
-        Post entity = postRepository.findByIdFetch(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
-        return new PostResponseDto(entity);
-    }
-
-    public List<PostListResponseDto> getListDesc() {
-        return postRepository.findAllDesc().stream()
-                .map(PostListResponseDto::new)
-                .collect(Collectors.toList());
-    }
 }
