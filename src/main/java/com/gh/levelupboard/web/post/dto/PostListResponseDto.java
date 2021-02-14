@@ -5,14 +5,15 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Getter
-public class PostListResponseDto {
+//@Getter
+public class PostListResponseDto { // 게시글 목록 출력에 사용
 
-    private Long id;
-    private String title;
-    private String writer;
-    private LocalDateTime createdDate;
-    private int hit;
+    private Long id; // 번호
+    private String title; // 제목
+    private String writer; // 작성자
+    private LocalDateTime createdDate; // 작성일
+    private int hit; // 조회수
+
 
     public PostListResponseDto(Post entity) {
         id = entity.getId();

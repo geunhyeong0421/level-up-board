@@ -1,9 +1,6 @@
 package com.gh.levelupboard.service.post;
 
-import com.gh.levelupboard.web.post.dto.PostListResponseDto;
-import com.gh.levelupboard.web.post.dto.PostResponseDto;
-import com.gh.levelupboard.web.post.dto.PostSaveRequestDto;
-import com.gh.levelupboard.web.post.dto.PostUpdateRequestDto;
+import com.gh.levelupboard.web.post.dto.*;
 
 import java.util.List;
 
@@ -19,8 +16,10 @@ public interface PostService {
     Long remove(Long id);
 
     // 게시글 조회
-    PostResponseDto get(Long id);
-    PostResponseDto get(Long id, boolean isMyPost);
+    PostResponseDto get(Long postId, Long loginUserId);
+
+    // 게시글 수정을 위한 정보만을 조회
+    EditPostResponseDto getForEdit(Long id);
 
     // 게시글 목록 조회
     List<PostListResponseDto> getListDesc();

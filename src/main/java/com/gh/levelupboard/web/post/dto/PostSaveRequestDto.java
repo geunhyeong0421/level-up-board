@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PostSaveRequestDto {
+public class PostSaveRequestDto { // 게시글 등록 요청 정보
 
-    private Long userId;
-    private String title;
-    private String content;
+    private Long userId; // 작성자(로그인 유저)
+    private String title; // 제목
+    private String content; // 내용
 
 
     public PostSaveRequestDto(Long userId, String title, String content) {

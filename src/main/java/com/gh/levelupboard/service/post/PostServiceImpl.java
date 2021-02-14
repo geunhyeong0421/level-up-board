@@ -4,10 +4,7 @@ import com.gh.levelupboard.domain.post.Post;
 import com.gh.levelupboard.domain.post.PostRepository;
 import com.gh.levelupboard.domain.user.User;
 import com.gh.levelupboard.domain.user.UserRepository;
-import com.gh.levelupboard.web.post.dto.PostListResponseDto;
-import com.gh.levelupboard.web.post.dto.PostResponseDto;
-import com.gh.levelupboard.web.post.dto.PostSaveRequestDto;
-import com.gh.levelupboard.web.post.dto.PostUpdateRequestDto;
+import com.gh.levelupboard.web.post.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,17 +48,25 @@ public class PostServiceImpl implements PostService{
         return id;
     }
 
-    @Override
-    public PostResponseDto get(Long id) {
-        Post entity = postRepository.findByIdFetch(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
-        return new PostResponseDto(entity);
-    }
-
     @Transactional
     @Override
-    public PostResponseDto get(Long id, boolean isMyPost) {
-        return null;
+    public PostResponseDto get(Long postId, Long longinUserId) {
+        Post post = postRepository.findByIdFetch(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + postId));
+
+        // 게시물 작성자와 이용자(로그인 유저) 일치 여부를 확인
+        boolean isMyPost = post.getUser().getId().equals(longinUserId);
+        if (isMyPost == false) { // 본인 글이 아니면 조회수 +1
+            post.increaseHit();
+        }
+        return new PostResponseDto(post, isMyPost);
+    }
+
+    @Override
+    public EditPostResponseDto getForEdit(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+        return new EditPostResponseDto(post);
     }
 
     @Override

@@ -5,7 +5,7 @@
     <div class="row">
         <!-- 게시판(사이드바) -->
         <div class="col-sm-2 py-3" style="background-color:#e9ecef">
-            <h3>게시판(Lv.7)</h3>
+            <h3>게시판(Lv.9)</h3>
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link" href="#">전체글 보기</a>
@@ -20,10 +20,10 @@
         </div>
         <div class="col-sm-10 py-3">
             <div class="d-flex mb-3">
-                {{#isMyPost}}
+                {{#post.isMyPost}}
                     <a href="/posts/{{post.id}}/edit" role="button" class="btn btn-primary mr-1">수정</a>
                     <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
-                {{/isMyPost}}
+                {{/post.isMyPost}}
                 <a href="/" role="button" class="btn btn-secondary ml-auto">목록</a>
             </div>
             <!-- 제목 -->
@@ -58,8 +58,7 @@
                 </div>
             </div>
             <hr>
-            <textarea style="width:100%; border:0" rows="10" readonly>{{post.content}}
-            </textarea>
+            <textarea style="width:100%; border:0" rows="10" readonly>{{post.content}}</textarea>
             <input type="hidden" id="post-id" value="{{post.id}}">
             <hr>
             <div class="d-flex ">
