@@ -30,7 +30,6 @@ var index = {
 
         var data = {
             title: title,
-            userId: $('#userId').val(),
             content: $('#content').val()
         };
 

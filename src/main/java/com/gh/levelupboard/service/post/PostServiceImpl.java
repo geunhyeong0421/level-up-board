@@ -25,7 +25,6 @@ public class PostServiceImpl implements PostService{
         Long userId = requestDto.getUserId();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 이용자가 없습니다. id=" + userId));
-
         return postRepository.save(requestDto.toEntity(user)).getId();
     }
 
@@ -34,7 +33,6 @@ public class PostServiceImpl implements PostService{
     public Long modify(Long id, PostUpdateRequestDto requestDto) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
-
         post.update(requestDto.getTitle(), requestDto.getContent());
         return id;
     }
@@ -48,18 +46,12 @@ public class PostServiceImpl implements PostService{
         return id;
     }
 
-    @Transactional
+    @Transactional // 조회수 변경 가능성
     @Override
     public PostResponseDto get(Long postId, Long longinUserId) {
         Post post = postRepository.findByIdFetch(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + postId));
-
-        // 게시물 작성자와 이용자(로그인 유저) 일치 여부를 확인
-        boolean isMyPost = post.getUser().getId().equals(longinUserId);
-        if (isMyPost == false) { // 본인 글이 아니면 조회수 +1
-            post.increaseHit();
-        }
-        return new PostResponseDto(post, isMyPost);
+        return new PostResponseDto(post, longinUserId);
     }
 
     @Override
@@ -75,4 +67,5 @@ public class PostServiceImpl implements PostService{
                 .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
     }
+
 }

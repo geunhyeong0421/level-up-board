@@ -1,5 +1,7 @@
 package com.gh.levelupboard.web.post;
 
+import com.gh.levelupboard.config.auth.LoginUser;
+import com.gh.levelupboard.config.auth.dto.SessionUser;
 import com.gh.levelupboard.service.post.PostService;
 import com.gh.levelupboard.web.post.dto.PostSaveRequestDto;
 import com.gh.levelupboard.web.post.dto.PostUpdateRequestDto;
@@ -17,7 +19,8 @@ public class PostApiController {
 
     // 등록
     @PostMapping("/api/v1/posts")
-    public Long addPost(@RequestBody PostSaveRequestDto requestDto) {
+    public Long addPost(@LoginUser SessionUser user, @RequestBody PostSaveRequestDto requestDto) {
+        requestDto.setUserId(user.getId());
         return postService.add(requestDto);
     }
 

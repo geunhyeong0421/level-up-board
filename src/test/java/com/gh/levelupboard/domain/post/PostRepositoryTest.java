@@ -26,8 +26,6 @@ class PostRepositoryTest {
     @Autowired
     private TestEntityManager em;
 
-    private static final String TEST_USER_NAME = "김테스트";
-    private static final String TEST_BOARD_NAME = "테스트 게시판";
     private User testUser;
     private Board testBoard;
 
@@ -36,43 +34,23 @@ class PostRepositoryTest {
         testUser = User.builder()
                 .loginType(LoginType.GOOGLE)
                 .loginId("1234")
-                .name(TEST_USER_NAME)
+                .name("김테스트")
                 .email("test@gmail.com")
-                .picture(null)
                 .role(Role.USER)
                 .build();
-        testBoard = new Board(TEST_BOARD_NAME);
+        testBoard = new Board("테스트 게시판");
     }
 
 
     @Test
-    public void saveTest() {
+    public void findAllDesc() {
         //given
         em.persist(testUser);
         em.persist(testBoard);
-        String title = "title";
-        String content = "content";
-
-        //when
-        Post savedPost = postRepository.save(new Post(testBoard, testUser, title, content));
-
-        //then
-        assertThat(savedPost.getTitle()).isEqualTo(title);
-        assertThat(savedPost.getContent()).isEqualTo(content);
-        assertThat(savedPost.getUser().getName()).isEqualTo(TEST_USER_NAME);
-        assertThat(savedPost.getBoard().getName()).isEqualTo(TEST_BOARD_NAME);
-    }
-
-
-    @Test
-    public void findAllDescTest() {
-        //given
-        em.persist(testUser);
-        em.persist(testBoard);
-        postRepository.save(new Post(testUser, "자유1", "content1"));
-        postRepository.save(new Post(testBoard, testUser, "테스트1", "content2"));
-        postRepository.save(new Post(testUser, "자유2", "content3"));
-        postRepository.save(new Post(testBoard, testUser, "테스트2", "content4"));
+        postRepository.save(new Post(null, null, testUser, "자유1", "content1"));
+        postRepository.save(new Post(null, testBoard, testUser, "테스트1", "content2"));
+        postRepository.save(new Post(null, null, testUser, "자유2", "content3"));
+        postRepository.save(new Post(null, testBoard, testUser, "테스트2", "content4"));
 
         //when
         List<Post> postList = postRepository.findAllDesc(); // 등록 순서의 역순으로 조회

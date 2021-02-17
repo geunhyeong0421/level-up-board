@@ -26,6 +26,8 @@
                 {{/post.isMyPost}}
                 <a href="/" role="button" class="btn btn-secondary ml-auto">목록</a>
             </div>
+            <!-- 번호 -->
+            <input type="hidden" id="post-id" value="{{post.id}}">
             <!-- 제목 -->
             <h2>{{post.title}}</h2>
             <div class="d-flex">
@@ -52,14 +54,16 @@
                         </span>
                     </div>
                     <div class="text-muted">
-                        <!-- 최종 수정일 -->
-                        {{post.modifiedDate}}에 수정됨
+                        <span class="mr-2">
+                            <!-- 최종 수정일 -->
+                            {{post.modifiedDate}}
+                        </span>
+                         수정됨
                     </div>
                 </div>
             </div>
             <hr>
-            <textarea style="width:100%; border:0" rows="10" readonly>{{post.content}}</textarea>
-            <input type="hidden" id="post-id" value="{{post.id}}">
+            <pre>{{post.content}}</pre>
             <hr>
             <div class="d-flex ">
                 <a href="/" role="button" class="btn btn-secondary mr-auto">목록</a>
