@@ -26,7 +26,6 @@ class CommentRepositoryTest {
     TestEntityManager em;
 
 
-
     @Test
     public void findByPostId() {
         //given
@@ -42,7 +41,7 @@ class CommentRepositoryTest {
                     .content(i + "번째 댓글")
                     .build();
             em.persist(parent); // 댓글 등록
-            em.flush(); // @PostPersist 변경 내용 적용
+            em.flush(); // @PostPersist 변경 내용 적용 - update 쿼리 발생
             count++;
             if (i % 2 == 0) {
                 continue; // 짝수번째 댓글에는 대댓글을 달지 않음
@@ -55,12 +54,10 @@ class CommentRepositoryTest {
                         .build();
                 child.setParent(parent);
                 em.persist(child); // 대댓글 등록
-                em.flush(); // @PostPersist 변경 내용 적용
                 count++;
             }
         }
-//        em.clear(); // 영속성 컨텍스트 초기화
-        System.out.println("\n\n======================== clear =========================\n\n");
+        System.out.println("\n\n======================== 입력 끝 =========================\n\n");
 
         //when
         List<Comment> comments = commentRepository.findByPostId(testPost.getId());
@@ -68,8 +65,9 @@ class CommentRepositoryTest {
         //then
         assertThat(comments.size()).isEqualTo(count);
         for (Comment comment : comments) {
-            System.out.printf("id: %d\tgroupId:%d\tcontent: %s\n", comment.getId(), comment.getGroupId(), comment.getContent());
+            System.out.printf("groupId:%d\tid: %d\tcontent: %s\n", comment.getGroupId(), comment.getId(), comment.getContent());
         }
+
     }
 
 

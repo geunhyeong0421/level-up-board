@@ -50,7 +50,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + id));
 
-        comment.update(requestDto.getContent(), requestDto.isSecret());
+        comment.update(requestDto.getContent(), requestDto.getIsSecret());
         return id;
     }
 

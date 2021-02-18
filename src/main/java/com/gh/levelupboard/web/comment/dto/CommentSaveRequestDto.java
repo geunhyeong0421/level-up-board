@@ -1,5 +1,6 @@
 package com.gh.levelupboard.web.comment.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gh.levelupboard.domain.comment.Comment;
 import com.gh.levelupboard.domain.post.Post;
 import com.gh.levelupboard.domain.user.User;
@@ -19,6 +20,8 @@ public class CommentSaveRequestDto { // 댓글 등록 요청 정보
     private Long parentId; // 부모 댓글 번호
 
     private String content; // 내용
+
+    @JsonProperty("isSecret")
     private boolean isSecret; // 비밀 댓글 여부
 
 

@@ -1,12 +1,11 @@
 {{>layouts/header}}
 
 
-<!-- body -->
 <div class="container-fluid">
     <div class="row">
         <!-- 게시판(사이드바) -->
         <div class="col-sm-2 py-3" style="background-color:#e9ecef">
-            <h3>게시판(Lv.9)</h3>
+            <h3>게시판(Lv.11)</h3>
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link" href="#">전체글 보기</a>
@@ -37,7 +36,7 @@
                 {{#posts}}
                     <tr>
                         <td>{{id}}</td>
-                        <td><a href="/posts/{{id}}">{{title}}</a></td>
+                        <td><a href="/posts/{{id}}" class="mr-1">{{title}}</a><span class="font-weight-bold">[{{commentCount}}]</span></td>
                         <td>{{writer}}</td>
                         <td>{{createdDate}}</td>
                         <td>{{hit}}</td>
@@ -48,7 +47,6 @@
         </div>
     </div>
 </div>
-<!-- /body -->
 
 
 {{>layouts/footer}}

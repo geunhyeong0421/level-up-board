@@ -11,6 +11,7 @@ import com.gh.levelupboard.web.comment.dto.CommentSaveRequestDto;
 import com.gh.levelupboard.web.comment.dto.CommentUpdateRequestDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -26,7 +27,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
 
-    private CommentService commentService;
+    @InjectMocks
+    private CommentServiceImpl commentService;
 
     @Mock
     private CommentRepository commentRepository;
@@ -53,7 +55,6 @@ class CommentServiceTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(User.builder().build()));
         when(commentRepository.findById(anyLong())).thenReturn(Optional.of(Comment.builder().build()));
         when(commentRepository.save(any(Comment.class))).thenReturn(savedComment);
-        commentService = new CommentServiceImpl(commentRepository, postRepository, userRepository);
 
         //when
         Long result = commentService.add(dto);
@@ -78,7 +79,6 @@ class CommentServiceTest {
                 .build();
 
         when(commentRepository.findById(expectedCommentId)).thenReturn(Optional.of(targetComment));
-        commentService = new CommentServiceImpl(commentRepository, null, null);
 
         //when
         Long result = commentService.modify(expectedCommentId, dto);
@@ -97,9 +97,8 @@ class CommentServiceTest {
                 .id(expectedCommentId)
                 .content("10번째 댓글은 대댓글이 달려있어서 isDelete를 true로 변경합니다.")
                 .build();
-        Comment.builder().content("대댓글입니다.").build().setParent(targetComment);
+        Comment.builder().content("대댓글 달아줍니다.").build().setParent(targetComment);
         when(commentRepository.findById(expectedCommentId)).thenReturn(Optional.of(targetComment));
-        commentService = new CommentServiceImpl(commentRepository, null, null);
 
         //when
         Long result = commentService.remove(expectedCommentId);
@@ -143,7 +142,6 @@ class CommentServiceTest {
             }
         }
         when(commentRepository.findByPostId(testPost.getId())).thenReturn(comments);
-        commentService = new CommentServiceImpl(commentRepository, null, null);
 
         //when
         List<CommentListResponseDto> result = commentService.getList(testPost.getId(), testUser.getId());
@@ -151,7 +149,7 @@ class CommentServiceTest {
         //then
         assertThat(result.size()).isEqualTo(comments.size());
         for (CommentListResponseDto dto : result) {
-            System.out.printf("isModified: %b\tcontent: %s\n", dto.isModified(), dto.getContent());
+            System.out.printf("%s\t%s\tisModified: %b\tcontent: %s\n", dto.getCreatedDate(), dto.getModifiedDate(), dto.getIsModified(), dto.getContent());
         }
     }
 

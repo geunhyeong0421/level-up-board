@@ -26,6 +26,7 @@ public class Post {
 
     private String title; // 제목
     private String content; // 내용
+
     private int hit; // 조회수
     private int commentCount; // 댓글수
 
