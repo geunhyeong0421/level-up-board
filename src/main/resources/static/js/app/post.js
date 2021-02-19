@@ -1,4 +1,4 @@
-var index = {
+var post = {
 
     init : function() {
         var _this = this;
@@ -99,4 +99,4 @@ var index = {
 
 };
 
-index.init();
+post.init();

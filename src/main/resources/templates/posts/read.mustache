@@ -103,7 +103,7 @@
                                     <span class="text-muted-comment">1992.04.21. 19:46</span> <!-- 수정일 -->
                                     <span class="text-muted-comment">수정됨</span> <!-- 수정 여부 -->
                                 </div>
-                                <div class="col-auto px-0 comment-buttons"> <!-- 답글 버튼 + @ -->
+                                <div class="comment-buttons col-auto px-0" data-id="4"> <!-- 답글 버튼 + @ -->
                                     <button type="button" class="btn btn-dark btn-sm" id="btn-reply-comment">답글</button>
                                     <button type="button" class="btn btn-primary btn-sm" id="btn-update-comment">수정</button>
                                     <button type="button" class="btn btn-danger btn-sm" id="btn-delete-comment">삭제</button>
@@ -145,13 +145,15 @@
 
                 </div>
                 <div class="paging-comments text-center py-3 bg-info">페이징 처리</div>
-                <textarea class="form-control" id="comment-content" rows="3" placeholder="댓글을 남겨보세요"></textarea>
-                <div class="d-flex py-2">
-                    <div class="custom-control custom-checkbox ml-auto mr-1 pt-1">
-                        <input class="custom-control-input" type="checkbox" id="is-secret">
-                        <label class="custom-control-label text-muted-comment" for="is-secret">비밀로 하기</label>
+                <div class="input-comment">
+                    <textarea class="form-control" id="comment-content" rows="3" placeholder="댓글을 남겨보세요"></textarea>
+                    <div class="d-flex py-2">
+                        <div class="custom-control custom-checkbox ml-auto mr-1 pt-1">
+                            <input class="custom-control-input" type="checkbox" id="is-secret">
+                            <label class="custom-control-label text-muted-comment" for="is-secret">비밀로 하기</label>
+                        </div>
+                        <button type="button" class="btn btn-success btn-sm" id="btn-save-comment">등록</button>
                     </div>
-                    <button type="button" class="btn btn-success btn-sm" id="btn-save-comment">등록</button>
                 </div>
             </div>
             <!-- 댓글 관련 끝 -->
