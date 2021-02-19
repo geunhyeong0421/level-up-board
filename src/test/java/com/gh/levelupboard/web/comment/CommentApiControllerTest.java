@@ -175,7 +175,7 @@ class CommentApiControllerTest {
     @Test
     public void getCommentList() throws Exception {
         //given
-        int count = 1; // 기본 테스트 댓글
+        long count = commentRepository.count();
         for (int i = 1; i <= 10; i++) {
             Comment parent = Comment.builder()
                     .post(testPost)

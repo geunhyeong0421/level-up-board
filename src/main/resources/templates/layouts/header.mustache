@@ -4,7 +4,6 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/webjars/bootstrap/4.6.0/css/bootstrap.min.css">
 
@@ -14,6 +13,11 @@
             font-family: inherit;
             font-size: inherit;
             white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .text-muted-comment{
+            color: #6c757d;
+            font-size: 13px;
         }
     </style>
 </head>
@@ -30,7 +34,8 @@
                 <img src="{{loginUser.picture}}" class="rounded-circle" height="50" width="50" alt="profile_picture">
             {{/loginUser.picture}}
             {{^loginUser.picture}}
-                <img src="/images/blank_profile_picture.png" class="rounded-circle" height="50" width="50" alt="blank_profile">
+                <img src="/images/blank_profile_picture.png" class="rounded-circle" height="50" width="50"
+                     alt="blank_profile">
             {{/loginUser.picture}}
             <p class="my-2"><span class="font-weight-bold">{{loginUser.name}}</span>님 반갑습니다!</p>
             <a href="/logout" class="btn btn-primary active btn-sm" role="button">로그아웃</a>
@@ -42,3 +47,4 @@
     </div>
 </header>
 
+</html>

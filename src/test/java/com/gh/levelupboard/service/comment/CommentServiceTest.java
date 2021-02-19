@@ -149,7 +149,7 @@ class CommentServiceTest {
         //then
         assertThat(result.size()).isEqualTo(comments.size());
         for (CommentListResponseDto dto : result) {
-            System.out.printf("%s\t%s\tisModified: %b\tcontent: %s\n", dto.getCreatedDate(), dto.getModifiedDate(), dto.getIsModified(), dto.getContent());
+            System.out.printf("%s\tisModified: %b\tcontent: %s\n", dto.getModifiedDate(), dto.getIsModified(), dto.getContent());
         }
     }
 

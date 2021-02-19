@@ -20,8 +20,6 @@ public class CommentListResponseDto {
     private String profile; // 작성자 프로필 사진
     private String writer; // 작성자 이름
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime createdDate; // 작성일
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime modifiedDate; // 최종 수정일
     private boolean isModified; // 수정 여부
 
@@ -41,9 +39,8 @@ public class CommentListResponseDto {
 
         profile = entity.getUser().getPicture();
         writer = entity.getUser().getName();
-        createdDate = entity.getCreatedDate();
-        modifiedDate = entity.getModifiedDate();
-        isModified = !createdDate.isEqual(modifiedDate);
+        modifiedDate = entity.getModifiedDate(); // 수정일만 꺼내서 쓰고
+        isModified = !entity.getCreatedDate().isEqual(modifiedDate); // 작성일과 비교
 
         content = entity.getContent();
         isSecret = entity.isSecret();

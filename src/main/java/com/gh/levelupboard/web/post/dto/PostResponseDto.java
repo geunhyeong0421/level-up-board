@@ -22,6 +22,8 @@ public class PostResponseDto { // 게시글 조회 화면에 사용
     private LocalDateTime createdDate; // 작성일
     private LocalDateTime modifiedDate; // 최종 수정일
 
+    private boolean isModified; // 수정 여부
+
     private List<CommentListResponseDto> comments; // 댓글 목록
 
 
@@ -39,5 +41,8 @@ public class PostResponseDto { // 게시글 조회 화면에 사용
 
         createdDate = entity.getCreatedDate();
         modifiedDate = entity.getModifiedDate();
+
+        isModified = !createdDate.equals(modifiedDate);
     }
+
 }
