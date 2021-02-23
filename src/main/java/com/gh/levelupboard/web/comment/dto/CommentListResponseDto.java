@@ -22,8 +22,9 @@ public class CommentListResponseDto {
     private String modifiedDate; // 최종 수정일
     private boolean isModified; // 수정 여부
 
+    private String replyTo; // 답글 대상 유저 이름
     private String content; // 내용
-    private boolean isSecret; // 비밀 여부
+    private boolean isVisible; // 비밀 여부에 따른 가시성(게시글 작성자와 댓글 작성자,
     private boolean isDeleted; // 삭제 여부
 
     // json 파싱 시에 boolean 타입의 key값에 'is'가 생략되는 문제를 해결
@@ -33,8 +34,8 @@ public class CommentListResponseDto {
     public boolean getIsModified() {
         return isModified;
     }
-    public boolean getIsSecret() {
-        return isSecret;
+    public boolean getIsVisible() {
+        return isVisible;
     }
     public boolean getIsDeleted() {
         return isDeleted;
@@ -48,6 +49,7 @@ public class CommentListResponseDto {
         Comment parent = entity.getParent();
         if (parent != null) {
             parentId = parent.getId();
+            replyTo = parent.getUser().getName();
         }
 
         profile = entity.getUser().getPicture();
@@ -58,7 +60,7 @@ public class CommentListResponseDto {
         this.modifiedDate = pattern(modifiedDate);
 
         content = entity.getContent();
-        isSecret = entity.isSecret();
+        isVisible = entity.isSecret();
         isDeleted = entity.isDeleted();
     }
 

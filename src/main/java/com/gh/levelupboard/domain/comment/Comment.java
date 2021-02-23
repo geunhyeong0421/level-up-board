@@ -1,6 +1,5 @@
 package com.gh.levelupboard.domain.comment;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gh.levelupboard.domain.post.Post;
 import com.gh.levelupboard.domain.user.User;
 import lombok.*;
@@ -28,7 +27,6 @@ public class Comment {
     @JoinColumn(name = "user_id")
     private User user;
 
-    //    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Comment parent;
@@ -43,7 +41,7 @@ public class Comment {
     private LocalDateTime createdDate; // 작성일
     private LocalDateTime modifiedDate; // 최종 수정일
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent") // 단순 조회용
     private List<Comment> children = new ArrayList<>();
 
     @Transient
@@ -52,14 +50,15 @@ public class Comment {
 
     @Builder
     public Comment(Long id, Post post, User user, String content, boolean isSecret, LocalDateTime createdDate, LocalDateTime modifiedDate) {
-        this.id = id; // 댓글 번호
-        this.post = post; // 게시글
-        this.user = user; // 작성자
-        this.content = content; // 내용
-        this.isSecret = isSecret; // 비밀 여부
-        this.createdDate = createdDate; // 작성일
-        this.modifiedDate = modifiedDate; // 최종 수정일
+        this.id = id;
+        this.post = post;
+        this.user = user;
+        this.content = content;
+        this.isSecret = isSecret;
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
     }
+
 
 //=========================== JPA 관련 설정 ======================================
 /*
@@ -68,9 +67,9 @@ public class Comment {
  */
     @PrePersist // 직후에 insert 쿼리
     public void prePersist() {
-        if (parent != null) { // 부모가 있으면 부모의 id로 그룹 설정
-            groupId = parent.id;
-            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@ 부모 id로 그룹 설정 @@@@@@@@@@@@@@@@@@@@@@@@@");
+        if (parent != null) { // 부모가 있으면 부모의 그룹으로 그룹 설정
+            this.groupId = parent.groupId;
+            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@ 부모의 그룹으로 그룹 설정 @@@@@@@@@@@@@@@@@@@@@@@@@");
         }
         LocalDateTime now = LocalDateTime.now();
         createdDate = now;
@@ -79,7 +78,7 @@ public class Comment {
     }
     @PostPersist // insert 쿼리 직후
     public void postPersist() {
-        if (groupId != null) { return; } // 부모 id로 그룹 설정이 완료됐으면 return;
+        if (groupId != null) { return; } // 그룹 설정이 완료됐으면 return;
         groupId = id; // insert 쿼리 이후 생성된 본인의 id로 그룹 설정
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@ 본인 id로 그룹 설정 @@@@@@@@@@@@@@@@@@@@@@@@@");
         isGroupIdUpdated = true; // groupId: null -> this.id
@@ -87,7 +86,7 @@ public class Comment {
     }
     @PreUpdate // update 쿼리 직전
     public void preUpdate() { // 수정일 변경에만 관여
-        if (isGroupIdUpdated) { return; } // update 쿼리로 그룹을 설정했으면 수정일을 변경하지 않음
+        if (isGroupIdUpdated) { return; } // update 쿼리로 그룹을 설정할 땐 수정일을 변경하지 않음
         modifiedDate = LocalDateTime.now();
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@ PreUpdate 실행 완료 @@@@@@@@@@@@@@@@@@@@@@@@@");
     }

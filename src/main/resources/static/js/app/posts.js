@@ -1,4 +1,4 @@
-var post = {
+var posts = {
 
     init : function() {
         var _this = this;
@@ -40,7 +40,7 @@ var post = {
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
         }).done(function(result) {
-            alert('글이 등록되었습니다.');
+//            alert('글이 등록되었습니다.');
             window.location.href = '/posts/' + result;
         }).fail(function(error) {
             alert(JSON.stringify(error));
@@ -74,7 +74,7 @@ var post = {
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
         }).done(function(result) {
-            alert('글이 수정되었습니다.');
+//            alert('글이 수정되었습니다.');
             window.location.href = '/posts/' + result;
         }).fail(function(error) {
             alert(JSON.stringify(error));
@@ -89,7 +89,7 @@ var post = {
             dataType: 'json',
             contentType: 'application/json; charset=utf-8'
         }).done(function() {
-            alert('글이 삭제되었습니다.');
+//            alert('글이 삭제되었습니다.');
             window.location.href = '/';
         }).fail(function(error) {
             alert(JSON.stringify(error))
@@ -99,4 +99,4 @@ var post = {
 
 };
 
-post.init();
+posts.init();

@@ -34,6 +34,11 @@ public class Post {
     private LocalDateTime createdDate; // 작성일
     private LocalDateTime modifiedDate; // 최종 수정일
 
+    private boolean isDeleted; // 삭제 여부
+    public boolean getIsDeleted() {
+        return isDeleted;
+    }
+
     @Transient
     private int previousHit; // 조회수 변동 여부 확인용
     @Transient
@@ -73,6 +78,11 @@ public class Post {
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    // 게시글 삭제 상태로 변경
+    public void delete() {
+        this.isDeleted = true;
     }
 
     // 작성자와 이용자의 일치 여부에 따른 조회수 증가

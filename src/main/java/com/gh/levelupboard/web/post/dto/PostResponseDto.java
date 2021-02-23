@@ -49,8 +49,12 @@ public class PostResponseDto { // 게시글 조회 화면에 사용
     }
 
     private String pattern(LocalDateTime dateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm");
         return dateTime.format(formatter);
+    }
+
+    public void setComments(List<CommentListResponseDto> comments) {
+        this.comments = comments;
     }
 
 }

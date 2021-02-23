@@ -57,14 +57,23 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public Long remove(Long id) {
-        Comment comment = commentRepository.findById(id)
+        Comment comment = commentRepository.findById(id) // 성능 최적화 쿼리 필요
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + id));
 
-        if (comment.getChildren().size() != 0) { // 대댓글이 있으면 삭제 상태로 변경
+        if (comment.getChildren().size() != 0) { // 답글이 있으면 삭제 상태로 변경
             comment.delete();
         } else {
+            commentRepository.delete(comment); // 답글이 없으면 DB에서 삭제
             comment.getPost().decreaseCommentCount(); // 댓글수 -1
-            commentRepository.delete(comment); // 대댓글이 없으면 DB에서 삭제
+
+            Comment parent = comment.getParent();
+            // 부모 댓글이 삭제 상태인데 마지막 답글이 삭제됐다면
+            while (parent != null && parent.isDeleted() && parent.getChildren().size() == 1) {
+                commentRepository.delete(parent); // 부모 댓글을 DB에서 삭제
+                parent.getPost().decreaseCommentCount(); // 댓글수 -1
+
+                parent = parent.getParent();
+            }
         }
         return id;
     }

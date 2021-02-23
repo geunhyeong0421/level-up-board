@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @Query("select p from Post p join fetch p.user order by p.id desc")
+    @Query("select p from Post p join fetch p.user where p.isDeleted = false order by p.id desc")
     List<Post> findAllDesc();
 
     @Query("select p from Post p join fetch p.user where p.id = :id")
