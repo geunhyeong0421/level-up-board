@@ -34,7 +34,7 @@ var comments = {
         var data = {
             postId: $('#post-id').val(),
             content: $('#input-comment-content').val(),
-            isSecret: $('#is-secret').is(":checked")
+            isSecret: $('#is-secret').is(':checked')
         };
 
         $.ajax({
@@ -99,7 +99,7 @@ var comments = {
 
         var data = {
             content: inputUpdateComment.val(),
-            isSecret: isSecret.is(":checked")
+            isSecret: isSecret.is(':checked')
         };
 
         $.ajax({
@@ -130,6 +130,10 @@ var comments = {
             $('.btn-edit-comment').text('수정').removeClass('active');
             $('.btn-delete-comment').show();
         //==============================================
+            var isSecret = $('#' + comment.data('id') + '-is-secret').is(':checked');
+            if(isSecret) {
+                $('#reply-' + comment.data('id') + '-is-secret').prop('checked', true);
+            }
 
             comment.find('.reply-comment').toggle(); // 답글 편집 도구 토글
             replyButton.text('취소').toggleClass('active');;
@@ -154,7 +158,7 @@ var comments = {
             postId: $('#post-id').val(),
             parentId: parentId,
             content: inputReplyComment.val(),
-            isSecret: $('#reply-' + parentId + '-is-secret').is(":checked")
+            isSecret: $('#reply-' + parentId + '-is-secret').is(':checked')
         };
 
         $.ajax({

@@ -1,9 +1,11 @@
 package com.gh.levelupboard.service.comment;
 
+import com.gh.levelupboard.config.auth.dto.SessionUser;
 import com.gh.levelupboard.domain.comment.Comment;
 import com.gh.levelupboard.domain.comment.CommentRepository;
 import com.gh.levelupboard.domain.post.Post;
 import com.gh.levelupboard.domain.post.PostRepository;
+import com.gh.levelupboard.domain.user.Role;
 import com.gh.levelupboard.domain.user.User;
 import com.gh.levelupboard.domain.user.UserRepository;
 import com.gh.levelupboard.web.comment.dto.CommentListResponseDto;
@@ -111,7 +113,7 @@ class CommentServiceTest {
     @Test
     public void getList() throws Exception {
         //given
-        User testUser = User.builder().id(3L).build();
+        User testUser = User.builder().id(3L).role(Role.USER).build();
         Post testPost = new Post(9L, null, testUser, "자유게시판", "9번 글입니다.^^");
         List<Comment> comments = new ArrayList<>();
         for (int i = 1; i <= 10; i++) {
@@ -144,7 +146,7 @@ class CommentServiceTest {
         when(commentRepository.findByPostId(testPost.getId())).thenReturn(comments);
 
         //when
-        List<CommentListResponseDto> result = commentService.getList(testPost.getId(), testUser.getId());
+        List<CommentListResponseDto> result = commentService.getList(testPost.getId(), new SessionUser(testUser));
 
         //then
         assertThat(result.size()).isEqualTo(comments.size());

@@ -1,5 +1,6 @@
 package com.gh.levelupboard.service.post;
 
+import com.gh.levelupboard.config.auth.dto.SessionUser;
 import com.gh.levelupboard.domain.comment.CommentRepository;
 import com.gh.levelupboard.domain.post.Post;
 import com.gh.levelupboard.domain.post.PostRepository;
@@ -55,13 +56,13 @@ public class PostServiceImpl implements PostService{
 
     @Transactional // 조회수 변경 가능성
     @Override
-    public PostResponseDto get(Long postId, Long loginUserId) {
+    public PostResponseDto get(Long postId, SessionUser loginUser) {
         Post post = postRepository.findByIdFetch(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + postId));
-        PostResponseDto postResponseDto = new PostResponseDto(post, loginUserId);
+        PostResponseDto postResponseDto = new PostResponseDto(post, loginUser.getId());
 
         List<CommentListResponseDto> comments = commentRepository.findByPostId(postId).stream()
-                .map(comment -> new CommentListResponseDto(comment, loginUserId))
+                .map(comment -> new CommentListResponseDto(comment, loginUser))
                 .collect(Collectors.toList());
         postResponseDto.setComments(comments);
 

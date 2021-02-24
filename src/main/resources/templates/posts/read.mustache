@@ -1,23 +1,6 @@
 {{>layouts/header}}
 
 
-<div class="container-fluid">
-    <div class="row">
-        <!-- 게시판(사이드바) -->
-        <div class="col-sm-2 py-3" style="background-color:#e9ecef">
-            <h3>게시판(Lv.14)</h3>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">전체글 보기</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">자유게시판</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">공지사항</a>
-                </li>
-            </ul>
-        </div>
         <div class="col-sm-10 py-3">
             <div class="d-flex mb-3">
                 {{#post.isMyPost}}
@@ -81,33 +64,44 @@
                 <hr>
             </div>
 
-            <!-- 댓글 관련 -->
+<!----------------------------------------- 댓글 관련 ------------------------------------------------->
             <div class="container-comments px-2">
                 <h5><span class="badge badge-pill badge-dark py-2">댓글 {{post.commentCount}}</span></h5>
                 <div class="comment-list">
 
-                {{#post.comments}} <!-- 반복 시작 -->
-                {{^parentId}} <!-- 댓글이면(부모 댓글이 없으면) -->
+<!------------------------------------ 반복 ---------------------------------------->
+                {{#post.comments}}
+
+                {{^parentId}} <!-- 답글이 아닌 댓글 -->
                     <div class="comment d-flex" data-id="{{id}}">
-                    {{#isDeleted}} <!-- 삭제된 댓글(대댓글 존재)일 경우 -->
-                        <div class="text-muted py-3 mb-2">삭제된 댓글입니다.</div>
-                    {{/isDeleted}}
                 {{/parentId}}
-                {{#parentId}} <!-- 답글이면(부모 댓글이 있으면) -->
+                {{#parentId}} <!-- 답글(대댓글) -->
                     <div class="comment d-flex border-bottom mb-2" data-id="{{id}}" style="margin-left: 58px;">
-                    {{#isDeleted}} <!-- 삭제된 댓글(대댓글 존재)일 경우 -->
-                        <div class="text-muted py-2 mb-2">삭제된 댓글입니다.</div>
-                    {{/isDeleted}}
                 {{/parentId}}
 
+                    {{#isDeleted}} <!-- 답글이 달려있어서 삭제 '상태' -->
+                        <div class="col text-muted py-2 mb-2">삭제된 댓글입니다.</div>
+                    {{/isDeleted}}
                     {{^isDeleted}}
+
+                        {{^isVisible}} <!--비밀 댓글 처리-->
+                        <div class="col text-muted py-2 mb-2">
+                            <img src="/images/lock.svg" height="20" alt="locked">
+                            <span>비밀 댓글입니다.</span>
+                            <span class="text-muted-comment">{{modifiedDate}}</span> <!-- 수정일 -->
+                            {{#isModified}}
+                            <span class="text-muted-comment">수정됨</span> <!-- 수정 여부 -->
+                            {{/isModified}}
+                        </div>
+                        {{/isVisible}}
+                        {{#isVisible}}
                         <div class="comment-profile">
-                        {{#profile}}
+                            {{#profile}}
                             <img src="{{profile}}" class="rounded-circle mr-2" height="50" width="50" alt="profile_picture">
-                        {{/profile}}
-                        {{^profile}}
+                            {{/profile}}
+                            {{^profile}}
                             <img src="/images/blank_profile_picture.png" class="rounded-circle mr-2" height="50" width="50" alt="blank_profile">
-                        {{/profile}}
+                            {{/profile}}
                         </div>
                         <div class="flex-grow-1">
                             <div class="comment-info row mx-0">
@@ -127,18 +121,21 @@
                                 </div>
                             </div>
                             <div class="comment-body {{^parentId}}border-bottom mb-2{{/parentId}}">
-                                <pre class="comment-content mb-2">{{content}}</pre>
+                                <pre class="mb-2">{{#isSecret}}<img src="/images/lock.svg" height="20" alt="locked" class="mr-1">{{/isSecret}}{{#replyTo}}<a class="reply-to mr-1">@{{replyTo}}</a>{{/replyTo}}<span class="comment-content">{{content}}</span></pre>
                                 <div class="edit-comment" style="display: none;">
                                     <textarea class="form-control input-update-comment" rows="3" placeholder="내용을 입력하세요"></textarea>
                                     <div class="d-flex py-2">
                                         <div class="custom-control custom-checkbox ml-auto mr-1 pt-1">
-                                            <input class="custom-control-input update-is-secret" type="checkbox" id="{{id}}-is-secret">
+                                            <input class="custom-control-input update-is-secret" type="checkbox" id="{{id}}-is-secret" {{#isSecret}}checked{{/isSecret}}>
                                             <label class="custom-control-label text-muted-comment" for="{{id}}-is-secret">비밀로 하기</label>
                                         </div>
                                         <button type="button" class="btn btn-success btn-sm btn-update-comment">완료</button>
                                     </div>
                                 </div>
-                                <div class="reply-comment" style="display: none;">
+                                <div class="reply-comment border border-dark px-2 pt-2" style="display: none; background-color: #e9ecef;">
+                                    {{#parentId}}
+                                    <div class="text-primary">@{{writer}}</div>
+                                    {{/parentId}}
                                     <textarea class="form-control input-reply-comment" rows="3" placeholder="내용을 입력하세요"></textarea>
                                     <div class="d-flex py-2">
                                         <div class="custom-control custom-checkbox ml-auto mr-1 pt-1">
@@ -150,10 +147,12 @@
                                 </div>
                             </div>
                         </div>
+                        {{/isVisible}}
                     {{/isDeleted}}
 
                     </div> <!-- /.comment -->
-                {{/post.comments}} <!-- 반복 끝 -->
+                {{/post.comments}}
+<!------------------------------------ 반복 끝 ---------------------------------------->
 
                 </div>
                 <div class="paging-comments text-center py-3 bg-info">페이징 처리</div>
@@ -168,7 +167,7 @@
                     </div>
                 </div>
             </div>
-            <!-- 댓글 관련 끝 -->
+<!----------------------------------------- 댓글 관련 끝 ------------------------------------------------->
             <hr>
             <div class="d-flex">
                 <a href="/" role="button" class="btn btn-secondary mr-auto">목록</a>

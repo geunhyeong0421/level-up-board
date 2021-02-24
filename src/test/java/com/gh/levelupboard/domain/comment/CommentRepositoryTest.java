@@ -70,55 +70,5 @@ class CommentRepositoryTest {
 
     }
 
-    @Test
-    public void delete() {
-        //given
-        User testUser = User.builder().build();
-        em.persist(testUser);
-        Post testPost = new Post(null, null, testUser, "댓글 잘 달리나", "테스트 중");
-        em.persist(testPost);
-
-        Comment grandFather = Comment.builder()
-                .post(testPost)
-                .user(testUser)
-                .content("할아버지")
-                .build();
-        em.persist(grandFather);
-        Comment father = Comment.builder()
-                .post(testPost)
-                .user(testUser)
-                .content("아버지")
-                .build();
-        father.setParent(grandFather);
-        em.persist(father);
-        Comment comment = Comment.builder()
-                .post(testPost)
-                .user(testUser)
-                .content("아들")
-                .build();
-        comment.setParent(father);
-        em.persist(comment);
-
-        grandFather.delete();
-        father.delete();
-
-        //when
-        commentRepository.delete(comment);
-
-        Comment parent = comment.getParent();
-        if (parent != null && parent.getChildren().size() == 1 && parent.isDeleted()) {
-            commentRepository.delete(parent);
-
-            Comment grandParent = parent.getParent();
-            if (grandParent != null && grandParent.getChildren().size() == 1 && grandParent.isDeleted()) {
-                commentRepository.delete(grandParent);
-            }
-        }
-
-        //then
-        long count = commentRepository.count();
-        assertThat(count).isEqualTo(0);
-    }
-
 
 }

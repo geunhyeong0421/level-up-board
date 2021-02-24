@@ -1,5 +1,6 @@
 package com.gh.levelupboard.service.comment;
 
+import com.gh.levelupboard.config.auth.dto.SessionUser;
 import com.gh.levelupboard.web.comment.dto.CommentListResponseDto;
 import com.gh.levelupboard.web.comment.dto.CommentSaveRequestDto;
 import com.gh.levelupboard.web.comment.dto.CommentUpdateRequestDto;
@@ -19,6 +20,6 @@ public interface CommentService {
     Long remove(Long id);
 
     // 댓글 목록 조회
-    List<CommentListResponseDto> getList(Long postId, Long loginUserId);
+    List<CommentListResponseDto> getList(Long postId, SessionUser loginUser);
 
 }

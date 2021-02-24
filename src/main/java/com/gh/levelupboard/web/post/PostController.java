@@ -46,7 +46,7 @@ public class PostController {
                         @PathVariable Long id) {
         model.addAttribute("loginUser", user);
 
-        PostResponseDto dto = postService.get(id, user.getId());
+        PostResponseDto dto = postService.get(id, user);
         model.addAttribute("post", dto);
         return "posts/read";
     }

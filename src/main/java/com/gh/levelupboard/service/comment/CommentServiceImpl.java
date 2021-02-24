@@ -1,5 +1,6 @@
 package com.gh.levelupboard.service.comment;
 
+import com.gh.levelupboard.config.auth.dto.SessionUser;
 import com.gh.levelupboard.domain.comment.Comment;
 import com.gh.levelupboard.domain.comment.CommentRepository;
 import com.gh.levelupboard.domain.post.Post;
@@ -79,9 +80,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentListResponseDto> getList(Long postId, Long loginUserId) {
+    public List<CommentListResponseDto> getList(Long postId, SessionUser loginUser) {
         return commentRepository.findByPostId(postId).stream()
-                .map(comment -> new CommentListResponseDto(comment, loginUserId))
+                .map(comment -> new CommentListResponseDto(comment, loginUser))
                 .collect(Collectors.toList());
     }
 

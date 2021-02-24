@@ -40,7 +40,7 @@ public class CommentApiController {
     // 조회
     @GetMapping("/api/v1/posts/{postId}/comments")
     public List<CommentListResponseDto> getCommentList(@LoginUser SessionUser user, @PathVariable Long postId) {
-        return commentService.getList(postId, user.getId());
+        return commentService.getList(postId, user);
     }
 
 }

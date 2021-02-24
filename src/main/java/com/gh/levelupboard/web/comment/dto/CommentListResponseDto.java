@@ -1,6 +1,8 @@
 package com.gh.levelupboard.web.comment.dto;
 
+import com.gh.levelupboard.config.auth.dto.SessionUser;
 import com.gh.levelupboard.domain.comment.Comment;
+import com.gh.levelupboard.domain.user.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,10 +24,12 @@ public class CommentListResponseDto {
     private String modifiedDate; // 최종 수정일
     private boolean isModified; // 수정 여부
 
-    private String replyTo; // 답글 대상 유저 이름
+    private String replyTo; // 답글 수신자 이름
     private String content; // 내용
-    private boolean isVisible; // 비밀 여부에 따른 가시성(게시글 작성자와 댓글 작성자,
+    private boolean isSecret; // 비밀 여부
     private boolean isDeleted; // 삭제 여부
+
+    private boolean isVisible; // 비밀 여부에 따른 가시성(댓글 작성자, 게시글 작성자, 답글 수신자, 관리자)
 
     // json 파싱 시에 boolean 타입의 key값에 'is'가 생략되는 문제를 해결
     public boolean getIsMyComment() {
@@ -34,22 +38,40 @@ public class CommentListResponseDto {
     public boolean getIsModified() {
         return isModified;
     }
-    public boolean getIsVisible() {
-        return isVisible;
+    public boolean getIsSecret() {
+        return isSecret;
     }
     public boolean getIsDeleted() {
         return isDeleted;
     }
+    public boolean getIsVisible() {
+        return isVisible;
+    }
 
 
-    public CommentListResponseDto(Comment entity, Long loginUserId) {
-        isMyComment = entity.getUser().getId().equals(loginUserId);
+    public CommentListResponseDto(Comment entity, SessionUser loginUser) {
+        isSecret = entity.isSecret();
+        isVisible = !isSecret; // 가시성은 비밀 여부의 반대
+
+        isMyComment = entity.getUser().getId().equals(loginUser.getId());
+        boolean isAdmin = loginUser.getRole().equals(Role.ADMIN);
 
         id = entity.getId();
         Comment parent = entity.getParent();
-        if (parent != null) {
+        if (parent == null) { // 답글이 아닌 댓글이면
+            if (isSecret) {
+                boolean isPostWriter = entity.getPost().getUser().getId().equals(loginUser.getId());
+                isVisible = isMyComment || isPostWriter || isAdmin;
+            }
+        } else { // 답글이면
             parentId = parent.getId();
-            replyTo = parent.getUser().getName();
+            if (isSecret) {
+                boolean isReplyTo = parent.getUser().getId().equals(loginUser.getId());
+                isVisible = isMyComment || isReplyTo || isAdmin;
+            }
+            if (parentId != parent.getGroupId()) { // 답글의 답글이면
+                replyTo = parent.getUser().getName();
+            }
         }
 
         profile = entity.getUser().getPicture();
@@ -60,7 +82,6 @@ public class CommentListResponseDto {
         this.modifiedDate = pattern(modifiedDate);
 
         content = entity.getContent();
-        isVisible = entity.isSecret();
         isDeleted = entity.isDeleted();
     }
 

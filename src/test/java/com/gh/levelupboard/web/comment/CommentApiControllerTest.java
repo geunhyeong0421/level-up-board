@@ -7,6 +7,7 @@ import com.gh.levelupboard.domain.comment.Comment;
 import com.gh.levelupboard.domain.comment.CommentRepository;
 import com.gh.levelupboard.domain.post.Post;
 import com.gh.levelupboard.domain.post.PostRepository;
+import com.gh.levelupboard.domain.user.Role;
 import com.gh.levelupboard.domain.user.User;
 import com.gh.levelupboard.domain.user.UserRepository;
 import com.gh.levelupboard.web.comment.dto.CommentListResponseDto;
@@ -71,6 +72,7 @@ class CommentApiControllerTest {
     public void setUp() {
         User user = User.builder()
                 .name("김테스트")
+                .role(Role.USER)
                 .build();
         testUser = userRepository.save(user);
         when(httpSession.getAttribute("user")).thenReturn(new SessionUser(testUser));
