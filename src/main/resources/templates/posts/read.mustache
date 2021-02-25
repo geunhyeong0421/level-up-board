@@ -73,17 +73,16 @@
                 {{#post.comments}}
 
                 {{^parentId}} <!-- 답글이 아닌 댓글 -->
-                    <div class="comment d-flex" data-id="{{id}}">
+                    <div class="comment d-flex px-1 pt-1 mb-1{{#isMyComment}} my-comment{{/isMyComment}}" data-id="{{id}}">
                 {{/parentId}}
                 {{#parentId}} <!-- 답글(대댓글) -->
-                    <div class="comment d-flex border-bottom mb-2" data-id="{{id}}" style="margin-left: 58px;">
+                    <div class="comment d-flex px-1 pt-1 mb-1 border-bottom{{#isMyComment}} my-comment{{/isMyComment}}" data-id="{{id}}" style="margin-left: 58px;">
                 {{/parentId}}
 
                     {{#isDeleted}} <!-- 답글이 달려있어서 삭제 '상태' -->
                         <div class="col text-muted py-2 mb-2">삭제된 댓글입니다.</div>
                     {{/isDeleted}}
                     {{^isDeleted}}
-
                         {{^isVisible}} <!--비밀 댓글 처리-->
                         <div class="col text-muted py-2 mb-2">
                             <img src="/images/lock.svg" height="20" alt="locked">
@@ -107,6 +106,7 @@
                             <div class="comment-info row mx-0">
                                 <div class="col-sm-auto px-0 mr-2">
                                     <span class="font-weight-bold comment-writer">{{writer}}</span> <!-- 작성자 이름 -->
+                                    {{#equalsPostWriter}}<span class="badge badge-pill badge-danger">작성자</span>{{/equalsPostWriter}} <!-- 작성자 여부 -->
                                     <span class="text-muted-comment">{{modifiedDate}}</span> <!-- 수정일 -->
                                     {{#isModified}}
                                     <span class="text-muted-comment">수정됨</span> <!-- 수정 여부 -->
@@ -120,7 +120,7 @@
                                     {{/isMyComment}}
                                 </div>
                             </div>
-                            <div class="comment-body {{^parentId}}border-bottom mb-2{{/parentId}}">
+                            <div class="comment-body {{^parentId}}border-bottom{{/parentId}}">
                                 <pre class="mb-2">{{#isSecret}}<img src="/images/lock.svg" height="20" alt="locked" class="mr-1">{{/isSecret}}{{#replyTo}}<a class="reply-to mr-1">@{{replyTo}}</a>{{/replyTo}}<span class="comment-content">{{content}}</span></pre>
                                 <div class="edit-comment" style="display: none;">
                                     <textarea class="form-control input-update-comment" rows="3" placeholder="내용을 입력하세요"></textarea>
@@ -132,7 +132,7 @@
                                         <button type="button" class="btn btn-success btn-sm btn-update-comment">완료</button>
                                     </div>
                                 </div>
-                                <div class="reply-comment border border-dark px-2 pt-2" style="display: none; background-color: #e9ecef;">
+                                <div class="reply-comment border border-dark rounded-lg px-2 pt-2" style="display: none; background-color: #e9ecef;">
                                     {{#parentId}}
                                     <div class="text-primary">@{{writer}}</div>
                                     {{/parentId}}

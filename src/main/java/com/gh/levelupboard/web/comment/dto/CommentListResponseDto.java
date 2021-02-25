@@ -3,6 +3,7 @@ package com.gh.levelupboard.web.comment.dto;
 import com.gh.levelupboard.config.auth.dto.SessionUser;
 import com.gh.levelupboard.domain.comment.Comment;
 import com.gh.levelupboard.domain.user.Role;
+import com.gh.levelupboard.domain.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +22,7 @@ public class CommentListResponseDto {
 
     private String profile; // 작성자 프로필 사진
     private String writer; // 작성자 이름
+    private boolean equalsPostWriter; // 댓글 작성자 equals 게시글 작성자
     private String modifiedDate; // 최종 수정일
     private boolean isModified; // 수정 여부
 
@@ -53,14 +55,18 @@ public class CommentListResponseDto {
         isSecret = entity.isSecret();
         isVisible = !isSecret; // 가시성은 비밀 여부의 반대
 
-        isMyComment = entity.getUser().getId().equals(loginUser.getId());
+        User postWriter = entity.getPost().getUser();
+        User commentWriter = entity.getUser();
+        equalsPostWriter = postWriter.equals(commentWriter);
+
+        isMyComment = commentWriter.getId().equals(loginUser.getId());
         boolean isAdmin = loginUser.getRole().equals(Role.ADMIN);
 
         id = entity.getId();
         Comment parent = entity.getParent();
         if (parent == null) { // 답글이 아닌 댓글이면
             if (isSecret) {
-                boolean isPostWriter = entity.getPost().getUser().getId().equals(loginUser.getId());
+                boolean isPostWriter = postWriter.getId().equals(loginUser.getId());
                 isVisible = isMyComment || isPostWriter || isAdmin;
             }
         } else { // 답글이면
@@ -74,8 +80,8 @@ public class CommentListResponseDto {
             }
         }
 
-        profile = entity.getUser().getPicture();
-        writer = entity.getUser().getName();
+        profile = commentWriter.getPicture();
+        writer = commentWriter.getName();
 
         LocalDateTime modifiedDate = entity.getModifiedDate(); // 수정일만 꺼내서 쓰고
         isModified = !modifiedDate.isEqual(entity.getCreatedDate()); // 작성일과 비교
@@ -91,8 +97,6 @@ public class CommentListResponseDto {
         }
         return dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd. HH:mm"));
     }
-
-
 
 
 }
