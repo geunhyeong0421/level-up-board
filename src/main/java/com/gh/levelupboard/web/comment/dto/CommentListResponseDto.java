@@ -19,6 +19,7 @@ public class CommentListResponseDto {
 
     private Long id; // 댓글 번호
     private Long parentId; // 부모 댓글 번호
+    private Long groupId;
 
     private String profile; // 작성자 프로필 사진
     private String writer; // 작성자 이름
@@ -79,6 +80,7 @@ public class CommentListResponseDto {
                 replyTo = parent.getUser().getName();
             }
         }
+        groupId = entity.getGroupId();
 
         profile = commentWriter.getPicture();
         writer = commentWriter.getName();

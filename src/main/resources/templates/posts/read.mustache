@@ -16,12 +16,8 @@
                 </div>
                 <div class="d-flex post-info">
                     <div class="post-profile"> <!-- 작성자 프로필 사진 -->
-                        {{#post.profile}}
-                            <img src="{{post.profile}}" class="rounded-circle mr-2" height="75" width="75" alt="profile_picture">
-                        {{/post.profile}}
-                        {{^post.profile}}
-                            <img src="/images/blank_profile_picture.png" class="rounded-circle mr-2" height="75" width="75" alt="blank_profile">
-                        {{/post.profile}}
+                        {{#post.profile}}<img src="{{post.profile}}" class="rounded-circle mr-2" height="75" width="75" alt="profile_picture">{{/post.profile}}
+                        {{^post.profile}}<img src="/images/blank_profile_picture.png" class="rounded-circle mr-2" height="75" width="75" alt="blank_profile">{{/post.profile}}
                     </div>
                     <div>
                         <div class="font-weight-bold">
@@ -36,7 +32,7 @@
                                 조회 {{post.hit}} <!-- 조회수 -->
                             </span>
                             <span>
-                                댓글 {{post.commentCount}} <!-- 댓글수 -->
+                                댓글 <span class="comment-count">{{post.commentCount}}</span> <!-- 댓글수 -->
                             </span>
                         {{/post.isModified}}
                         </div>
@@ -46,7 +42,7 @@
                                 조회 {{post.hit}} <!-- 조회수 -->
                             </span>
                             <span>
-                                댓글 {{post.commentCount}} <!-- 댓글수 -->
+                                댓글 <span class="comment-count">{{post.commentCount}}</span> <!-- 댓글수 -->
                             </span>
                         {{/post.isModified}}
                         {{#post.isModified}} <!-- 수정 이력이 있으면 수정일을 출력 -->
@@ -66,96 +62,74 @@
 
 <!----------------------------------------- 댓글 관련 ------------------------------------------------->
             <div class="container-comments px-2">
-                <h5><span class="badge badge-pill badge-dark py-2">댓글 {{post.commentCount}}</span></h5>
+                <h5><span class="badge badge-pill badge-dark py-2">댓글 <span class="comment-count">{{post.commentCount}}</span></span></h5>
                 <div class="comment-list">
-
-<!------------------------------------ 반복 ---------------------------------------->
+<!--------------------- 댓글 출력 --------------------->
                 {{#post.comments}}
-
-                {{^parentId}} <!-- 답글이 아닌 댓글 -->
-                    <div class="comment d-flex px-1 pt-1 mb-1{{#isMyComment}} my-comment{{/isMyComment}}" data-id="{{id}}">
-                {{/parentId}}
-                {{#parentId}} <!-- 답글(대댓글) -->
-                    <div class="comment d-flex px-1 pt-1 mb-1 border-bottom{{#isMyComment}} my-comment{{/isMyComment}}" data-id="{{id}}" style="margin-left: 58px;">
-                {{/parentId}}
-
-                    {{#isDeleted}} <!-- 답글이 달려있어서 삭제 '상태' -->
-                        <div class="col text-muted py-2 mb-2">삭제된 댓글입니다.</div>
-                    {{/isDeleted}}
+                {{^parentId}}<div class="comment d-flex px-1 pt-1 mb-1{{#isMyComment}} my-comment{{/isMyComment}}" data-id="{{id}}" data-group-id="{{groupId}}">{{/parentId}}
+                {{#parentId}}<div class="comment d-flex px-1 pt-1 mb-1 border-bottom{{#isMyComment}} my-comment{{/isMyComment}}" data-id="{{id}}" data-group-id="{{groupId}}" style="margin-left: 58px;">{{/parentId}}
+                    {{#isDeleted}}<div class="col text-muted py-2 mb-2">삭제된 댓글입니다.</div>{{/isDeleted}}
                     {{^isDeleted}}
                         {{^isVisible}} <!--비밀 댓글 처리-->
-                        <div class="col text-muted py-2 mb-2">
-                            <img src="/images/lock.svg" height="20" alt="locked">
-                            <span>비밀 댓글입니다.</span>
-                            <span class="text-muted-comment">{{modifiedDate}}</span> <!-- 수정일 -->
-                            {{#isModified}}
-                            <span class="text-muted-comment">수정됨</span> <!-- 수정 여부 -->
-                            {{/isModified}}
-                        </div>
+                            <div class="col text-muted py-2 mb-2">
+                                <img src="/images/lock.svg" height="20" alt="locked">
+                                <span>비밀 댓글입니다.</span>
+                                <span class="text-muted-comment">{{modifiedDate}}</span>
+                                {{#isModified}}<span class="text-muted-comment">수정됨</span>{{/isModified}}
+                            </div>
                         {{/isVisible}}
                         {{#isVisible}}
-                        <div class="comment-profile">
-                            {{#profile}}
-                            <img src="{{profile}}" class="rounded-circle mr-2" height="50" width="50" alt="profile_picture">
-                            {{/profile}}
-                            {{^profile}}
-                            <img src="/images/blank_profile_picture.png" class="rounded-circle mr-2" height="50" width="50" alt="blank_profile">
-                            {{/profile}}
-                        </div>
-                        <div class="flex-grow-1">
-                            <div class="comment-info row mx-0">
-                                <div class="col-sm-auto px-0 mr-2">
-                                    <span class="font-weight-bold comment-writer">{{writer}}</span> <!-- 작성자 이름 -->
-                                    {{#equalsPostWriter}}<span class="badge badge-pill badge-danger">작성자</span>{{/equalsPostWriter}} <!-- 작성자 여부 -->
-                                    <span class="text-muted-comment">{{modifiedDate}}</span> <!-- 수정일 -->
-                                    {{#isModified}}
-                                    <span class="text-muted-comment">수정됨</span> <!-- 수정 여부 -->
-                                    {{/isModified}}
-                                </div>
-                                <div class="comment-buttons col px-0"> <!-- 답글 버튼 + @ -->
-                                    <button type="button" class="btn btn-outline-dark btn-sm btn-reply-comment">답글</button>
-                                    {{#isMyComment}}
-                                    <button type="button" class="btn btn-outline-primary btn-sm btn-edit-comment">수정</button>
-                                    <button type="button" class="btn btn-outline-danger btn-sm btn-delete-comment">삭제</button>
-                                    {{/isMyComment}}
-                                </div>
+                            <div class="comment-profile">
+                                {{#profile}}<img src="{{profile}}" class="rounded-circle mr-2" height="50" width="50" alt="profile_picture">{{/profile}}
+                                {{^profile}}<img src="/images/blank_profile_picture.png" class="rounded-circle mr-2" height="50" width="50" alt="blank_profile">{{/profile}}
                             </div>
-                            <div class="comment-body {{^parentId}}border-bottom{{/parentId}}">
-                                <pre class="mb-2">{{#isSecret}}<img src="/images/lock.svg" height="20" alt="locked" class="mr-1">{{/isSecret}}{{#replyTo}}<a class="reply-to mr-1">@{{replyTo}}</a>{{/replyTo}}<span class="comment-content">{{content}}</span></pre>
-                                <div class="edit-comment" style="display: none;">
-                                    <textarea class="form-control input-update-comment" rows="3" placeholder="내용을 입력하세요"></textarea>
-                                    <div class="d-flex py-2">
-                                        <div class="custom-control custom-checkbox ml-auto mr-1 pt-1">
-                                            <input class="custom-control-input update-is-secret" type="checkbox" id="{{id}}-is-secret" {{#isSecret}}checked{{/isSecret}}>
-                                            <label class="custom-control-label text-muted-comment" for="{{id}}-is-secret">비밀로 하기</label>
+                            <div class="flex-grow-1">
+                                <div class="comment-info row mx-0">
+                                    <div class="col-sm-auto px-0 mr-1">
+                                        <span class="font-weight-bold comment-writer">{{writer}}</span> <!-- 작성자 이름 -->
+                                        {{#equalsPostWriter}}<span class="badge badge-pill badge-danger">작성자</span>{{/equalsPostWriter}} <!-- 작성자 여부 -->
+                                        <span class="text-muted-comment">{{modifiedDate}}</span> <!-- 수정일 -->
+                                        {{#isModified}}<span class="text-muted-comment">수정됨</span>{{/isModified}} <!-- 수정 여부 -->
+                                    </div>
+                                    <div class="comment-buttons col px-0"> <!-- 답글 버튼 + @ -->
+                                        <div class="d-flex">
+                                            <button type="button" class="btn btn-outline-dark btn-xs btn-reply-comment">답글</button>
+                                            {{#isMyComment}}
+                                                <button type="button" class="btn btn-outline-primary btn-xs btn-edit-comment ml-auto mr-1">수정</button>
+                                                <button type="button" class="btn btn-outline-danger btn-xs btn-delete-comment">삭제</button>
+                                            {{/isMyComment}}
                                         </div>
-                                        <button type="button" class="btn btn-success btn-sm btn-update-comment">완료</button>
                                     </div>
                                 </div>
-                                <div class="reply-comment border border-dark rounded-lg px-2 pt-2" style="display: none; background-color: #e9ecef;">
-                                    {{#parentId}}
-                                    <div class="text-primary">@{{writer}}</div>
-                                    {{/parentId}}
-                                    <textarea class="form-control input-reply-comment" rows="3" placeholder="내용을 입력하세요"></textarea>
-                                    <div class="d-flex py-2">
-                                        <div class="custom-control custom-checkbox ml-auto mr-1 pt-1">
-                                            <input class="custom-control-input reply-is-secret" type="checkbox" id="reply-{{id}}-is-secret">
-                                            <label class="custom-control-label text-muted-comment" for="reply-{{id}}-is-secret">비밀로 하기</label>
-                                        </div>
-                                        <button type="button" class="btn btn-success btn-sm btn-save-reply-comment">등록</button>
-                                    </div>
+                                <div class="comment-body {{^parentId}}border-bottom{{/parentId}}">
+                                    <pre class="mb-2">{{#isSecret}}<img src="/images/lock.svg" height="20" alt="locked" class="mr-1">{{/isSecret}}{{#replyTo}}<a class="reply-to mr-1">@{{replyTo}}</a>{{/replyTo}}<span class="comment-content">{{content}}</span></pre>
                                 </div>
                             </div>
-                        </div>
                         {{/isVisible}}
                     {{/isDeleted}}
-
-                    </div> <!-- /.comment -->
+                </div> <!-- /.comment -->
                 {{/post.comments}}
-<!------------------------------------ 반복 끝 ---------------------------------------->
-
+<!--------------------- 댓글 출력 끝--------------------->
                 </div>
-                <div class="paging-comments text-center py-3 bg-info">페이징 처리</div>
+                <nav class="paging-comments" aria-label="Comments page navigation">
+                    <ul class="pagination justify-content-center mt-3">
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="#">2</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
                 <div class="input-comment">
                     <textarea class="form-control" id="input-comment-content" rows="3" placeholder="댓글을 남겨보세요"></textarea>
                     <div class="d-flex py-2">
@@ -181,24 +155,4 @@
 <!-- /.container-fluid -->
 
 
-
-
-<footer class="container-fluid text-center text-muted py-4 border-top">
-    <p>&copy; 2021, 게시판 키우기 by 김근형</p>
-</footer>
-
-
-<script src="/webjars/jquery/3.5.1/jquery.min.js"></script>
-<script src="/webjars/bootstrap/4.6.0/js/bootstrap.min.js"></script>
-
-<!--posts.js 추가-->
-<script src="/js/app/posts.js"></script>
-<!--comments.js 추가-->
-<script src="/js/app/comments.js"></script>
-<script>
-    $(document).ready(function(){
-//        comments.getList();
-    });
-</script>
-</body>
-</html>
+{{>layouts/footer}}
