@@ -7,8 +7,11 @@ import com.gh.levelupboard.domain.post.PostRepository;
 import com.gh.levelupboard.domain.user.User;
 import com.gh.levelupboard.domain.user.UserRepository;
 import com.gh.levelupboard.web.comment.dto.CommentListResponseDto;
+import com.gh.levelupboard.web.pagination.Pagination;
 import com.gh.levelupboard.web.post.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,10 +63,13 @@ public class PostServiceImpl implements PostService{
         Post post = postRepository.findByIdFetch(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + postId));
         PostResponseDto postResponseDto = new PostResponseDto(post, loginUser.getId());
+        int commentCount = post.getCommentCount(); // 댓글 수
 
-        List<CommentListResponseDto> comments = commentRepository.findByPostId(postId).stream()
-                .map(comment -> new CommentListResponseDto(comment, loginUser))
-                .collect(Collectors.toList());
+        int size = Pagination.COMMENT.getSize(); // 댓글 페이징 크기
+        int lastPage = (commentCount != 0) ? (int) Math.ceil(1.0 * commentCount / size) : 1; // 마지막 페이지 계산
+        PageRequest pageRequest = PageRequest.of(lastPage - 1, size); // 페이지의 인덱스를 넘겨준다
+        Page<CommentListResponseDto> comments = commentRepository.findByPostIdWithPagination(postId, pageRequest)
+                .map(comment -> new CommentListResponseDto(comment, loginUser));
         postResponseDto.setComments(comments);
 
         return postResponseDto;

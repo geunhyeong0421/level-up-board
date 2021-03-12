@@ -9,6 +9,7 @@ import com.gh.levelupboard.domain.user.Role;
 import com.gh.levelupboard.domain.user.User;
 import com.gh.levelupboard.domain.user.UserRepository;
 import com.gh.levelupboard.web.comment.dto.CommentListResponseDto;
+import com.gh.levelupboard.web.comment.dto.CommentResultDto;
 import com.gh.levelupboard.web.comment.dto.CommentSaveRequestDto;
 import com.gh.levelupboard.web.comment.dto.CommentUpdateRequestDto;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,10 +59,10 @@ class CommentServiceTest {
         when(commentRepository.save(any(Comment.class))).thenReturn(savedComment);
 
         //when
-        Long result = commentService.add(dto);
+        CommentResultDto result = commentService.add(dto);
 
         //then
-        assertThat(result).isEqualTo(expectedCommentId);
+        assertThat(result.getTargetId()).isEqualTo(expectedCommentId);
     }
 
     @Test
@@ -77,16 +77,20 @@ class CommentServiceTest {
                 .build();
         Comment targetComment = Comment.builder()
                 .id(expectedCommentId)
+                .post(Post.builder().id(1L).build())
                 .content("10번째 댓글입니다.")
                 .build();
+        List<Long> resultList = new ArrayList<>();
+        resultList.add(expectedCommentId);
 
         when(commentRepository.findById(expectedCommentId)).thenReturn(Optional.of(targetComment));
+        when(commentRepository.findIdByPostId(anyLong())).thenReturn(resultList);
 
         //when
-        Long result = commentService.modify(expectedCommentId, dto);
+        CommentResultDto result = commentService.modify(expectedCommentId, dto);
 
         //then
-        assertThat(result).isEqualTo(expectedCommentId);
+        assertThat(result.getTargetId()).isEqualTo(expectedCommentId);
         assertThat(targetComment.getContent()).isEqualTo(expectedContent);
         assertThat(targetComment.isSecret()).isTrue();
     }
@@ -97,16 +101,20 @@ class CommentServiceTest {
         Long expectedCommentId = 10L;
         Comment targetComment = Comment.builder()
                 .id(expectedCommentId)
+                .post(Post.builder().id(1L).build())
                 .content("10번째 댓글은 대댓글이 달려있어서 isDelete를 true로 변경합니다.")
                 .build();
         Comment.builder().content("대댓글 달아줍니다.").build().setParent(targetComment);
+        List<Long> resultList = new ArrayList<>();
+        resultList.add(expectedCommentId);
+
         when(commentRepository.findById(expectedCommentId)).thenReturn(Optional.of(targetComment));
+        when(commentRepository.findIdByPostId(anyLong())).thenReturn(resultList);
 
         //when
-        Long result = commentService.remove(expectedCommentId);
+        CommentResultDto result = commentService.remove(expectedCommentId);
 
         //then
-        assertThat(result).isEqualTo(expectedCommentId);
         assertThat(targetComment.isDeleted()).isTrue();
     }
 

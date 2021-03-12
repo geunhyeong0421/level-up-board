@@ -69,32 +69,26 @@ public class Comment {
     public void prePersist() {
         if (parent != null) { // 부모가 있으면 부모의 그룹으로 그룹 설정
             this.groupId = parent.groupId;
-            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@ 부모의 그룹으로 그룹 설정 @@@@@@@@@@@@@@@@@@@@@@@@@");
         }
         LocalDateTime now = LocalDateTime.now();
         createdDate = now;
         modifiedDate = now;
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@ PrePersist 호출 완료 @@@@@@@@@@@@@@@@@@@@@@@@@");
     }
     @PostPersist // insert 쿼리 직후
     public void postPersist() {
         if (groupId != null) { return; } // 그룹 설정이 완료됐으면 return;
         groupId = id; // insert 쿼리 이후 생성된 본인의 id로 그룹 설정
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@ 본인 id로 그룹 설정 @@@@@@@@@@@@@@@@@@@@@@@@@");
         isGroupIdUpdated = true; // groupId: null -> this.id
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@ PostPersist 실행 완료 @@@@@@@@@@@@@@@@@@@@@@@@@");
     }
     @PreUpdate // update 쿼리 직전
     public void preUpdate() { // 수정일 변경에만 관여
         if (isGroupIdUpdated) { return; } // update 쿼리로 그룹을 설정할 땐 수정일을 변경하지 않음
         modifiedDate = LocalDateTime.now();
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@ PreUpdate 실행 완료 @@@@@@@@@@@@@@@@@@@@@@@@@");
     }
     @PostUpdate // update 쿼리 직후
     public void postUpdate() {
         if(!isGroupIdUpdated) { return; } // 초기화가 필요하지 않으면 return;
         isGroupIdUpdated = false; // 초기화
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@ PostUpdate 실행 완료 @@@@@@@@@@@@@@@@@@@@@@@@@");
     }
 //==============================================================================
 

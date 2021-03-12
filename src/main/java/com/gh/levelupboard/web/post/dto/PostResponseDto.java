@@ -1,10 +1,14 @@
 package com.gh.levelupboard.web.post.dto;
 
 import com.gh.levelupboard.domain.post.Post;
+import com.gh.levelupboard.web.pagination.Pagination;
+import com.gh.levelupboard.web.pagination.PaginationDto;
 import com.gh.levelupboard.web.comment.dto.CommentListResponseDto;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostResponseDto { // 게시글 조회 화면에 사용
@@ -26,7 +30,9 @@ public class PostResponseDto { // 게시글 조회 화면에 사용
     private boolean isModified; // 수정 여부
 
     private List<CommentListResponseDto> comments; // 댓글 목록
-
+    private boolean commentsFirst;
+    private Integer commentsPrev;
+    private List<PaginationDto> commentsPages = new ArrayList<>();
 
     public PostResponseDto(Post entity, Long longinUserId) {
         isMyPost = entity.isMyPost(longinUserId); // 조건에 따라 조회수 +1
@@ -53,8 +59,23 @@ public class PostResponseDto { // 게시글 조회 화면에 사용
         return dateTime.format(formatter);
     }
 
-    public void setComments(List<CommentListResponseDto> comments) {
-        this.comments = comments;
+    // 최신 댓글(마지막 페이지) 출력
+    public void setComments(Page<CommentListResponseDto> comments) {
+        this.comments = comments.getContent();
+
+        int totalPages = comments.getTotalPages() != 0 ? comments.getTotalPages() : 1; // 전체 페이지 수
+        int paginationNavSize = Pagination.COMMENT.getNavSize(); // 화면에 출력되는 탐색 페이지 수
+        int totalNavPages = (int) Math.ceil(1.0 * totalPages / paginationNavSize);
+        int startPage = (totalNavPages - 1) * paginationNavSize + 1;
+
+        commentsFirst = (totalPages == 1); // 첫 페이지 여부
+        if(totalNavPages > 1){
+            commentsPrev = startPage - 1;
+        }
+
+        for (int i = startPage; i <= totalPages; i++) {
+            commentsPages.add(new PaginationDto(i, i == totalPages));
+        }
     }
 
 }
