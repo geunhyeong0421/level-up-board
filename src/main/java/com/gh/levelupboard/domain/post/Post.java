@@ -24,6 +24,9 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user; // 작성자
 
+    private Long groupId; // 계층형 게시판 구현
+    private int groupOrder;
+
     private String title; // 제목
     private String content; // 내용
 

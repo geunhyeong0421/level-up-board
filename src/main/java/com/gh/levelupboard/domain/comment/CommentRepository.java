@@ -23,7 +23,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("select count(c) from Comment c join c.post p where p.id = :postId")
     long countByPostId(@Param("postId") Long postId);
 
-    // 댓글 등록 후 갱신 페이지 확인용
+    // 댓글 등록, 수정, 삭제 이후 페이지 추적용
     @Query("select c.id from Comment c join c.post p where p.id = :postId order by c.groupId, c.id")
     List<Long> findIdByPostId(@Param("postId") Long postId);
 

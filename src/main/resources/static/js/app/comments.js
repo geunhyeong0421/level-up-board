@@ -65,7 +65,7 @@ var comments = {
         var comment = editButton.closest('.comment'); // 편집(수정) 대상 댓글
         var id = comment.data('id');
         var content = comment.find('.comment-content'); // 내용 부분
-        var isSecret = comment.find('img[alt="locked"]').length > 0; // 비밀 여부
+        var isSecret = comment.find('.locked').length > 0; // 비밀 여부
 
         var editComment = '<div class="edit-comment">'
                         + '    <textarea class="form-control input-update-comment" rows="3" placeholder="내용을 입력하세요"></textarea>'
@@ -132,7 +132,7 @@ var comments = {
         var comment = replyButton.closest('.comment'); // 답글 대상(부모가 될 댓글)
         var id = comment.data('id');
         var commentHasParent = comment.data('parent-id'); // 값이 있으면 답글
-        var isSecret = comment.find('img[alt="locked"]').length > 0; // 비밀 여부
+        var isSecret = comment.find('.locked').length > 0; // 비밀 여부
 
         var replyComment = '<div class="reply-comment border border-dark rounded-lg px-2 pt-2 mb-1" style="margin-left: 58px;">';
         if(commentHasParent) { // 답글의 답글이면 수신자 표기
@@ -251,7 +251,7 @@ var comments = {
             } else {
                 if(!dto.isVisible) { // 비밀 댓글 처리
                     commentList += '<div class="col text-muted py-2 mb-2">'
-                                 + '    <img src="/images/lock.svg" height="20" alt="locked">'
+                                 + '    <span class="locked">&#x1F512;</span>'
                                  + '    <span>비밀 댓글입니다.</span>'
                                  + '    <span class="text-muted-comment">' + dto.modifiedDate + '</span>'
                                  + (dto.isModified ? ' <span class="text-muted-comment">수정됨</span>' : '')
@@ -259,9 +259,9 @@ var comments = {
                 } else {
                     commentList += '<div class="comment-profile">';
                     if(!dto.profile) {
-                        commentList += '<img src="/images/blank_profile_picture.png" class="rounded-circle mr-2" height="50" width="50" alt="blank_profile">';
+                        commentList += '<img src="/images/blank_profile.png" class="rounded-circle mr-2" width="50" height="50" alt="blank_profile">';
                     } else {
-                        commentList += '<img src="' + dto.profile + '" class="rounded-circle mr-2" height="50" width="50" alt="profile_picture">';
+                        commentList += '<img src="' + dto.profile + '" class="rounded-circle mr-2" width="50" height="50" alt="profile">';
                     }
                     commentList += '</div>'
                                  + '<div class="flex-grow-1">'
@@ -282,8 +282,8 @@ var comments = {
                                  + '        </div>'
                                  + '    </div>'
                                  + '    <div class="comment-body' + (!dto.parentId ? ' border-bottom">' : '">')
-                                 + '        <pre class="mb-2">' + (dto.isSecret ? '<img src="/images/lock.svg" height="20" alt="locked" class="mr-1">' : '')
-                                 +          (dto.replyTo ? '<a class="reply-to mr-1">@' + dto.replyTo + '</a>' : '') + '<span class="comment-content">' + dto.content + '</span></pre>'
+                                 + '        <pre class="mb-2">' + (dto.isSecret ? '<span class="locked">&#x1F512;</span> ' : '')
+                                 +          (dto.replyTo ? '<a class="reply-to">@' + dto.replyTo + '</a> ' : '') + '<span class="comment-content">' + dto.content + '</span></pre>'
                                  + '    </div>'
                                  + '</div>';
                 } // isVisible-end

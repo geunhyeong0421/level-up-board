@@ -11,7 +11,7 @@ public class CommentResultDto {
 
     public CommentResultDto(Long commentId, int commentRownum) {
         targetId = commentId;
-        pageIndex = (int) Math.ceil(1.0 * commentRownum / Pagination.COMMENT.getSize()) - 1; // 인덱스는 0부터이므로 -1
+        pageIndex = commentRownum != 0 ? (int) Math.ceil(1.0 * commentRownum / Pagination.COMMENT.getSize()) - 1 : 0;
     }
 
 }

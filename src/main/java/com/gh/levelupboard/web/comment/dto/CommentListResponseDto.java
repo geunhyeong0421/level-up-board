@@ -32,7 +32,7 @@ public class CommentListResponseDto {
     private boolean isSecret; // 비밀 여부
     private boolean isDeleted; // 삭제 여부
 
-    private boolean isVisible; // 비밀 여부에 따른 가시성(댓글 작성자, 게시글 작성자, 답글 수신자, 관리자)
+    private boolean isVisible; // 비밀 댓글 공개 여부
 
     // json 파싱 시에 boolean 타입의 key값에 'is'가 생략되는 문제를 해결
     public boolean getIsMyComment() {
@@ -54,30 +54,29 @@ public class CommentListResponseDto {
 
     public CommentListResponseDto(Comment entity, SessionUser loginUser) {
         isSecret = entity.isSecret();
-        isVisible = !isSecret; // 가시성은 비밀 여부의 반대
+        isVisible = !isSecret; // 비밀 여부에 따른 공개 여부
 
         User postWriter = entity.getPost().getUser();
         User commentWriter = entity.getUser();
         equalsPostWriter = postWriter.equals(commentWriter);
 
         isMyComment = commentWriter.getId().equals(loginUser.getId());
-        boolean isAdmin = loginUser.getRole().equals(Role.ADMIN);
+        if (!isVisible) { // 댓글 작성자, 게시글 작성자, 관리자에게는 비밀 댓글 공개
+            boolean isPostWriter = postWriter.getId().equals(loginUser.getId());
+            boolean isAdmin = loginUser.getRole().equals(Role.ADMIN);
+            isVisible = isMyComment || isPostWriter || isAdmin;
+        }
 
         id = entity.getId();
         Comment parent = entity.getParent();
-        if (parent == null) { // 답글이 아닌 댓글이면
-            if (isSecret) {
-                boolean isPostWriter = postWriter.getId().equals(loginUser.getId());
-                isVisible = isMyComment || isPostWriter || isAdmin;
-            }
-        } else { // 답글이면
+        if (parent != null) { // 답글(대댓글)이면
             parentId = parent.getId();
-            if (isSecret) {
-                boolean isReplyTo = parent.getUser().getId().equals(loginUser.getId());
-                isVisible = isMyComment || isReplyTo || isAdmin;
-            }
             if (parentId != parent.getGroupId()) { // 답글의 답글이면
                 replyTo = parent.getUser().getName();
+            }
+            if (!isVisible) { // 답글의 수신자에게는 공개
+                boolean isReplyTo = parent.getUser().getId().equals(loginUser.getId());
+                isVisible = isReplyTo;
             }
         }
         groupId = entity.getGroupId();

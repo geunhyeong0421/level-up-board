@@ -1,20 +1,20 @@
 {{>layouts/header}}
 
 
-        <div class="col-sm-10 py-3">
-            <form>
-                <div class="form-group">
-                    <label for="title">제목</label>
-                    <input type="text" class="form-control" id="title" placeholder="제목을 입력하세요" autofocus>
-                </div>
-                <div class="form-group">
-                    <label for="content">내용</label>
-                    <textarea class="form-control" id="content" rows="10" placeholder="내용을 입력하세요"></textarea>
-                </div>
-            </form>
-            <a href="/" role="button" class="btn btn-secondary">취소</a>
-            <button type="button" class="btn btn-success" id="btn-save">등록</button>
+<div class="container-fluid py-3">
+    <form>
+        <div class="form-group">
+            <label for="title">제목</label>
+            <input type="text" class="form-control" id="title" placeholder="제목을 입력하세요" autofocus>
         </div>
+        <div class="form-group">
+            <label for="content">내용</label>
+            <textarea class="form-control" id="content" rows="10" placeholder="내용을 입력하세요"></textarea>
+        </div>
+    </form>
+    <div class="d-flex">
+        <a href="/" role="button" class="btn btn-secondary mr-auto">취소</a>
+        <button type="button" class="btn btn-success" id="btn-save">등록</button>
     </div>
 </div>
 
