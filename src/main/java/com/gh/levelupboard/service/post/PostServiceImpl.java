@@ -49,7 +49,7 @@ public class PostServiceImpl implements PostService{
     public Long remove(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
-        if (post.getCommentCount() != 0) { // 댓글이 있으면 삭제 상태로 변경
+        if (post.getCommentsCount() != 0) { // 댓글이 있으면 삭제 상태로 변경
             post.delete();
         } else { // 댓글이 없으면 DB에서 삭제
             postRepository.delete(post);
@@ -63,7 +63,7 @@ public class PostServiceImpl implements PostService{
         Post post = postRepository.findByIdFetch(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + postId));
         PostResponseDto postResponseDto = new PostResponseDto(post, loginUser.getId());
-        int commentCount = post.getCommentCount(); // 댓글 수
+        int commentCount = post.getCommentsCount(); // 댓글 수
 
         int size = Pagination.COMMENT.getSize(); // 댓글 페이징 크기
         int lastPage = (commentCount != 0) ? (int) Math.ceil(1.0 * commentCount / size) : 1; // 마지막 페이지 계산
@@ -88,5 +88,6 @@ public class PostServiceImpl implements PostService{
                 .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
     }
+
 
 }

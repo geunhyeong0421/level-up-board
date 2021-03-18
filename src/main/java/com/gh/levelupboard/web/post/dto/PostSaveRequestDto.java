@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PostSaveRequestDto { // 게시글 등록 요청 정보
 
+    private Long boardId; // 게시판
     private Long userId; // 작성자(로그인 유저)
     private String title; // 제목
     private String content; // 내용
@@ -27,4 +28,5 @@ public class PostSaveRequestDto { // 게시글 등록 요청 정보
                 .content(this.content)
                 .build();
     }
+
 }

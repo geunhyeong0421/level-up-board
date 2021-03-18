@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -29,7 +29,6 @@ public class CommentServiceImpl implements CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    @Transactional
     @Override
     public CommentResultDto add(CommentSaveRequestDto requestDto) {
         Long postId = requestDto.getPostId();
@@ -49,7 +48,6 @@ public class CommentServiceImpl implements CommentService {
         return new CommentResultDto(commentId, commentRownum);
     }
 
-    @Transactional
     @Override
     public CommentResultDto modify(Long id, CommentUpdateRequestDto requestDto) {
         Comment comment = commentRepository.findById(id)
@@ -61,7 +59,6 @@ public class CommentServiceImpl implements CommentService {
         return new CommentResultDto(id ,rownum);
     }
 
-    @Transactional
     @Override
     public CommentResultDto remove(Long id) {
         Comment comment = commentRepository.findById(id) // 성능 최적화 쿼리 필요
@@ -73,14 +70,14 @@ public class CommentServiceImpl implements CommentService {
             return new CommentResultDto(id, rownum);
         } else {
             commentRepository.delete(comment); // 답글이 없으면 DB에서 삭제
-            comment.getPost().decreaseCommentCount(); // 댓글수 -1
+            comment.getPost().decreaseCommentsCount(); // 댓글수 -1
             rownum--;
 
             Comment parent = comment.getParent();
             // 부모 댓글이 삭제 상태인데 마지막 답글이 삭제됐다면
             while (parent != null && parent.isDeleted() && parent.getChildren().size() == 1) {
                 commentRepository.delete(parent); // 부모 댓글을 DB에서 삭제
-                parent.getPost().decreaseCommentCount(); // 댓글수 -1
+                parent.getPost().decreaseCommentsCount(); // 댓글수 -1
                 rownum--;
 
                 parent = parent.getParent();
@@ -90,6 +87,7 @@ public class CommentServiceImpl implements CommentService {
         return new CommentResultDto(null, rownum);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<CommentListResponseDto> getList(Long postId, SessionUser loginUser) {
         return commentRepository.findByPostId(postId).stream()
@@ -97,6 +95,7 @@ public class CommentServiceImpl implements CommentService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<CommentListResponseDto> getListWithPagination(Long postId, SessionUser loginUser, Pageable pageable) {
         return commentRepository.findByPostIdWithPagination(postId, pageable)

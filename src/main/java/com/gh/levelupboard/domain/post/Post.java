@@ -31,7 +31,7 @@ public class Post {
     private String content; // 내용
 
     private int hit; // 조회수
-    private int commentCount; // 댓글수
+    private int commentsCount; // 댓글수
 
     @Column(updatable = false)
     private LocalDateTime createdDate; // 작성일
@@ -45,7 +45,7 @@ public class Post {
     @Transient
     private int previousHit; // 조회수 변동 여부 확인용
     @Transient
-    private int previousCommentCount; // 댓글수 변동 여부 확인용
+    private int previousCommentsCount; // 댓글수 변동 여부 확인용
 
 
     @Builder
@@ -61,7 +61,7 @@ public class Post {
     @PostLoad
     public void setPreviousHit() {
         previousHit = hit;
-        previousCommentCount = commentCount;
+        previousCommentsCount = commentsCount;
     }
     @PrePersist
     public void prePersist() {
@@ -71,7 +71,7 @@ public class Post {
     }
     @PreUpdate
     public void preUpdate() { // 조회수 또는 댓글수 변동시에는 수정일을 변경하지 않음
-        if (previousHit != hit || previousCommentCount != commentCount) { return; }
+        if (previousHit != hit || previousCommentsCount != commentsCount) { return; }
         modifiedDate = LocalDateTime.now();
     }
 //=============================================================
@@ -98,12 +98,12 @@ public class Post {
     }
 
     // 댓글수 +1
-    public void increaseCommentCount() {
-        commentCount++;
+    public void increaseCommentsCount() {
+        commentsCount++;
     }
     // 댓글수 -1
-    public void decreaseCommentCount() {
-        commentCount--;
+    public void decreaseCommentsCount() {
+        commentsCount--;
     }
 
 

@@ -50,21 +50,20 @@
         {{/loginUser}}
     </div>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-        <h4 class="text-light m-0 pr-4">게시판(Lv.18)</h4>
+        <h4 class="text-light m-0 pr-4">게시판(Lv.19)</h4>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="">전체글<span class="sr-only">(current)</span></a>
+                <li class="nav-item{{#allPosts}} active{{/allPosts}}">
+                    <a class="nav-link" href="/posts">전체글</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="">자유게시판</a>
+                {{#boards}}
+                <li class="nav-item{{#current}} active{{/current}}">
+                    <a class="nav-link" href="/boards/{{id}}/posts">{{name}}</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="" tabindex="-1" aria-disabled="true">공지사항</a>
-                </li>
+                {{/boards}}
             </ul>
         </div>
     </nav>

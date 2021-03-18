@@ -22,7 +22,7 @@ public class PostListResponseDto { // 게시글 목록 출력에 사용
         writer = entity.getUser().getName();
         createdDate = pattern(entity.getCreatedDate());
         hit = entity.getHit();
-        commentCount = entity.getCommentCount();
+        commentCount = entity.getCommentsCount();
     }
 
     private String pattern(LocalDateTime dateTime) {

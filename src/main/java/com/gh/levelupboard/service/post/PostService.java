@@ -22,7 +22,7 @@ public interface PostService {
     // 게시글 수정을 위한 정보만을 조회
     EditPostResponseDto getForEdit(Long id);
 
-    // 게시글 목록 조회
+    // 전체글 조회
     List<PostListResponseDto> getListDesc();
 
 }

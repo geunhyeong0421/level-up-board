@@ -16,8 +16,10 @@
             <textarea class="form-control" id="content" rows="10">{{post.content}}</textarea>
         </div>
     </form>
-    <a href="../{{post.id}}" role="button" class="btn btn-secondary">취소</a>
-    <button type="button" class="btn btn-success" id="btn-update">완료</button>
+    <div class="d-flex">
+        <a href="../{{post.id}}" role="button" class="btn btn-secondary mr-auto">취소</a>
+        <button type="button" class="btn btn-success" id="btn-update">완료</button>
+    </div>
 </div>
 
 

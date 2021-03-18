@@ -295,7 +295,11 @@ var comments = {
 
 
 //================================ Pagination ===================================
-        var totalPages = page.totalPages != 0 ? page.totalPages : 1; // 전체 페이지 수
+        var totalPages = page.totalPages; // 전체 페이지 수
+        if(!totalPages) {
+            $('.comments-pagination').find('ul').empty();
+            return;
+        }
         var currentPage = page.number + 1; // 현재 페이지
 
         var paginationNavSize = 5; // 탐색 페이지(?)의 크기(화면에 출력되는 페이지 수)

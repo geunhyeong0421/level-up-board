@@ -41,7 +41,7 @@ var posts = {
             data: JSON.stringify(data)
         }).done(function(result) {
 //            alert('글이 등록되었습니다.');
-            window.location.href = '/posts/' + result;
+            window.location.href = './' + result;
         }).fail(function(error) {
             alert(JSON.stringify(error));
         });
@@ -75,7 +75,7 @@ var posts = {
             data: JSON.stringify(data)
         }).done(function(result) {
 //            alert('글이 수정되었습니다.');
-            window.location.href = '/posts/' + result;
+            window.location.href = '../' + result;
         }).fail(function(error) {
             alert(JSON.stringify(error));
         });
@@ -90,7 +90,7 @@ var posts = {
             contentType: 'application/json; charset=utf-8'
         }).done(function() {
 //            alert('글이 삭제되었습니다.');
-            window.location.href = '/';
+            window.location.href = '../posts';
         }).fail(function(error) {
             alert(JSON.stringify(error))
         });

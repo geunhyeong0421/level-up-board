@@ -39,7 +39,7 @@ public class CommentSaveRequestDto { // 댓글 등록 요청 정보
         if (parent != null) {
             newComment.setParent(parent);
         }
-        post.increaseCommentCount();
+        post.increaseCommentsCount();
         return newComment;
     }
 

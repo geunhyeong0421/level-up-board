@@ -44,7 +44,7 @@ public class PostResponseDto { // 게시글 조회 화면에 사용
         profile = entity.getUser().getPicture();
         writer = entity.getUser().getName();
         hit = entity.getHit(); // 변동된 조회수 적용
-        commentCount = entity.getCommentCount();
+        commentCount = entity.getCommentsCount();
 
         LocalDateTime createdDate = entity.getCreatedDate();
         LocalDateTime modifiedDate = entity.getModifiedDate();
@@ -61,15 +61,17 @@ public class PostResponseDto { // 게시글 조회 화면에 사용
 
     // 최신 댓글(마지막 페이지) 출력
     public void setComments(Page<CommentListResponseDto> comments) {
+        int totalPages = comments.getTotalPages(); // 전체 페이지 수
+        if (totalPages == 0) { return; }
+
         this.comments = comments.getContent();
 
-        int totalPages = comments.getTotalPages() != 0 ? comments.getTotalPages() : 1; // 전체 페이지 수
         int paginationNavSize = Pagination.COMMENT.getNavSize(); // 화면에 출력되는 탐색 페이지 수
         int totalNavPages = (int) Math.ceil(1.0 * totalPages / paginationNavSize);
         int startPage = (totalNavPages - 1) * paginationNavSize + 1;
 
-        commentsFirst = (totalPages == 1); // 첫 페이지 여부
-        if(totalNavPages > 1){
+        commentsFirst = comments.isFirst(); // 첫 페이지 여부
+        if (totalNavPages > 1) {
             commentsPrev = startPage - 1;
         }
 
