@@ -2,6 +2,7 @@ package com.gh.levelupboard.service.board;
 
 import com.gh.levelupboard.domain.board.Board;
 import com.gh.levelupboard.domain.board.BoardRepository;
+import com.gh.levelupboard.domain.user.Role;
 import com.gh.levelupboard.web.board.dto.BoardListDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -24,8 +25,8 @@ public class BoardServiceImpl implements BoardService {
     public void init() {
         if(boardRepository.count() == 0) {
             boardRepository.save(new Board("자유게시판"));
-            boardRepository.save(new Board("테스트게시판"));
-            boardRepository.save(new Board("공지사항"));
+            boardRepository.save(new Board("테스트게시판", Role.ADMIN));
+            boardRepository.save(new Board("공지사항", Role.ADMIN));
         }
         boards = boardRepository.findAll(Sort.by("id"));
     }
@@ -42,6 +43,11 @@ public class BoardServiceImpl implements BoardService {
         return boards.stream()
                 .map(board -> new BoardListDto(board, id))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Board get(Long id) {
+        return boards.get(id.intValue() - 1);
     }
 
 }

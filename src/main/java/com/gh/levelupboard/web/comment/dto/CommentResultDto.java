@@ -9,9 +9,9 @@ public class CommentResultDto {
     private Long targetId;
     private int pageIndex;
 
-    public CommentResultDto(Long commentId, int commentRownum) {
-        targetId = commentId;
-        pageIndex = commentRownum != 0 ? (int) Math.ceil(1.0 * commentRownum / Pagination.COMMENT.getSize()) - 1 : 0;
+    public CommentResultDto(Long targetId, int targetRownum) {
+        this.targetId = targetId;
+        pageIndex = (int) Math.ceil(1.0 * targetRownum / Pagination.COMMENT.getSize()) - 1;
     }
 
 }

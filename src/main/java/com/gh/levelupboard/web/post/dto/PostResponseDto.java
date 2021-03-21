@@ -15,6 +15,7 @@ public class PostResponseDto { // 게시글 조회 화면에 사용
 
     private boolean isMyPost; // 조회 게시글의 본인 작성 여부
 
+    private String boardName; // 게시판 이름
     private Long id; // 번호
     private String title; // 제목
     private String content; // 내용
@@ -37,6 +38,7 @@ public class PostResponseDto { // 게시글 조회 화면에 사용
     public PostResponseDto(Post entity, Long longinUserId) {
         isMyPost = entity.isMyPost(longinUserId); // 조건에 따라 조회수 +1
 
+        boardName = entity.getBoard().getName();
         id = entity.getId();
         title = entity.getTitle();
         content = entity.getContent();

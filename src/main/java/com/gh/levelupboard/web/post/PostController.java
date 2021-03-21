@@ -2,6 +2,7 @@ package com.gh.levelupboard.web.post;
 
 import com.gh.levelupboard.config.auth.LoginUser;
 import com.gh.levelupboard.config.auth.dto.SessionUser;
+import com.gh.levelupboard.domain.user.Role;
 import com.gh.levelupboard.service.board.BoardService;
 import com.gh.levelupboard.service.post.PostService;
 import com.gh.levelupboard.web.post.dto.EditPostResponseDto;
@@ -41,6 +42,7 @@ public class PostController {
         if (user != null) { model.addAttribute("loginUser", user); }
         model.addAttribute("posts", postService.getListDesc());
         model.addAttribute("boards", boardService.getList(boardId));
+        model.addAttribute("adminOnly", Role.ADMIN.equals(boardService.get(boardId).getCreatePermission()));
         return "posts";
     }
 
@@ -57,6 +59,9 @@ public class PostController {
     @GetMapping("/boards/{boardId}/posts/new")
     public String createPost(Model model, @LoginUser SessionUser user,
                                     @PathVariable Long boardId) {
+        if (!user.isAdmin() && boardService.get(boardId).getCreatePermission() != null) {
+            return "forbidden";
+        }
         model.addAttribute("loginUser", user);
         model.addAttribute("boards", boardService.getList(boardId));
         return "posts/create";
@@ -89,22 +94,30 @@ public class PostController {
     @GetMapping("/posts/{id}/edit")
     public String editPost(Model model, @LoginUser SessionUser user,
                             @PathVariable Long id) {
+        EditPostResponseDto dto = postService.getForEdit(id);
+        if (!dto.getWriterId().equals(user.getId())) {
+            return "forbidden";
+        }
+        model.addAttribute("post", dto);
+
         model.addAttribute("loginUser", user);
         model.addAttribute("allPosts", true);
         model.addAttribute("boards", boardService.getList());
 
-        EditPostResponseDto dto = postService.getForEdit(id);
-        model.addAttribute("post", dto);
         return "posts/edit";
     }
     @GetMapping("/boards/{boardId}/posts/{id}/edit")
     public String editPost(Model model, @LoginUser SessionUser user,
                            @PathVariable Long boardId, @PathVariable Long id) {
+        EditPostResponseDto dto = postService.getForEdit(id);
+        if (!dto.getWriterId().equals(user.getId())) {
+            return "forbidden";
+        }
+        model.addAttribute("post", dto);
+
         model.addAttribute("loginUser", user);
         model.addAttribute("boards", boardService.getList(boardId));
 
-        EditPostResponseDto dto = postService.getForEdit(id);
-        model.addAttribute("post", dto);
         return "posts/edit";
     }
 

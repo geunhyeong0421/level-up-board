@@ -45,6 +45,7 @@ public class CommentServiceImpl implements CommentService {
         }
         Long commentId = commentRepository.save(requestDto.toEntity(post, user, parent)).getId();
         int commentRownum = commentRepository.findIdByPostId(postId).indexOf(commentId) + 1;
+
         return new CommentResultDto(commentId, commentRownum);
     }
 
@@ -64,27 +65,38 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findById(id) // 성능 최적화 쿼리 필요
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + id));
 
-        int rownum = commentRepository.findIdByPostId(comment.getPost().getId()).indexOf(id) + 1;
-        if (comment.getChildren().size() != 0) { // 답글이 있으면 삭제 상태로 변경
-            comment.delete();
-            return new CommentResultDto(id, rownum);
-        } else {
-            commentRepository.delete(comment); // 답글이 없으면 DB에서 삭제
+        List<Long> commentIdList = commentRepository.findIdByPostId(comment.getPost().getId());
+        if (comment.getChildren().size() != 0) { // 답글이 있으면
+            comment.delete(); // 삭제 상태로 변경
+
+            return new CommentResultDto(id, commentIdList.indexOf(id) + 1);
+        } else { // 답글이 없으면
+            commentRepository.delete(comment); // DB에서 삭제
             comment.getPost().decreaseCommentsCount(); // 댓글수 -1
-            rownum--;
 
             Comment parent = comment.getParent();
             // 부모 댓글이 삭제 상태인데 마지막 답글이 삭제됐다면
             while (parent != null && parent.isDeleted() && parent.getChildren().size() == 1) {
                 commentRepository.delete(parent); // 부모 댓글을 DB에서 삭제
                 parent.getPost().decreaseCommentsCount(); // 댓글수 -1
-                rownum--;
+                commentIdList.remove(parent.getId()); // 목록에서 제거
 
                 parent = parent.getParent();
             }
-        }
 
-        return new CommentResultDto(null, rownum);
+            Long targetId = null;
+            int targetRownum = 0;
+            if (commentIdList.size() != 1) { // 화면에 출력할 댓글이 존재(계산을 위해 삭제된 댓글을 남겨뒀으므로 0이 아닌 1이 기준)
+                int deletedCommentIndex = commentIdList.indexOf(id); // 삭제된 댓글의 index
+                targetId = (deletedCommentIndex == commentIdList.size() - 1) // 마지막 댓글이 삭제된 경우
+                        ? commentIdList.get(deletedCommentIndex - 1) // 바로 앞의 댓글을 추적
+                        : commentIdList.get(deletedCommentIndex + 1); // 아니면 바로 뒤의 댓글을 추적
+                commentIdList.remove(deletedCommentIndex); // 삭제된 댓글을 목록에서 제거하고 화면에 출력할 댓글들만 남긴다
+                targetRownum = commentIdList.indexOf(targetId) + 1; // 추적 댓글의 rownum을 계산
+            }
+
+            return new CommentResultDto(targetId, targetRownum);
+        }
     }
 
     @Transactional(readOnly = true)

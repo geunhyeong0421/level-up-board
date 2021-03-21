@@ -4,7 +4,14 @@
 <div class="container-fluid py-3">
     <div class="d-flex mb-2">
         <h4>Total: {{posts.size}}</h4>
-        <a href="./posts/new" role="button" class="btn btn-primary ml-auto">글쓰기</a>
+        {{^adminOnly}}
+            <a href="./posts/new" role="button" class="btn btn-primary ml-auto">글쓰기</a>
+        {{/adminOnly}}
+        {{#adminOnly}}
+            {{#loginUser.admin}}
+                <a href="./posts/new" role="button" class="btn btn-primary ml-auto">글쓰기</a>
+            {{/loginUser.admin}}
+        {{/adminOnly}}
     </div>
     <!--목록 출력 영역-->
     {{#posts.empty}}
@@ -14,18 +21,20 @@
         <table class="table table-sm table-hover table-bordered text-center">
             <thead>
             <tr>
+                <th width="10%"></th>
                 <th width="10%">번호</th>
                 <th width="50%">제목</th>
-                <th width="15%">작성자</th>
-                <th width="15%">작성일</th>
+                <th width="10%">작성자</th>
+                <th width="10%">작성일</th>
                 <th width="10%">조회</th>
             </tr>
             </thead>
             <tbody id="tbody">
             {{#posts}}
                 <tr>
+                    <td class="text-muted">{{boardName}}</td>
                     <td>{{id}}</td>
-                    <td><a href="./posts/{{id}}" class="mr-1">{{title}}</a><span class="font-weight-bold">[{{commentCount}}]</span></td>
+                    <td><a href="./posts/{{id}}">{{title}}</a><span class="font-weight-bold pl-1">[{{commentCount}}]</span></td>
                     <td>{{writer}}</td>
                     <td>{{createdDate}}</td>
                     <td>{{hit}}</td>

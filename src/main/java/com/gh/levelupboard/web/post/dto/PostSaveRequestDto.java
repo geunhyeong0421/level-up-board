@@ -1,5 +1,6 @@
 package com.gh.levelupboard.web.post.dto;
 
+import com.gh.levelupboard.domain.board.Board;
 import com.gh.levelupboard.domain.post.Post;
 import com.gh.levelupboard.domain.user.User;
 import lombok.AllArgsConstructor;
@@ -21,8 +22,9 @@ public class PostSaveRequestDto { // 게시글 등록 요청 정보
         this.userId = userId;
     }
 
-    public Post toEntity(User user) {
+    public Post toEntity(Board board, User user) {
         return Post.builder()
+                .board(board)
                 .user(user)
                 .title(this.title)
                 .content(this.content)

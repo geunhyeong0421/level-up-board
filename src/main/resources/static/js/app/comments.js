@@ -209,7 +209,7 @@ var comments = {
             dataType: 'json',
         }).done(function(result) {
 
-            // 댓글 목록 refresh(삭제 위치 추적)
+            // 댓글 목록 refresh(삭제 위치 추적 - 앞 또는 뒤)
             _this.getList(result.pageIndex);
             if(result.targetId) {
                 $('.comment[data-id="' + result.targetId + '"]')[0].scrollIntoView({block:"center"});
@@ -220,6 +220,12 @@ var comments = {
         });
     },
     getList : function(pageIndex) {
+        if(pageIndex < 0) {
+            $('.comment-count').text(0);
+            $('.comment-list').empty();
+            $('.comments-pagination').find('ul').empty();
+            return;
+        }
         var _this = this;
         var id = $('#post-id').val();
 
@@ -290,16 +296,12 @@ var comments = {
             } // isNotDeleted-end
             commentList += '</div>';
         }); // each-end
-        $('.comment-list').empty().append(commentList);
         $('.comment-count').text(page.totalElements);
+        $('.comment-list').empty().append(commentList);
 
 
 //================================ Pagination ===================================
         var totalPages = page.totalPages; // 전체 페이지 수
-        if(!totalPages) {
-            $('.comments-pagination').find('ul').empty();
-            return;
-        }
         var currentPage = page.number + 1; // 현재 페이지
 
         var paginationNavSize = 5; // 탐색 페이지(?)의 크기(화면에 출력되는 페이지 수)

@@ -15,6 +15,12 @@ var posts = {
         });
     },
     save : function() {
+        var selectBoard = $('select');
+        if(!selectBoard.val()) {
+            alert('게시판을 선택해주세요.');
+            selectBoard.focus();
+            return;
+        }
         var title = $('#title').val().trim();
         if(!title) {
             alert('제목을 입력해 주세요.');
@@ -29,6 +35,7 @@ var posts = {
         }
 
         var data = {
+            boardId: selectBoard.val(),
             title: title,
             content: $('#content').val()
         };

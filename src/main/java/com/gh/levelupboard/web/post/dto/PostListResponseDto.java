@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 public class PostListResponseDto { // 게시글 목록 출력에 사용
 
+    private String boardName; // 게시판 이름
     private Long id; // 번호
     private String title; // 제목
     private String writer; // 작성자
@@ -17,6 +18,7 @@ public class PostListResponseDto { // 게시글 목록 출력에 사용
 
 
     public PostListResponseDto(Post entity) {
+        boardName = entity.getBoard().getName();
         id = entity.getId();
         title = entity.getTitle();
         writer = entity.getUser().getName();

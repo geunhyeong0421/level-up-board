@@ -13,12 +13,14 @@ public class SessionUser implements Serializable {
     private String email;
     private String picture;
     private Role role;
+    private boolean isAdmin;
 
     public SessionUser(User user) {
-        this.id = user.getId();
-        this.name = user.getName();
-        this.email = user.getEmail();
-        this.picture = user.getPicture();
-        this.role = user.getRole();
+        id = user.getId();
+        name = user.getName();
+        email = user.getEmail();
+        picture = user.getPicture();
+        role = user.getRole();
+        isAdmin = role.equals(Role.ADMIN);
     }
 }

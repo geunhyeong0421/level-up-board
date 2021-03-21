@@ -4,8 +4,34 @@
 <div class="container-fluid py-3">
     <form>
         <div class="form-group">
+            <select class="form-control"{{#allPosts}} autofocus{{/allPosts}}{{^allPosts}} disabled{{/allPosts}}>
+                {{#allPosts}}
+                    <option value="">선택</option>
+                    {{#loginUser.admin}}
+                        {{#boards}}
+                            <option value="{{id}}">{{name}}</option>
+                        {{/boards}}
+                    {{/loginUser.admin}}
+                    {{^loginUser.admin}}
+                        {{#boards}}
+                            {{^createPermission}}
+                                <option value="{{id}}">{{name}}</option>
+                            {{/createPermission}}
+                        {{/boards}}
+                    {{/loginUser.admin}}
+                {{/allPosts}}
+                {{^allPosts}}
+                    {{#boards}}
+                        {{#current}}
+                            <option value="{{id}}">{{name}}</option>
+                        {{/current}}
+                    {{/boards}}
+                {{/allPosts}}
+            </select>
+        </div>
+        <div class="form-group">
             <label for="title">제목</label>
-            <input type="text" class="form-control" id="title" placeholder="제목을 입력하세요" autofocus>
+            <input type="text" class="form-control" id="title" placeholder="제목을 입력하세요"{{^allPosts}} autofocus{{/allPosts}}>
         </div>
         <div class="form-group">
             <label for="content">내용</label>

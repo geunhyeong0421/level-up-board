@@ -1,11 +1,13 @@
 package com.gh.levelupboard.service.post;
 
 import com.gh.levelupboard.config.auth.dto.SessionUser;
+import com.gh.levelupboard.domain.board.Board;
 import com.gh.levelupboard.domain.comment.CommentRepository;
 import com.gh.levelupboard.domain.post.Post;
 import com.gh.levelupboard.domain.post.PostRepository;
 import com.gh.levelupboard.domain.user.User;
 import com.gh.levelupboard.domain.user.UserRepository;
+import com.gh.levelupboard.service.board.BoardService;
 import com.gh.levelupboard.web.comment.dto.CommentListResponseDto;
 import com.gh.levelupboard.web.pagination.Pagination;
 import com.gh.levelupboard.web.post.dto.*;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class PostServiceImpl implements PostService{
+
+    private final BoardService boardService;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
@@ -29,10 +33,11 @@ public class PostServiceImpl implements PostService{
     @Transactional
     @Override
     public Long add(PostSaveRequestDto requestDto) {
+        Board board = boardService.get(requestDto.getBoardId());
         Long userId = requestDto.getUserId();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 이용자가 없습니다. id=" + userId));
-        return postRepository.save(requestDto.toEntity(user)).getId();
+        return postRepository.save(requestDto.toEntity(board, user)).getId();
     }
 
     @Transactional

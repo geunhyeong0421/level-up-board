@@ -63,8 +63,7 @@ public class CommentListResponseDto {
         isMyComment = commentWriter.getId().equals(loginUser.getId());
         if (!isVisible) { // 댓글 작성자, 게시글 작성자, 관리자에게는 비밀 댓글 공개
             boolean isPostWriter = postWriter.getId().equals(loginUser.getId());
-            boolean isAdmin = loginUser.getRole().equals(Role.ADMIN);
-            isVisible = isMyComment || isPostWriter || isAdmin;
+            isVisible = isMyComment || isPostWriter || loginUser.isAdmin();
         }
 
         id = entity.getId();
