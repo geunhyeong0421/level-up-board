@@ -67,28 +67,22 @@ public class Comment {
  */
     @PrePersist // 직후에 insert 쿼리
     public void prePersist() {
-        if (parent != null) { // 부모가 있으면 부모의 그룹으로 그룹 설정
-            this.groupId = parent.groupId;
-        }
-        LocalDateTime now = LocalDateTime.now();
-        createdDate = now;
-        modifiedDate = now;
+        modifiedDate = createdDate = LocalDateTime.now();
     }
     @PostPersist // insert 쿼리 직후
     public void postPersist() {
-        if (groupId != null) { return; } // 그룹 설정이 완료됐으면 return;
-        groupId = id; // insert 쿼리 이후 생성된 본인의 id로 그룹 설정
-        isGroupIdUpdated = true; // groupId: null -> this.id
+        if (groupId == null) {
+            groupId = id; // insert 쿼리 이후 생성된 본인의 id로 그룹 설정
+            isGroupIdUpdated = true;
+        }
     }
     @PreUpdate // update 쿼리 직전
     public void preUpdate() { // 수정일 변경에만 관여
-        if (isGroupIdUpdated) { return; } // update 쿼리로 그룹을 설정할 땐 수정일을 변경하지 않음
+        if (isGroupIdUpdated) {
+            isGroupIdUpdated = false; // 초기화
+            return;
+        }
         modifiedDate = LocalDateTime.now();
-    }
-    @PostUpdate // update 쿼리 직후
-    public void postUpdate() {
-        if(!isGroupIdUpdated) { return; } // 초기화가 필요하지 않으면 return;
-        isGroupIdUpdated = false; // 초기화
     }
 //==============================================================================
 
@@ -96,6 +90,7 @@ public class Comment {
     //== 연관 관계 메서드 ==//
     public void setParent(Comment parent) {
         this.parent = parent;
+        this.groupId = parent.groupId; // 부모의 그룹으로 그룹 설정
         parent.children.add(this);
     }
 

@@ -7,6 +7,7 @@ import com.gh.levelupboard.service.board.BoardService;
 import com.gh.levelupboard.service.post.PostService;
 import com.gh.levelupboard.web.post.dto.EditPostResponseDto;
 import com.gh.levelupboard.web.post.dto.PostResponseDto;
+import com.gh.levelupboard.web.post.dto.ReplyPostResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -76,6 +77,7 @@ public class PostController {
         model.addAttribute("boards", boardService.getList());
 
         PostResponseDto dto = postService.get(id, user);
+        dto.setCanReply(user.isAdmin());
         model.addAttribute("post", dto);
         return "posts/read";
     }
@@ -86,6 +88,7 @@ public class PostController {
         model.addAttribute("boards", boardService.getList(boardId));
 
         PostResponseDto dto = postService.get(id, user);
+        dto.setCanReply(user.isAdmin());
         model.addAttribute("post", dto);
         return "posts/read";
     }
@@ -103,7 +106,6 @@ public class PostController {
         model.addAttribute("loginUser", user);
         model.addAttribute("allPosts", true);
         model.addAttribute("boards", boardService.getList());
-
         return "posts/edit";
     }
     @GetMapping("/boards/{boardId}/posts/{id}/edit")
@@ -117,8 +119,36 @@ public class PostController {
 
         model.addAttribute("loginUser", user);
         model.addAttribute("boards", boardService.getList(boardId));
-
         return "posts/edit";
+    }
+
+    // 게시글 답글 화면
+    @GetMapping("/posts/{id}/reply")
+    public String replyPost(Model model, @LoginUser SessionUser user,
+                            @PathVariable Long id) {
+        ReplyPostResponseDto dto = postService.getForReply(id);
+        if (dto.getCreatePermission() != null && !user.isAdmin()) {
+            return "forbidden";
+        }
+        model.addAttribute("post", dto);
+
+        model.addAttribute("loginUser", user);
+        model.addAttribute("boards", boardService.getList());
+        model.addAttribute("allPosts", true);
+        return "posts/reply";
+    }
+    @GetMapping("/boards/{boardId}/posts/{id}/reply")
+    public String replyPost(Model model, @LoginUser SessionUser user,
+                            @PathVariable Long boardId, @PathVariable Long id) {
+        ReplyPostResponseDto dto = postService.getForReply(id);
+        if (dto.getCreatePermission() != null && !user.isAdmin()) {
+            return "forbidden";
+        }
+        model.addAttribute("post", dto);
+
+        model.addAttribute("loginUser", user);
+        model.addAttribute("boards", boardService.getList(boardId));
+        return "posts/reply";
     }
 
 }

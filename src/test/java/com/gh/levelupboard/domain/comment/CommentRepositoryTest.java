@@ -70,7 +70,6 @@ class CommentRepositoryTest {
         for (Comment comment : comments) {
             System.out.printf("groupId:%d\tid: %d\tcontent: %s\n", comment.getGroupId(), comment.getId(), comment.getContent());
         }
-
     }
 
     @Test

@@ -13,6 +13,9 @@ var posts = {
                 _this.delete();
             }
         });
+        $('#btn-save-reply').on('click', function() {
+            _this.saveReply();
+        });
     },
     save : function() {
         var selectBoard = $('select');
@@ -21,14 +24,12 @@ var posts = {
             selectBoard.focus();
             return;
         }
-        var title = $('#title').val().trim();
-        if(!title) {
+        if(!$('#title').val().trim()) {
             alert('제목을 입력해 주세요.');
             $('#title').val("").focus();
             return;
         }
-        var content = $('#content').val().trim();
-        if(!content) {
+        if(!$('#content').val().trim()) {
             alert('내용을 입력해 주세요.');
             $('#content').focus();
             return;
@@ -36,7 +37,7 @@ var posts = {
 
         var data = {
             boardId: selectBoard.val(),
-            title: title,
+            title: $('#title').val().trim(),
             content: $('#content').val()
         };
 
@@ -54,21 +55,19 @@ var posts = {
         });
     },
     update : function() {
-        var title = $('#title').val().trim();
-        if(!title) {
+        if(!$('#title').val().trim()) {
             alert('제목을 입력해 주세요.');
             $('#title').val("").focus();
             return;
         }
-        var content = $('#content').val().trim();
-        if(!content) {
+        if(!$('#content').val().trim()) {
             alert('내용을 입력해 주세요.');
             $('#content').focus();
             return;
         }
 
         var data = {
-            title: title,
+            title: $('#title').val().trim(),
             content: $('#content').val()
         };
 
@@ -100,6 +99,38 @@ var posts = {
             window.location.href = '../posts';
         }).fail(function(error) {
             alert(JSON.stringify(error))
+        });
+    },
+    saveReply : function() {
+        if(!$('#title').val().trim()) {
+            alert('제목을 입력해 주세요.');
+            $('#title').val("").focus();
+            return;
+        }
+        if(!$('#content').val().trim()) {
+            alert('내용을 입력해 주세요.');
+            $('#content').focus();
+            return;
+        }
+
+        var data = {
+            boardId: $('select').val(),
+            parentId: $('#parent-id').val(),
+            title: $('#title').val().trim(),
+            content: $('#content').val()
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/posts',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data)
+        }).done(function(result) {
+//            alert('글이 등록되었습니다.');
+            window.location.href = '../' + result;
+        }).fail(function(error) {
+            alert(JSON.stringify(error));
         });
     }
 

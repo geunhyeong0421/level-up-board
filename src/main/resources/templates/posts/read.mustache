@@ -4,7 +4,9 @@
 <div class="container-fluid py-3">
     <div class="d-flex mb-2">
         <a href="../posts" role="button" class="btn btn-secondary">목록</a>
-        <button type="button" class="btn btn-dark ml-1">답글</button>
+        {{#post.canReply}}
+            <a href="./{{post.id}}/reply" role="button" class="btn btn-dark ml-1">답글</a>
+        {{/post.canReply}}
         {{#post.isMyPost}}
             <a href="./{{post.id}}/edit" role="button" class="btn btn-primary ml-auto mr-1">수정</a>
             <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
@@ -72,12 +74,12 @@
         {{#post.comments}}
         {{^parentId}}<div class="comment d-flex px-1 pt-1 mb-1{{#isMyComment}} my-comment{{/isMyComment}}" data-id="{{id}}">{{/parentId}}
         {{#parentId}}<div class="comment d-flex px-1 pt-1 mb-1 border-bottom{{#isMyComment}} my-comment{{/isMyComment}}" data-id="{{id}}" data-parent-id="{{parentId}}" style="margin-left: 58px;">{{/parentId}}
-            {{#isDeleted}}<div class="col text-muted py-2 mb-2">삭제된 댓글입니다.</div>{{/isDeleted}}
+            {{#isDeleted}}<div class="col font-weight-bold text-muted py-2 mb-2">삭제된 댓글입니다.</div>{{/isDeleted}}
             {{^isDeleted}}
                 {{^isVisible}} <!--비밀 댓글 처리-->
                     <div class="col text-muted py-2 mb-2">
                         <span class="locked">&#x1F512;</span>
-                        <span>비밀 댓글입니다.</span>
+                        <span class="font-weight-bold">비밀 댓글입니다.</span>
                         <span class="text-muted-comment">{{modifiedDate}}</span>
                         {{#isModified}}<span class="text-muted-comment">수정됨</span>{{/isModified}}
                     </div>

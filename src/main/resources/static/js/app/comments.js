@@ -253,12 +253,12 @@ var comments = {
             }
 
             if(dto.isDeleted) {
-                commentList += '<div class="col text-muted py-2 mb-2">삭제된 댓글입니다.</div>';
+                commentList += '<div class="col font-weight-bold text-muted py-2 mb-2">삭제된 댓글입니다.</div>';
             } else {
                 if(!dto.isVisible) { // 비밀 댓글 처리
                     commentList += '<div class="col text-muted py-2 mb-2">'
                                  + '    <span class="locked">&#x1F512;</span>'
-                                 + '    <span>비밀 댓글입니다.</span>'
+                                 + '    <span class="font-weight-bold">비밀 댓글입니다.</span>'
                                  + '    <span class="text-muted-comment">' + dto.modifiedDate + '</span>'
                                  + (dto.isModified ? ' <span class="text-muted-comment">수정됨</span>' : '')
                                  + '</div>';

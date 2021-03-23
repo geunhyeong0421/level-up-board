@@ -1,5 +1,6 @@
 package com.gh.levelupboard.web.post.dto;
 
+import com.gh.levelupboard.config.auth.dto.SessionUser;
 import com.gh.levelupboard.domain.post.Post;
 import com.gh.levelupboard.web.pagination.Pagination;
 import com.gh.levelupboard.web.pagination.PaginationDto;
@@ -15,6 +16,7 @@ public class PostResponseDto { // 게시글 조회 화면에 사용
 
     private boolean isMyPost; // 조회 게시글의 본인 작성 여부
 
+    private boolean canReply; // 답글 가능 여부
     private String boardName; // 게시판 이름
     private Long id; // 번호
     private String title; // 제목
@@ -35,9 +37,10 @@ public class PostResponseDto { // 게시글 조회 화면에 사용
     private Integer commentsPrev;
     private List<PaginationDto> commentsPages = new ArrayList<>();
 
-    public PostResponseDto(Post entity, Long longinUserId) {
-        isMyPost = entity.isMyPost(longinUserId); // 조건에 따라 조회수 +1
+    public PostResponseDto(Post entity, SessionUser loginUser) {
+        isMyPost = entity.isMyPost(loginUser.getId()); // 조건에 따라 조회수 +1
 
+        canReply = entity.getBoard().getCreatePermission() == null;
         boardName = entity.getBoard().getName();
         id = entity.getId();
         title = entity.getTitle();
@@ -80,6 +83,10 @@ public class PostResponseDto { // 게시글 조회 화면에 사용
         for (int i = startPage; i <= totalPages; i++) {
             commentsPages.add(new PaginationDto(i, i == totalPages));
         }
+    }
+
+    public void setCanReply(boolean isAdmin) {
+        canReply = canReply || isAdmin;
     }
 
 }

@@ -18,27 +18,45 @@
         <h5 class="text-center py-5 my-5">등록된 게시글이 없습니다.</h5>
     {{/posts.empty}}
     {{^posts.empty}}
-        <table class="table table-sm table-hover table-bordered text-center">
+        <table class="table table-sm table-hover table-bordered">
             <thead>
             <tr>
                 <th width="10%"></th>
-                <th width="10%">번호</th>
-                <th width="50%">제목</th>
+                <th width="5%">번호</th>
+                <th width="60%">제목</th>
                 <th width="10%">작성자</th>
                 <th width="10%">작성일</th>
-                <th width="10%">조회</th>
+                <th width="5%">조회</th>
             </tr>
             </thead>
             <tbody id="tbody">
             {{#posts}}
-                <tr>
-                    <td class="text-muted">{{boardName}}</td>
-                    <td>{{id}}</td>
-                    <td><a href="./posts/{{id}}">{{title}}</a><span class="font-weight-bold pl-1">[{{commentCount}}]</span></td>
-                    <td>{{writer}}</td>
-                    <td>{{createdDate}}</td>
-                    <td>{{hit}}</td>
-                </tr>
+                {{#deleted}}
+                    <tr>
+                        <td class="text-muted">{{boardName}}</td>
+                        <td></td>
+                        <td>
+                            {{#reply}}{{#depth}}<span class="px-2"></span>{{/depth}}└{{/reply}}
+                            <span class="font-weight-bold text-muted">삭제된 글입니다.</span>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                {{/deleted}}
+                {{^deleted}}
+                    <tr>
+                        <td class="text-muted">{{boardName}}</td>
+                        <td>{{id}}</td>
+                        <td>
+                            {{#reply}}{{#depth}}<span class="px-2"></span>{{/depth}}└{{/reply}}
+                            <a href="./posts/{{id}}">{{title}}</a><span class="font-weight-bold pl-1">[{{commentCount}}]</span>
+                        </td>
+                        <td>{{writer}}</td>
+                        <td>{{createdDate}}</td>
+                        <td>{{hit}}</td>
+                    </tr>
+                {{/deleted}}
             {{/posts}}
             </tbody>
         </table>

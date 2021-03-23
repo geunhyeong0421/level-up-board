@@ -34,15 +34,17 @@ public class CommentServiceImpl implements CommentService {
         Long postId = requestDto.getPostId();
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + postId));
+
         Long userId = requestDto.getUserId();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 이용자가 없습니다. id=" + userId));
+
         Long parentId = requestDto.getParentId();
-        Comment parent = null;
-        if (parentId != null) {
-            parent = commentRepository.findById(parentId)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + parentId));
-        }
+        Comment parent = (parentId != null)
+                ? commentRepository.findById(parentId)
+                   .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + parentId))
+                : null;
+
         Long commentId = commentRepository.save(requestDto.toEntity(post, user, parent)).getId();
         int commentRownum = commentRepository.findIdByPostId(postId).indexOf(commentId) + 1;
 
