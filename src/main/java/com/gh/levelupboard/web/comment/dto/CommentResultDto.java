@@ -7,11 +7,11 @@ import lombok.Getter;
 public class CommentResultDto {
 
     private Long targetId;
-    private int pageIndex;
+    private int page;
 
     public CommentResultDto(Long targetId, int targetRownum) {
         this.targetId = targetId;
-        pageIndex = (int) Math.ceil(1.0 * targetRownum / Pagination.COMMENT.getSize()) - 1;
+        page = (int) Math.ceil(1.0 * targetRownum / Pagination.COMMENT.getSize());
     }
 
 }

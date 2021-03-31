@@ -24,7 +24,6 @@ public class PostListResponseDto { // 게시글 목록 출력에 사용
     private boolean deleted;
 
     private List<Object> depth = new ArrayList<>();
-    private boolean reply;
 
 
     public PostListResponseDto(Post entity) {
@@ -44,8 +43,6 @@ public class PostListResponseDto { // 게시글 목록 출력에 사용
         for (int i = 0; i < entity.getDepth(); i++) {
             depth.add(new Object());
         }
-
-        reply = !depth.isEmpty();
     }
 
     private String pattern(LocalDateTime dateTime) {

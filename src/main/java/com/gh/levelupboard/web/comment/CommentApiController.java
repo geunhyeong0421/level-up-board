@@ -50,7 +50,7 @@ public class CommentApiController {
     // 조회 + 페이징
     @GetMapping("/api/v2/posts/{postId}/comments")
     public Page<CommentListResponseDto> getCommentListWithPagination(@LoginUser SessionUser user, @PathVariable Long postId,
-                                                                     @PageableDefault(size = 5) Pageable pageable) {
+                                                                     Pageable pageable) {
         return commentService.getListWithPagination(postId, user, pageable);
     }
 

@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
 
     @Query("select p from Post p join fetch p.board join fetch p.user where p.id = :id")
     Optional<Post> findByIdForEdit(@Param("id") Long id);
@@ -28,5 +28,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("select p from Post p join fetch p.board join fetch p.user order by p.groupId desc, p.groupOrder asc")
     List<Post> findAllDesc();
+
+    @Query("select p from Post p join fetch p.board b join fetch p.user where b.id = :boardId order by p.groupId desc, p.groupOrder asc")
+    List<Post> findByBoardId(@Param("boardId") Long boardId);
+
 
 }

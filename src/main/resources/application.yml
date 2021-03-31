@@ -17,8 +17,13 @@ spring:
       hibernate:
         show_sql: false
         format_sql: true
+        use_sql_comments: true
         dialect: org.hibernate.dialect.MySQL57Dialect
 
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
 
 logging.level:
   org.hibernate.SQL: debug

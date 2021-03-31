@@ -5,13 +5,15 @@ import com.gh.levelupboard.config.auth.dto.SessionUser;
 import com.gh.levelupboard.domain.user.Role;
 import com.gh.levelupboard.service.board.BoardService;
 import com.gh.levelupboard.service.post.PostService;
-import com.gh.levelupboard.web.post.dto.EditPostResponseDto;
-import com.gh.levelupboard.web.post.dto.PostResponseDto;
-import com.gh.levelupboard.web.post.dto.ReplyPostResponseDto;
+import com.gh.levelupboard.web.pagination.Pagination;
+import com.gh.levelupboard.web.pagination.PaginationDto;
+import com.gh.levelupboard.web.post.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
@@ -29,21 +31,28 @@ public class PostController {
 
     // 전체글 조회 화면(현재 홈 화면 겸용)
     @GetMapping(value = {"/posts", "/"})
-    public String readAllPosts(Model model, @LoginUser SessionUser user) {
+    public String readAllPosts(Model model, @LoginUser SessionUser user,
+                               @ModelAttribute("cri") Criteria cri) {
         if (user != null) { model.addAttribute("loginUser", user); }
-        model.addAttribute("posts", postService.getListDesc());
-        model.addAttribute("allPosts", true);
         model.addAttribute("boards", boardService.getList());
+        model.addAttribute("allPosts", true);
+
+        Page<PostListResponseDto> pageResult = postService.getList(cri);
+        model.addAttribute("posts", pageResult.getContent());
+        model.addAttribute("pageMaker", new PaginationDto(pageResult, Pagination.POST.getNavSize()));
         return "posts";
     }
     // 게시판(게시글 목록) 조회 화면
     @GetMapping("/boards/{boardId}/posts")
-    public String readPosts(Model model, @LoginUser SessionUser user,
-                            @PathVariable Long boardId) {
+    public String readPosts(Model model, @LoginUser SessionUser user, @PathVariable Long boardId,
+                            @ModelAttribute("cri") Criteria cri) {
         if (user != null) { model.addAttribute("loginUser", user); }
-        model.addAttribute("posts", postService.getListDesc());
         model.addAttribute("boards", boardService.getList(boardId));
-        model.addAttribute("adminOnly", Role.ADMIN.equals(boardService.get(boardId).getCreatePermission()));
+        model.addAttribute("adminOnly", boardService.get(boardId).getCreatePermission()).equals(Role.ADMIN);
+
+        Page<PostListResponseDto> pageResult = postService.getList(boardId, cri);
+        model.addAttribute("posts", pageResult.getContent());
+        model.addAttribute("pageMaker", new PaginationDto(pageResult, Pagination.POST.getNavSize()));
         return "posts";
     }
 
@@ -53,8 +62,8 @@ public class PostController {
     @GetMapping("/posts/new")
     public String createPost(Model model, @LoginUser SessionUser user) {
         model.addAttribute("loginUser", user);
-        model.addAttribute("allPosts", true);
         model.addAttribute("boards", boardService.getList());
+        model.addAttribute("allPosts", true);
         return "posts/create";
     }
     @GetMapping("/boards/{boardId}/posts/new")
@@ -73,12 +82,10 @@ public class PostController {
     public String readPost(Model model, @LoginUser SessionUser user,
                         @PathVariable Long id) {
         model.addAttribute("loginUser", user);
-        model.addAttribute("allPosts", true);
         model.addAttribute("boards", boardService.getList());
+        model.addAttribute("allPosts", true);
 
-        PostResponseDto dto = postService.get(id, user);
-        dto.setCanReply(user.isAdmin());
-        model.addAttribute("post", dto);
+        model.addAttribute("post", postService.get(id, user));
         return "posts/read";
     }
     @GetMapping("/boards/{boardId}/posts/{id}")
@@ -87,9 +94,7 @@ public class PostController {
         model.addAttribute("loginUser", user);
         model.addAttribute("boards", boardService.getList(boardId));
 
-        PostResponseDto dto = postService.get(id, user);
-        dto.setCanReply(user.isAdmin());
-        model.addAttribute("post", dto);
+        model.addAttribute("post", postService.get(id, user));
         return "posts/read";
     }
 
@@ -104,8 +109,8 @@ public class PostController {
         model.addAttribute("post", dto);
 
         model.addAttribute("loginUser", user);
-        model.addAttribute("allPosts", true);
         model.addAttribute("boards", boardService.getList());
+        model.addAttribute("allPosts", true);
         return "posts/edit";
     }
     @GetMapping("/boards/{boardId}/posts/{id}/edit")

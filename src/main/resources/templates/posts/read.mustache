@@ -4,13 +4,13 @@
 <div class="container-fluid py-3">
     <div class="d-flex mb-2">
         <a href="../posts" role="button" class="btn btn-secondary">목록</a>
-        {{#post.canReply}}
-            <a href="./{{post.id}}/reply" role="button" class="btn btn-dark ml-1">답글</a>
-        {{/post.canReply}}
-        {{#post.isMyPost}}
-            <a href="./{{post.id}}/edit" role="button" class="btn btn-primary ml-auto mr-1">수정</a>
-            <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
-        {{/post.isMyPost}}
+    {{#post.canReply}}
+        <a href="./{{post.id}}/reply" role="button" class="btn btn-dark ml-1">답글</a>
+    {{/post.canReply}}
+    {{#post.isMyPost}}
+        <a href="./{{post.id}}/edit" role="button" class="btn btn-primary ml-auto mr-1">수정</a>
+        <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
+    {{/post.isMyPost}}
     </div>
     <div class="post">
         <input type="hidden" id="post-id" value="{{post.id}}"> <!-- 번호 -->
@@ -72,8 +72,8 @@
         <div class="comment-list">
 <!--------------------- 댓글 출력 --------------------->
         {{#post.comments}}
-        {{^parentId}}<div class="comment d-flex px-1 pt-1 mb-1{{#isMyComment}} my-comment{{/isMyComment}}" data-id="{{id}}">{{/parentId}}
-        {{#parentId}}<div class="comment d-flex px-1 pt-1 mb-1 border-bottom{{#isMyComment}} my-comment{{/isMyComment}}" data-id="{{id}}" data-parent-id="{{parentId}}" style="margin-left: 58px;">{{/parentId}}
+            {{^parentId}}<div class="comment d-flex px-1 pt-1 mb-1{{#isMyComment}} my-comment{{/isMyComment}}" data-id="{{id}}">{{/parentId}}
+            {{#parentId}}<div class="comment d-flex px-1 pt-1 mb-1 border-bottom{{#isMyComment}} my-comment{{/isMyComment}}" data-id="{{id}}" data-parent-id="{{parentId}}" style="margin-left: 58px;">{{/parentId}}
             {{#isDeleted}}<div class="col font-weight-bold text-muted py-2 mb-2">삭제된 댓글입니다.</div>{{/isDeleted}}
             {{^isDeleted}}
                 {{^isVisible}} <!--비밀 댓글 처리-->
@@ -113,29 +113,29 @@
                     </div>
                 {{/isVisible}}
             {{/isDeleted}}
-        </div> <!-- /.comment -->
+            </div> <!-- /.comment -->
         {{/post.comments}}
 <!--------------------- 댓글 출력 끝--------------------->
         </div>
         <nav class="comments-pagination" aria-label="Comments page navigation">
             <ul class="pagination pagination-sm justify-content-center mt-3">
-            {{^post.commentsPages.empty}}
-                <li class="page-item{{#post.commentsFirst}} disabled{{/post.commentsFirst}}" data-toggle="tooltip" title="처음">
+            {{^post.comments.empty}}
+                <li class="page-item{{^post.pageMaker.firstPage}} disabled{{/post.pageMaker.firstPage}}" data-toggle="tooltip" title="처음">
                     <a class="page-link" href="" aria-label="First" data-page="1">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li class="page-item{{^post.commentsPrev}} disabled{{/post.commentsPrev}}" data-toggle="tooltip" title="이전">
-                    <a class="page-link" href="" aria-label="Previous"{{#post.commentsPrev}} data-page="{{post.commentsPrev}}"{{/post.commentsPrev}}>
+                <li class="page-item{{^post.pageMaker.prevPage}} disabled{{/post.pageMaker.prevPage}}" data-toggle="tooltip" title="이전">
+                    <a class="page-link" href="" aria-label="Previous"{{#post.pageMaker.prevPage}} data-page="{{post.pageMaker.prevPage}}"{{/post.pageMaker.prevPage}}>
                         <span aria-hidden="true">&lsaquo;</span>
                     </a>
                 </li>
-                {{#post.commentsPages}}
-                <li class="page-item{{#currentPage}} active" aria-current="page{{/currentPage}}">
-                    {{#currentPage}}<span class="page-link">{{page}}</span>{{/currentPage}}
-                    {{^currentPage}}<a class="page-link" href="" data-page="{{page}}">{{page}}</a>{{/currentPage}}
+                {{#post.pageMaker.pages}}
+                <li class="page-item{{#current}} active" aria-current="page{{/current}}">
+                    {{#current}}<span class="page-link">{{page}}</span>{{/current}}
+                    {{^current}}<a class="page-link" href="" data-page="{{page}}">{{page}}</a>{{/current}}
                 </li>
-                {{/post.commentsPages}}
+                {{/post.pageMaker.pages}}
                 <li class="page-item disabled" data-toggle="tooltip" title="다음">
                     <a class="page-link" href="" aria-label="Next">
                         <span aria-hidden="true">&rsaquo;</span>
@@ -146,7 +146,7 @@
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
-            {{/post.commentsPages.empty}}
+            {{/post.comments.empty}}
             </ul>
         </nav>
         <div class="input-comment">

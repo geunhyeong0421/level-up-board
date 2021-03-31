@@ -10,9 +10,6 @@ public class BoardListDto {
     private boolean current;
     private Role createPermission;
 
-    public BoardListDto(Board board) {
-        this(board, null);
-    }
 
     public BoardListDto(Board board, Long currentBoardId) {
         id = board.getId();

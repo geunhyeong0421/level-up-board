@@ -24,7 +24,7 @@ var comments = {
         });
         $('.comments-pagination').on('click', 'a.page-link', function(e) {
             e.preventDefault();
-            _this.getList($(this).data('page') - 1);
+            _this.getList($(this).data('page'));
         });
     },
     save : function() {
@@ -54,7 +54,7 @@ var comments = {
             $('#input-comment-content').val("");
             $('#is-secret').prop("checked", false);
             // 댓글 목록 refresh(최신)
-            _this.getList(result.pageIndex);
+            _this.getList(result.page);
             $('.comment[data-id="' + result.targetId + '"]')[0].scrollIntoView({behavior:"smooth", block:"center"});
 
         }).fail(function(error) {
@@ -121,7 +121,7 @@ var comments = {
         }).done(function(result) {
 
             // 댓글 목록 refresh(수정 댓글 추적)
-            _this.getList(result.pageIndex);
+            _this.getList(result.page);
             $('.comment[data-id="' + result.targetId + '"]')[0].scrollIntoView({block:"center"});
 
         }).fail(function(error) {
@@ -192,7 +192,7 @@ var comments = {
         }).done(function(result) {
 
             // 댓글 목록 refresh(최신)
-            _this.getList(result.pageIndex);
+            _this.getList(result.page);
             $('.comment[data-id="' + result.targetId + '"]')[0].scrollIntoView({behavior:"smooth", block:"center"});
 
         }).fail(function(error) {
@@ -210,7 +210,7 @@ var comments = {
         }).done(function(result) {
 
             // 댓글 목록 refresh(삭제 위치 추적 - 앞 또는 뒤)
-            _this.getList(result.pageIndex);
+            _this.getList(result.page);
             if(result.targetId) {
                 $('.comment[data-id="' + result.targetId + '"]')[0].scrollIntoView({block:"center"});
             }
@@ -219,8 +219,8 @@ var comments = {
             alert(JSON.stringify(error))
         });
     },
-    getList : function(pageIndex) {
-        if(pageIndex < 0) {
+    getList : function(page) {
+        if(!page) {
             $('.comment-count').text(0);
             $('.comment-list').empty();
             $('.comments-pagination').find('ul').empty();
@@ -231,7 +231,7 @@ var comments = {
 
         $.ajax({
             type: 'GET',
-            url: '/api/v2/posts/' + id + '/comments?page=' + pageIndex,
+            url: '/api/v2/posts/' + id + '/comments?page=' + page,
             async: false,
             dataType: 'json',
         }).done(function(result) {
@@ -240,10 +240,10 @@ var comments = {
             alert(JSON.stringify(error));
         });
     },
-    showList : function(page) {
+    showList : function(pageResult) {
         var commentList = '';
 
-        $.each(page.content, function(i, dto) {
+        $.each(pageResult.content, function(i, dto) {
             if(!dto.parentId) { // 답글이 아닌(부모가 없는) 댓글
                 commentList += '<div class="comment d-flex px-1 pt-1 mb-1' + (dto.isMyComment ? ' my-comment"' : '"')
                              + ' data-id="' + dto.id + '">';
@@ -296,41 +296,38 @@ var comments = {
             } // isNotDeleted-end
             commentList += '</div>';
         }); // each-end
-        $('.comment-count').text(page.totalElements);
+        $('.comment-count').text(pageResult.totalElements);
         $('.comment-list').empty().append(commentList);
 
 
 //================================ Pagination ===================================
-        var totalPages = page.totalPages; // 전체 페이지 수
-        var currentPage = page.number + 1; // 현재 페이지
+        var currentPage = pageResult.number + 1; // 현재 페이지
+        var totalPages = pageResult.totalPages; // 전체 페이지 수
 
-        var paginationNavSize = 5; // 탐색 페이지(?)의 크기(화면에 출력되는 페이지 수)
-        var totalNavPages = Math.ceil(totalPages / paginationNavSize); // 전체 탐색(?) 페이지 수
-        var currentNavPage = Math.ceil(currentPage / paginationNavSize); // 현재 페이지가 속한 탐색 페이지
+        var navSize = 5; // 탐색 페이지(?)의 크기(화면에 출력되는 페이지 수)
+        var currentNav = Math.ceil(currentPage / navSize); // 현재 페이지가 속한 탐색 페이지
+        var totalNavs = Math.ceil(totalPages / navSize); // 전체 탐색(?) 페이지 수
 
-        var endNum = currentNavPage * paginationNavSize; // 현재 탐색 페이지의 끝 숫자
-        var startNum = endNum - (paginationNavSize - 1); // 현재 탐색 페이지의 첫 숫자
-        if(currentNavPage == totalNavPages) { // 현재 탐색 페이지가 마지막 탐색 페이지라면
-            endNum = totalPages; // 전체 페이지의 마지막 페이지가 현재 탐색 페이지의 끝 숫자
-        }
+        var startPage = (currentNav - 1) * navSize + 1; // 현재 탐색 페이지의 첫 숫자
+        var endPage = currentNav != totalNavs ? currentNav * navSize : totalPages; // 현재 탐색 페이지의 끝 숫자
 
-        var first = page.first; // 첫 페이지 여부
-        var prev = currentNavPage > 1; // 이전 탐색 페이지 유무
-        var next = currentNavPage < totalNavPages; // 다음 탐색 페이지 유무
-        var last = page.last; // 마지막 페이지 여부
+        var first = !pageResult.first; // '처음' 페이지 활성화 여부
+        var prev = currentNav > 1; // '이전' 페이지 활성화 여부
+        var next = currentNav < totalNavs; // '다음' 페이지 활성화 여부
+        var last = !pageResult.last; // '마지막' 페이지 활성화 여부
 
         var refreshPagination =
-            '<li class="page-item' + (first ? ' disabled' : '') + '" data-toggle="tooltip" title="처음">'
+            '<li class="page-item' + (first ? '' : ' disabled') + '" data-toggle="tooltip" title="처음">'
         +       '<a class="page-link" href="" aria-label="First" data-page="1">'
         +           '<span aria-hidden="true">&laquo;</span>'
         +       '</a>'
         +   '</li>'
         +   '<li class="page-item' + (prev ? '' : ' disabled') + '" data-toggle="tooltip" title="이전">'
-        +       '<a class="page-link" href="" aria-label="Previous"' + (prev ? ' data-page="' + (startNum - 1) + '"' : '') + '>'
+        +       '<a class="page-link" href="" aria-label="Previous"' + (prev ? ' data-page="' + (startPage - 1) + '"' : '') + '>'
         +           '<span aria-hidden="true">&lsaquo;</span>'
         +       '</a>'
         +   '</li>';
-        for(var i = startNum; i <= endNum; i++) {
+        for(var i = startPage; i <= endPage; i++) {
             refreshPagination +=
                 '<li class="page-item' + (i == currentPage ? ' active" aria-current="page' : '') + '">'
             + (i == currentPage ? '<span class="page-link">' + i + '</span>'
@@ -339,11 +336,11 @@ var comments = {
         }
         refreshPagination +=
             '<li class="page-item' + (next ? '' : ' disabled') + '" data-toggle="tooltip" title="다음">'
-        +       '<a class="page-link" href="" aria-label="Next"' + (next ? ' data-page="' + (endNum + 1) + '"' : '') + '>'
+        +       '<a class="page-link" href="" aria-label="Next"' + (next ? ' data-page="' + (endPage + 1) + '"' : '') + '>'
         +           '<span aria-hidden="true">&rsaquo;</span>'
         +       '</a>'
         +   '</li>'
-        +   '<li class="page-item' + (last ? ' disabled' : '') + '" data-toggle="tooltip" title="마지막">'
+        +   '<li class="page-item' + (last ? '' : ' disabled') + '" data-toggle="tooltip" title="마지막">'
         +       '<a class="page-link" href="" aria-label="Last" data-page="' + totalPages + '">'
         +           '<span aria-hidden="true">&raquo;</span>'
         +       '</a>'

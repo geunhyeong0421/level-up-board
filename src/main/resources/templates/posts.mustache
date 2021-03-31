@@ -2,8 +2,12 @@
 
 
 <div class="container-fluid py-3">
+    <form action="./posts" method="get">
+        <input type="hidden" name="page" value="{{cri.page}}">
+        <input type="hidden" name="size" value="{{cri.size}}">
+    </form>
     <div class="d-flex mb-2">
-        <h4>Total: {{posts.size}}</h4>
+        <h4>Total: {{pageMaker.total}}</h4>
         {{^adminOnly}}
             <a href="./posts/new" role="button" class="btn btn-primary ml-auto">글쓰기</a>
         {{/adminOnly}}
@@ -36,7 +40,8 @@
                         <td class="text-muted">{{boardName}}</td>
                         <td></td>
                         <td>
-                            {{#reply}}{{#depth}}<span class="px-2"></span>{{/depth}}└{{/reply}}
+                            {{#depth}}<span class="px-2"></span>{{/depth}}
+                            {{^depth.empty}}<span>└</span>{{/depth.empty}}
                             <span class="font-weight-bold text-muted">삭제된 글입니다.</span>
                         </td>
                         <td></td>
@@ -49,7 +54,8 @@
                         <td class="text-muted">{{boardName}}</td>
                         <td>{{id}}</td>
                         <td>
-                            {{#reply}}{{#depth}}<span class="px-2"></span>{{/depth}}└{{/reply}}
+                            {{#depth}}<span class="px-2"></span>{{/depth}}
+                            {{^depth.empty}}<span>└</span>{{/depth.empty}}
                             <a href="./posts/{{id}}">{{title}}</a><span class="font-weight-bold pl-1">[{{commentCount}}]</span>
                         </td>
                         <td>{{writer}}</td>
@@ -60,6 +66,36 @@
             {{/posts}}
             </tbody>
         </table>
+        <nav class="posts-pagination" aria-label="Posts page navigation">
+            <ul class="pagination flex-wrap justify-content-center mt-3">
+                <li class="page-item{{^pageMaker.firstPage}} disabled{{/pageMaker.firstPage}}" data-toggle="tooltip" title="처음">
+                    <a class="page-link" href="" aria-label="First" data-page="1">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item{{^pageMaker.prevPage}} disabled{{/pageMaker.prevPage}}" data-toggle="tooltip" title="이전">
+                    <a class="page-link" href="" aria-label="Previous"{{#pageMaker.prevPage}} data-page="{{pageMaker.prevPage}}"{{/pageMaker.prevPage}}>
+                        <span aria-hidden="true">&lsaquo;</span>
+                    </a>
+                </li>
+                {{#pageMaker.pages}}
+                    <li class="page-item{{#current}} active" aria-current="page{{/current}}">
+                        {{#current}}<span class="page-link">{{page}}</span>{{/current}}
+                        {{^current}}<a class="page-link" href="" data-page="{{page}}">{{page}}</a>{{/current}}
+                    </li>
+                {{/pageMaker.pages}}
+                <li class="page-item{{^pageMaker.nextPage}} disabled{{/pageMaker.nextPage}}" data-toggle="tooltip" title="다음">
+                    <a class="page-link" href="" aria-label="Next"{{#pageMaker.nextPage}} data-page="{{pageMaker.nextPage}}"{{/pageMaker.nextPage}}>
+                        <span aria-hidden="true">&rsaquo;</span>
+                    </a>
+                </li>
+                <li class="page-item{{^pageMaker.lastPage}} disabled{{/pageMaker.lastPage}}" data-toggle="tooltip" title="마지막">
+                    <a class="page-link" href="" aria-label="Last"{{#pageMaker.lastPage}} data-page="{{pageMaker.lastPage}}"{{/pageMaker.lastPage}}>
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     {{/posts.empty}}
 </div>
 

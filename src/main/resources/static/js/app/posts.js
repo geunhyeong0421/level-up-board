@@ -16,6 +16,11 @@ var posts = {
         $('#btn-save-reply').on('click', function() {
             _this.saveReply();
         });
+        $('.posts-pagination').on('click', 'a.page-link', function(e) {
+            e.preventDefault();
+            $('input[name="page"]').val($(this).data('page'));
+            $('form').submit();
+        });
     },
     save : function() {
         var selectBoard = $('select');

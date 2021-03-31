@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PostResponseDto { // 게시글 조회 화면에 사용
@@ -33,14 +32,12 @@ public class PostResponseDto { // 게시글 조회 화면에 사용
     private boolean isModified; // 수정 여부
 
     private List<CommentListResponseDto> comments; // 댓글 목록
-    private boolean commentsFirst;
-    private Integer commentsPrev;
-    private List<PaginationDto> commentsPages = new ArrayList<>();
+    private PaginationDto pageMaker;
 
     public PostResponseDto(Post entity, SessionUser loginUser) {
         isMyPost = entity.isMyPost(loginUser.getId()); // 조건에 따라 조회수 +1
 
-        canReply = entity.getBoard().getCreatePermission() == null;
+        canReply = entity.getBoard().getCreatePermission() == null || loginUser.isAdmin();
         boardName = entity.getBoard().getName();
         id = entity.getId();
         title = entity.getTitle();
@@ -65,28 +62,10 @@ public class PostResponseDto { // 게시글 조회 화면에 사용
     }
 
     // 최신 댓글(마지막 페이지) 출력
-    public void setComments(Page<CommentListResponseDto> comments) {
-        int totalPages = comments.getTotalPages(); // 전체 페이지 수
-        if (totalPages == 0) { return; }
-
-        this.comments = comments.getContent();
-
-        int paginationNavSize = Pagination.COMMENT.getNavSize(); // 화면에 출력되는 탐색 페이지 수
-        int totalNavPages = (int) Math.ceil(1.0 * totalPages / paginationNavSize);
-        int startPage = (totalNavPages - 1) * paginationNavSize + 1;
-
-        commentsFirst = comments.isFirst(); // 첫 페이지 여부
-        if (totalNavPages > 1) {
-            commentsPrev = startPage - 1;
-        }
-
-        for (int i = startPage; i <= totalPages; i++) {
-            commentsPages.add(new PaginationDto(i, i == totalPages));
-        }
+    public void setComments(Page<CommentListResponseDto> pageResult) {
+        comments = pageResult.getContent();
+        pageMaker = new PaginationDto(pageResult, Pagination.COMMENT.getNavSize());
     }
 
-    public void setCanReply(boolean isAdmin) {
-        canReply = canReply || isAdmin;
-    }
 
 }

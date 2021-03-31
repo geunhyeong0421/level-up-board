@@ -124,7 +124,7 @@ public class Post {
     }
 
     // 게시글 삭제 상태로 변경
-    public void delete() {
+    public void setDeleted() {
         this.isDeleted = true;
     }
 

@@ -2,8 +2,7 @@ package com.gh.levelupboard.service.post;
 
 import com.gh.levelupboard.config.auth.dto.SessionUser;
 import com.gh.levelupboard.web.post.dto.*;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface PostService {
 
@@ -25,7 +24,10 @@ public interface PostService {
     // 답글 작성을 위한 정보만을 조회
     ReplyPostResponseDto getForReply(Long id);
 
-    // 전체글 조회
-    List<PostListResponseDto> getListDesc();
+    // 게시글 목록(전체) 조회
+    Page<PostListResponseDto> getList(Criteria cri);
+
+    // 게시글 목록(게시판) 조회
+    Page<PostListResponseDto> getList(Long boardId, Criteria cri);
 
 }
