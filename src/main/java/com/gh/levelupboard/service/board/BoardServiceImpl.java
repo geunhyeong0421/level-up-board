@@ -2,6 +2,8 @@ package com.gh.levelupboard.service.board;
 
 import com.gh.levelupboard.domain.board.Board;
 import com.gh.levelupboard.domain.board.BoardRepository;
+import com.gh.levelupboard.domain.comment.Comment;
+import com.gh.levelupboard.domain.comment.CommentRepository;
 import com.gh.levelupboard.domain.post.Post;
 import com.gh.levelupboard.domain.post.PostRepository;
 import com.gh.levelupboard.domain.user.Role;
@@ -23,6 +25,7 @@ public class BoardServiceImpl implements BoardService {
     private List<Board> boards;
 
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     @PostConstruct
@@ -34,13 +37,21 @@ public class BoardServiceImpl implements BoardService {
         }
         boards = boardRepository.findAll(Sort.by("id"));
 
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 1000; i++) {
             Post post = Post.builder()
                     .board(boards.get(1))
                     .title("페이징 테스트 " + i)
                     .content("테스트용 " + i + "번째 글입니다.")
                     .build();
             postRepository.save(post);
+        }
+
+        for (int i = 1; i <= 300; i++) {
+            Comment comment = Comment.builder()
+                    .post(postRepository.findById(1000L).get())
+                    .content("테스트용 " + i + "번째 댓글입니다.")
+                    .build();
+            commentRepository.save(comment);
         }
     }
 

@@ -2,6 +2,10 @@
 
 
 <div class="container-fluid py-3">
+    <form action="" method="get" id="form-criteria">
+        <input type="hidden" name="page" value="{{cri.page}}">
+        <input type="hidden" name="size" value="{{cri.size}}">
+    </form>
     <form>
         <div class="form-group">
             <select class="form-control" disabled>
@@ -19,7 +23,7 @@
         </div>
     </form>
     <div class="d-flex">
-        <a href="../{{post.id}}" role="button" class="btn btn-secondary mr-auto">취소</a>
+        <a href="../{{post.id}}" role="button" class="posts btn btn-secondary mr-auto">취소</a>
         <button type="button" class="btn btn-success" id="btn-save-reply">등록</button>
     </div>
 </div>

@@ -2,24 +2,43 @@
 
 
 <div class="container-fluid py-3">
-    <form action="./posts" method="get">
+    <h5 class="text-muted pl-1">{{#boardName}}{{boardName}}{{/boardName}}{{^boardName}}전체글{{/boardName}}</h5>
+    <form action="" method="get" id="form-criteria">
         <input type="hidden" name="page" value="{{cri.page}}">
         <input type="hidden" name="size" value="{{cri.size}}">
+        <div class="input-group input-group-sm">
+            <select class="mr-1">
+                <option value="TC">제목+내용</option>
+                <option value="T">제목</option>
+                <option value="C">내용</option>
+                <option value="W">작성자</option>
+            </select>
+            <input type="text" class="mr-1" placeholder="검색어를 입력하세요">
+            <a href="./posts" role="button" class="posts btn btn-sm btn-primary">검색</a>
+        </div>
+        <div class="input-group my-2">
+            <h4 class="m-0 pl-1">Total: {{pageMaker.total}}</h4>
+            <select class="ml-auto">
+                <option value="10">10개씩</option>
+                <option value="20">20개씩</option>
+                <option value="30">30개씩</option>
+                <option value="50">50개씩</option>
+            </select>
+        </div>
     </form>
-    <div class="d-flex mb-2">
-        <h4>Total: {{pageMaker.total}}</h4>
-        {{^adminOnly}}
-            <a href="./posts/new" role="button" class="btn btn-primary ml-auto">글쓰기</a>
-        {{/adminOnly}}
-        {{#adminOnly}}
-            {{#loginUser.admin}}
-                <a href="./posts/new" role="button" class="btn btn-primary ml-auto">글쓰기</a>
-            {{/loginUser.admin}}
-        {{/adminOnly}}
-    </div>
     <!--목록 출력 영역-->
     {{#posts.empty}}
-        <h5 class="text-center py-5 my-5">등록된 게시글이 없습니다.</h5>
+        <hr><h5 class="text-center py-5 my-5">등록된 게시글이 없습니다.</h5><hr>
+        <div class="d-flex">
+            {{^adminOnly}}
+                <a href="./posts/new" role="button" class="posts btn btn-primary ml-auto">글쓰기</a>
+            {{/adminOnly}}
+            {{#adminOnly}}
+                {{#loginUser.admin}}
+                    <a href="./posts/new" role="button" class="posts btn btn-primary ml-auto">글쓰기</a>
+                {{/loginUser.admin}}
+            {{/adminOnly}}
+        </div>
     {{/posts.empty}}
     {{^posts.empty}}
         <table class="table table-sm table-hover table-bordered">
@@ -56,7 +75,7 @@
                         <td>
                             {{#depth}}<span class="px-2"></span>{{/depth}}
                             {{^depth.empty}}<span>└</span>{{/depth.empty}}
-                            <a href="./posts/{{id}}">{{title}}</a><span class="font-weight-bold pl-1">[{{commentCount}}]</span>
+                            <a class="posts" href="./posts/{{id}}">{{title}}</a><span class="font-weight-bold pl-1">[{{commentCount}}]</span>
                         </td>
                         <td>{{writer}}</td>
                         <td>{{createdDate}}</td>
@@ -66,31 +85,41 @@
             {{/posts}}
             </tbody>
         </table>
+        <div class="d-flex">
+            {{^adminOnly}}
+                <a href="./posts/new" role="button" class="posts btn btn-primary ml-auto">글쓰기</a>
+            {{/adminOnly}}
+            {{#adminOnly}}
+                {{#loginUser.admin}}
+                    <a href="./posts/new" role="button" class="posts btn btn-primary ml-auto">글쓰기</a>
+                {{/loginUser.admin}}
+            {{/adminOnly}}
+        </div>
         <nav class="posts-pagination" aria-label="Posts page navigation">
             <ul class="pagination flex-wrap justify-content-center mt-3">
                 <li class="page-item{{^pageMaker.firstPage}} disabled{{/pageMaker.firstPage}}" data-toggle="tooltip" title="처음">
-                    <a class="page-link" href="" aria-label="First" data-page="1">
+                    <a class="posts page-link" href="./posts" aria-label="First" data-page="1">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
                 <li class="page-item{{^pageMaker.prevPage}} disabled{{/pageMaker.prevPage}}" data-toggle="tooltip" title="이전">
-                    <a class="page-link" href="" aria-label="Previous"{{#pageMaker.prevPage}} data-page="{{pageMaker.prevPage}}"{{/pageMaker.prevPage}}>
+                    <a class="posts page-link" href="./posts" aria-label="Previous"{{#pageMaker.prevPage}} data-page="{{pageMaker.prevPage}}"{{/pageMaker.prevPage}}>
                         <span aria-hidden="true">&lsaquo;</span>
                     </a>
                 </li>
                 {{#pageMaker.pages}}
                     <li class="page-item{{#current}} active" aria-current="page{{/current}}">
                         {{#current}}<span class="page-link">{{page}}</span>{{/current}}
-                        {{^current}}<a class="page-link" href="" data-page="{{page}}">{{page}}</a>{{/current}}
+                        {{^current}}<a class="posts page-link" href="./posts" data-page="{{page}}">{{page}}</a>{{/current}}
                     </li>
                 {{/pageMaker.pages}}
                 <li class="page-item{{^pageMaker.nextPage}} disabled{{/pageMaker.nextPage}}" data-toggle="tooltip" title="다음">
-                    <a class="page-link" href="" aria-label="Next"{{#pageMaker.nextPage}} data-page="{{pageMaker.nextPage}}"{{/pageMaker.nextPage}}>
+                    <a class="posts page-link" href="./posts" aria-label="Next"{{#pageMaker.nextPage}} data-page="{{pageMaker.nextPage}}"{{/pageMaker.nextPage}}>
                         <span aria-hidden="true">&rsaquo;</span>
                     </a>
                 </li>
                 <li class="page-item{{^pageMaker.lastPage}} disabled{{/pageMaker.lastPage}}" data-toggle="tooltip" title="마지막">
-                    <a class="page-link" href="" aria-label="Last"{{#pageMaker.lastPage}} data-page="{{pageMaker.lastPage}}"{{/pageMaker.lastPage}}>
+                    <a class="posts page-link" href="./posts" aria-label="Last"{{#pageMaker.lastPage}} data-page="{{pageMaker.lastPage}}"{{/pageMaker.lastPage}}>
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>

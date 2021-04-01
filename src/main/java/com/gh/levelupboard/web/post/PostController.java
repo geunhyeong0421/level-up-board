@@ -31,8 +31,7 @@ public class PostController {
 
     // 전체글 조회 화면(현재 홈 화면 겸용)
     @GetMapping(value = {"/posts", "/"})
-    public String readAllPosts(Model model, @LoginUser SessionUser user,
-                               @ModelAttribute("cri") Criteria cri) {
+    public String readAllPosts(Model model, @LoginUser SessionUser user, @ModelAttribute("cri") Criteria cri) {
         if (user != null) { model.addAttribute("loginUser", user); }
         model.addAttribute("boards", boardService.getList());
         model.addAttribute("allPosts", true);
@@ -44,10 +43,11 @@ public class PostController {
     }
     // 게시판(게시글 목록) 조회 화면
     @GetMapping("/boards/{boardId}/posts")
-    public String readPosts(Model model, @LoginUser SessionUser user, @PathVariable Long boardId,
-                            @ModelAttribute("cri") Criteria cri) {
+    public String readPosts(Model model, @LoginUser SessionUser user, @ModelAttribute("cri") Criteria cri,
+                            @PathVariable Long boardId) {
         if (user != null) { model.addAttribute("loginUser", user); }
         model.addAttribute("boards", boardService.getList(boardId));
+        model.addAttribute("boardName", boardService.get(boardId).getName());
         model.addAttribute("adminOnly", boardService.get(boardId).getCreatePermission()).equals(Role.ADMIN);
 
         Page<PostListResponseDto> pageResult = postService.getList(boardId, cri);
@@ -60,14 +60,14 @@ public class PostController {
 
     // 게시글 등록 화면
     @GetMapping("/posts/new")
-    public String createPost(Model model, @LoginUser SessionUser user) {
+    public String createPost(Model model, @LoginUser SessionUser user, @ModelAttribute("cri") Criteria cri) {
         model.addAttribute("loginUser", user);
         model.addAttribute("boards", boardService.getList());
         model.addAttribute("allPosts", true);
         return "posts/create";
     }
     @GetMapping("/boards/{boardId}/posts/new")
-    public String createPost(Model model, @LoginUser SessionUser user,
+    public String createPost(Model model, @LoginUser SessionUser user, @ModelAttribute("cri") Criteria cri,
                                     @PathVariable Long boardId) {
         if (!user.isAdmin() && boardService.get(boardId).getCreatePermission() != null) {
             return "forbidden";
@@ -79,7 +79,7 @@ public class PostController {
 
     // 게시글 조회 화면
     @GetMapping("/posts/{id}")
-    public String readPost(Model model, @LoginUser SessionUser user,
+    public String readPost(Model model, @LoginUser SessionUser user, @ModelAttribute("cri") Criteria cri,
                         @PathVariable Long id) {
         model.addAttribute("loginUser", user);
         model.addAttribute("boards", boardService.getList());
@@ -89,7 +89,7 @@ public class PostController {
         return "posts/read";
     }
     @GetMapping("/boards/{boardId}/posts/{id}")
-    public String readPost(Model model, @LoginUser SessionUser user,
+    public String readPost(Model model, @LoginUser SessionUser user, @ModelAttribute("cri") Criteria cri,
                            @PathVariable Long boardId, @PathVariable Long id) {
         model.addAttribute("loginUser", user);
         model.addAttribute("boards", boardService.getList(boardId));
@@ -100,7 +100,7 @@ public class PostController {
 
     // 게시글 수정 화면
     @GetMapping("/posts/{id}/edit")
-    public String editPost(Model model, @LoginUser SessionUser user,
+    public String editPost(Model model, @LoginUser SessionUser user, @ModelAttribute("cri") Criteria cri,
                             @PathVariable Long id) {
         EditPostResponseDto dto = postService.getForEdit(id);
         if (!dto.getWriterId().equals(user.getId())) {
@@ -114,7 +114,7 @@ public class PostController {
         return "posts/edit";
     }
     @GetMapping("/boards/{boardId}/posts/{id}/edit")
-    public String editPost(Model model, @LoginUser SessionUser user,
+    public String editPost(Model model, @LoginUser SessionUser user, @ModelAttribute("cri") Criteria cri,
                            @PathVariable Long boardId, @PathVariable Long id) {
         EditPostResponseDto dto = postService.getForEdit(id);
         if (!dto.getWriterId().equals(user.getId())) {
@@ -129,7 +129,7 @@ public class PostController {
 
     // 게시글 답글 화면
     @GetMapping("/posts/{id}/reply")
-    public String replyPost(Model model, @LoginUser SessionUser user,
+    public String replyPost(Model model, @LoginUser SessionUser user, @ModelAttribute("cri") Criteria cri,
                             @PathVariable Long id) {
         ReplyPostResponseDto dto = postService.getForReply(id);
         if (dto.getCreatePermission() != null && !user.isAdmin()) {
@@ -143,7 +143,7 @@ public class PostController {
         return "posts/reply";
     }
     @GetMapping("/boards/{boardId}/posts/{id}/reply")
-    public String replyPost(Model model, @LoginUser SessionUser user,
+    public String replyPost(Model model, @LoginUser SessionUser user, @ModelAttribute("cri") Criteria cri,
                             @PathVariable Long boardId, @PathVariable Long id) {
         ReplyPostResponseDto dto = postService.getForReply(id);
         if (dto.getCreatePermission() != null && !user.isAdmin()) {

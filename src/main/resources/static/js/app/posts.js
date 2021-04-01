@@ -16,10 +16,12 @@ var posts = {
         $('#btn-save-reply').on('click', function() {
             _this.saveReply();
         });
-        $('.posts-pagination').on('click', 'a.page-link', function(e) {
+        $('a.posts').on("click", function(e) {
             e.preventDefault();
-            $('input[name="page"]').val($(this).data('page'));
-            $('form').submit();
+            if($(this).hasClass("page-link")) {
+                $('input[name="page"]').val($(this).data("page"));
+            }
+            $('#form-criteria').attr("action", $(this).attr("href")).submit();
         });
     },
     save : function() {
@@ -86,7 +88,7 @@ var posts = {
             data: JSON.stringify(data)
         }).done(function(result) {
 //            alert('글이 수정되었습니다.');
-            window.location.href = '../' + result;
+            $('#form-criteria').attr("action", "../" + result).submit();
         }).fail(function(error) {
             alert(JSON.stringify(error));
         });
@@ -101,7 +103,7 @@ var posts = {
             contentType: 'application/json; charset=utf-8'
         }).done(function() {
 //            alert('글이 삭제되었습니다.');
-            window.location.href = '../posts';
+            $('#form-criteria').attr("action", "../posts").submit();
         }).fail(function(error) {
             alert(JSON.stringify(error))
         });
@@ -133,7 +135,7 @@ var posts = {
             data: JSON.stringify(data)
         }).done(function(result) {
 //            alert('글이 등록되었습니다.');
-            window.location.href = '../' + result;
+            $('#form-criteria').attr("action", "../" + result).submit();
         }).fail(function(error) {
             alert(JSON.stringify(error));
         });

@@ -24,7 +24,7 @@ var comments = {
         });
         $('.comments-pagination').on('click', 'a.page-link', function(e) {
             e.preventDefault();
-            _this.getList($(this).data('page'));
+            _this.getList($(this).attr("href"));
         });
     },
     save : function() {
@@ -318,12 +318,12 @@ var comments = {
 
         var refreshPagination =
             '<li class="page-item' + (first ? '' : ' disabled') + '" data-toggle="tooltip" title="처음">'
-        +       '<a class="page-link" href="" aria-label="First" data-page="1">'
+        +       '<a class="page-link" href="1" aria-label="First">'
         +           '<span aria-hidden="true">&laquo;</span>'
         +       '</a>'
         +   '</li>'
         +   '<li class="page-item' + (prev ? '' : ' disabled') + '" data-toggle="tooltip" title="이전">'
-        +       '<a class="page-link" href="" aria-label="Previous"' + (prev ? ' data-page="' + (startPage - 1) + '"' : '') + '>'
+        +       '<a class="page-link" href="' + (startPage - 1) + '" aria-label="Previous">'
         +           '<span aria-hidden="true">&lsaquo;</span>'
         +       '</a>'
         +   '</li>';
@@ -331,17 +331,17 @@ var comments = {
             refreshPagination +=
                 '<li class="page-item' + (i == currentPage ? ' active" aria-current="page' : '') + '">'
             + (i == currentPage ? '<span class="page-link">' + i + '</span>'
-                                : '<a class="page-link" href="" data-page="' + i + '">' + i + '</a>')
+                                : '<a class="page-link" href="' + i + '">' + i + '</a>')
             +   '</li>';
         }
         refreshPagination +=
             '<li class="page-item' + (next ? '' : ' disabled') + '" data-toggle="tooltip" title="다음">'
-        +       '<a class="page-link" href="" aria-label="Next"' + (next ? ' data-page="' + (endPage + 1) + '"' : '') + '>'
+        +       '<a class="page-link" href="' + (endPage + 1) + '" aria-label="Next">'
         +           '<span aria-hidden="true">&rsaquo;</span>'
         +       '</a>'
         +   '</li>'
         +   '<li class="page-item' + (last ? '' : ' disabled') + '" data-toggle="tooltip" title="마지막">'
-        +       '<a class="page-link" href="" aria-label="Last" data-page="' + totalPages + '">'
+        +       '<a class="page-link" href="' + totalPages + '" aria-label="Last">'
         +           '<span aria-hidden="true">&raquo;</span>'
         +       '</a>'
         +   '</li>';
