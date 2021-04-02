@@ -3,6 +3,8 @@
 
 <div class="container-fluid py-3">
     <form action="" method="get" id="form-criteria">
+        {{#cri.type}}<input type="hidden" name="type" value="{{cri.type}}">{{/cri.type}}
+        {{#cri.keyword}}<input type="hidden" name="keyword" value="{{cri.keyword}}">{{/cri.keyword}}
         <input type="hidden" name="page" value="{{cri.page}}">
         <input type="hidden" name="size" value="{{cri.size}}">
     </form>

@@ -2,27 +2,37 @@
 
 
 <div class="container-fluid py-3">
-    <h5 class="text-muted pl-1">{{#boardName}}{{boardName}}{{/boardName}}{{^boardName}}전체글{{/boardName}}</h5>
+    <div class="d-flex mb-2">
+        <h5 class="text-muted pl-1 mr-auto">{{#boardName}}{{boardName}}{{/boardName}}{{^boardName}}전체글{{/boardName}}</h5>
+        {{^adminOnly}}
+            <a href="./posts/new" role="button" class="posts btn btn-primary">글쓰기</a>
+        {{/adminOnly}}
+        {{#adminOnly}}
+            {{#loginUser.admin}}
+                <a href="./posts/new" role="button" class="posts btn btn-primary">글쓰기</a>
+            {{/loginUser.admin}}
+        {{/adminOnly}}
+    </div>
     <form action="" method="get" id="form-criteria">
-        <input type="hidden" name="page" value="{{cri.page}}">
-        <input type="hidden" name="size" value="{{cri.size}}">
-        <div class="input-group input-group-sm">
-            <select class="mr-1">
+        <div class="input-group">
+            <select id="search-type" class="mr-1 mt-1">
                 <option value="TC">제목+내용</option>
                 <option value="T">제목</option>
                 <option value="C">내용</option>
                 <option value="W">작성자</option>
             </select>
-            <input type="text" class="mr-1" placeholder="검색어를 입력하세요">
-            <a href="./posts" role="button" class="posts btn btn-sm btn-primary">검색</a>
+            <input type="text" id="search-keyword" class="mr-1 mt-1" placeholder="검색어를 입력하세요" value="{{#cri.keyword}}{{cri.keyword}}{{/cri.keyword}}">
+            <a href="./posts" role="button" class="posts btn btn-sm btn-outline-primary mt-1 btn-search">검색</a>
         </div>
-        <div class="input-group my-2">
+        <input type="hidden" name="type" value="{{#cri.type}}{{cri.type}}{{/cri.type}}">
+        <input type="hidden" name="keyword" value="{{#cri.keyword}}{{cri.keyword}}{{/cri.keyword}}">
+        <input type="hidden" name="page" value="{{cri.page}}">
+        <div class="input-group my-3">
             <h4 class="m-0 pl-1">Total: {{pageMaker.total}}</h4>
-            <select class="ml-auto">
-                <option value="10">10개씩</option>
-                <option value="20">20개씩</option>
-                <option value="30">30개씩</option>
-                <option value="50">50개씩</option>
+            <select name="size" class="ml-auto">
+                {{#cri.sizeOptions}}
+                    <option value="{{value}}"{{#selected}} selected{{/selected}}>{{name}}</option>
+                {{/cri.sizeOptions}}
             </select>
         </div>
     </form>
@@ -31,13 +41,14 @@
         <hr><h5 class="text-center py-5 my-5">등록된 게시글이 없습니다.</h5><hr>
         <div class="d-flex">
             {{^adminOnly}}
-                <a href="./posts/new" role="button" class="posts btn btn-primary ml-auto">글쓰기</a>
+                <a href="./posts/new" role="button" class="posts btn btn-primary">글쓰기</a>
             {{/adminOnly}}
             {{#adminOnly}}
                 {{#loginUser.admin}}
-                    <a href="./posts/new" role="button" class="posts btn btn-primary ml-auto">글쓰기</a>
+                    <a href="./posts/new" role="button" class="posts btn btn-primary">글쓰기</a>
                 {{/loginUser.admin}}
             {{/adminOnly}}
+            <button type="button" class="btn btn-info ml-auto" onclick="$('.navbar')[0].scrollIntoView();">위로</button>
         </div>
     {{/posts.empty}}
     {{^posts.empty}}
@@ -87,13 +98,14 @@
         </table>
         <div class="d-flex">
             {{^adminOnly}}
-                <a href="./posts/new" role="button" class="posts btn btn-primary ml-auto">글쓰기</a>
+                <a href="./posts/new" role="button" class="posts btn btn-primary">글쓰기</a>
             {{/adminOnly}}
             {{#adminOnly}}
                 {{#loginUser.admin}}
-                    <a href="./posts/new" role="button" class="posts btn btn-primary ml-auto">글쓰기</a>
+                    <a href="./posts/new" role="button" class="posts btn btn-primary">글쓰기</a>
                 {{/loginUser.admin}}
             {{/adminOnly}}
+            <button type="button" class="btn btn-info ml-auto" onclick="$('.navbar')[0].scrollIntoView();">위로</button>
         </div>
         <nav class="posts-pagination" aria-label="Posts page navigation">
             <ul class="pagination flex-wrap justify-content-center mt-3">

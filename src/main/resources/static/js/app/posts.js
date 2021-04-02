@@ -18,10 +18,15 @@ var posts = {
         });
         $('a.posts').on("click", function(e) {
             e.preventDefault();
-            if($(this).hasClass("page-link")) {
-                $('input[name="page"]').val($(this).data("page"));
+            _this.submitForm($(this));
+        });
+        $('select[name="size"]').on('change', function() {
+            if (!$('input[name="keyword"]').val()) {
+                $('input[name="type"]').remove();
+                $('input[name="keyword"]').remove();
             }
-            $('#form-criteria').attr("action", $(this).attr("href")).submit();
+            $('input[name="page"]').val(1);
+            $('#form-criteria').attr("action", "./posts").submit();
         });
     },
     save : function() {
@@ -139,6 +144,28 @@ var posts = {
         }).fail(function(error) {
             alert(JSON.stringify(error));
         });
+    },
+    submitForm : function(trigger) {
+        if (trigger.hasClass("page-link")) {
+            $('input[name="page"]').val(trigger.data("page"));
+        }
+        if (trigger.hasClass("btn-search")) {
+            var keyword = $('#search-keyword').val().trim();
+            if (!keyword) {
+                alert("검색어를 입력해주세요.");
+                $('#search-keyword').val("").focus();
+                return;
+            }
+            $('input[name="type"]').val($('#search-type').val());
+            $('input[name="keyword"]').val(keyword);
+            $('input[name="page"]').val(1);
+        }
+
+        if (!$('input[name="keyword"]').val()) {
+            $('input[name="type"]').remove();
+            $('input[name="keyword"]').remove();
+        }
+        $('#form-criteria').attr("action", trigger.attr("href")).submit();
     }
 
 
