@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,5 +60,25 @@ public class Criteria {
 
         return PageRequest.of(page - 1, size); // (실제 페이지 - 1)의 값을 사용
     }
-    
+
+    public String getTypeAfterSet() {
+        if (StringUtils.hasText(keyword)) {
+            boolean selected = false;
+            for (OptionListDto typeOption : typeOptions) {
+                if (typeOption.getValue().equals(type)) {
+                    typeOption.select();
+                    selected = true;
+                    break;
+                }
+            }
+            if (!selected) {
+                type = "TC"; // 기본값으로 설정
+            }
+        } else {
+            type = null;
+            keyword = null;
+        }
+        return type;
+    }
+
 }

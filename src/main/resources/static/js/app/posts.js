@@ -28,6 +28,16 @@ var posts = {
             $('input[name="page"]').val(1);
             $('#form-criteria').attr("action", "./posts").submit();
         });
+        $('#search-keyword').on("keydown", function(e) {
+            if(e.keyCode === 13) {
+                e.preventDefault();
+            }
+        });
+        $('#search-keyword').on("keyup", function(e) {
+            if(e.keyCode === 13) {
+                $('.btn-search').trigger("click");
+            }
+        });
     },
     save : function() {
         var selectBoard = $('select');
