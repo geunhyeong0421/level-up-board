@@ -35,7 +35,7 @@ public class Comment {
 
     private Long groupId; // 조회 쿼리의 order by에 사용
 
-    @Column(length = 500)
+    @Column(length = 3000)
     private String content;
 
     private boolean isSecret; // 비밀 여부

@@ -4,10 +4,25 @@ spring:
       - oauth
       - real-db
 
+  session:
+    store-type: jdbc
+
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL57Dialect
+        show_sql: false
+        format_sql: true
+        use_sql_comments: false
 
-#  session:
-#    store-type: jdbc
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+
+logging.level:
+  org.hibernate.SQL: debug
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: false

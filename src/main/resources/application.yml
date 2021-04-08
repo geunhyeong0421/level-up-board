@@ -3,12 +3,14 @@ spring:
     include: oauth
 #    active: local
 
+  session:
+    store-type: jdbc
+
   datasource:
-    hikari:
-      jdbc-url: jdbc:h2:mem:testdb;MODE=MYSQL
-      username: sa
-      passwrod:
-      driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=MYSQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
 
   jpa:
     hibernate:
@@ -27,7 +29,6 @@ spring:
 
 logging.level:
   org.hibernate.SQL: debug
-
 
 decorator:
   datasource:

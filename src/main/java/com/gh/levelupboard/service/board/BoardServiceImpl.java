@@ -2,10 +2,6 @@ package com.gh.levelupboard.service.board;
 
 import com.gh.levelupboard.domain.board.Board;
 import com.gh.levelupboard.domain.board.BoardRepository;
-import com.gh.levelupboard.domain.comment.Comment;
-import com.gh.levelupboard.domain.comment.CommentRepository;
-import com.gh.levelupboard.domain.post.Post;
-import com.gh.levelupboard.domain.post.PostRepository;
 import com.gh.levelupboard.domain.user.Role;
 import com.gh.levelupboard.web.board.dto.BoardListDto;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +20,8 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private List<Board> boards;
 
-    private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
+//    private final PostRepository postRepository;
+//    private final CommentRepository commentRepository;
 
     @Transactional
     @PostConstruct
@@ -37,30 +33,30 @@ public class BoardServiceImpl implements BoardService {
         }
         boards = boardRepository.findAll(Sort.by("id"));
 
-        if (postRepository.count() == 0) {
-            String[] foods = {"중독족발", "금계찜닭", "새천년육회", "장어의꿈", "호두갈비"};
-            int[] counts = new int[foods.length];
-
-            for (int i = 1; i <= 1000; i++) {
-                int random = (int) (Math.random() * foods.length); // 0 ~ 4
-
-                Post post = Post.builder()
-                        .board(get(2L))
-                        .title("게시글 테스트 " + i + ", keyword: " + foods[random] + ++counts[random])
-                        .content("테스트용 " + i + "번째 게시글입니다.")
-                        .build();
-                postRepository.save(post);
-            }
-
-            Post post = postRepository.findById(1000L).get();
-            for (int i = 1; i <= 300; i++) {
-                Comment comment = Comment.builder()
-                        .post(post)
-                        .content("테스트용 " + i + "번째 댓글입니다.")
-                        .build();
-                commentRepository.save(comment);
-            }
-        }
+//        if (postRepository.count() == 0) {
+//            String[] foods = {"중독족발", "금계찜닭", "새천년육회", "장어의꿈", "호두갈비"};
+//            int[] counts = new int[foods.length];
+//
+//            for (int i = 1; i <= 1000; i++) {
+//                int random = (int) (Math.random() * foods.length); // 0 ~ 4
+//
+//                Post post = Post.builder()
+//                        .board(get(2L))
+//                        .title("게시글 테스트 " + i + ", keyword: " + foods[random] + ++counts[random])
+//                        .content("테스트용 " + i + "번째 게시글입니다.")
+//                        .build();
+//                postRepository.save(post);
+//            }
+//
+//            Post post = postRepository.findById(1000L).get();
+//            for (int i = 1; i <= 300; i++) {
+//                Comment comment = Comment.builder()
+//                        .post(post)
+//                        .content("테스트용 " + i + "번째 댓글입니다.")
+//                        .build();
+//                commentRepository.save(comment);
+//            }
+//        }
     }
 
     @Override
