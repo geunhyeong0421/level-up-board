@@ -26,12 +26,12 @@
         </div>
         <div class="d-flex post-info">
             <div class="post-profile"> <!-- 작성자 프로필 사진 -->
-                {{#post.profile}}<img src="{{post.profile}}" class="rounded-circle mr-2" width="75" height="75" alt="profile">{{/post.profile}}
-                {{^post.profile}}<img src="/images/blank_profile.png" class="rounded-circle mr-2" width="75" height="75" alt="blank_profile">{{/post.profile}}
+                {{#post.profilePicture}}<img src="{{post.profilePicture}}" class="rounded-circle mr-2" width="75" height="75" alt="profile">{{/post.profilePicture}}
+                {{^post.profilePicture}}<img src="/images/blank_profile.png" class="rounded-circle mr-2" width="75" height="75" alt="blank_profile">{{/post.profilePicture}}
             </div>
             <div>
                 <div class="font-weight-bold">
-                    {{post.writer}} <!-- 작성자 이름 -->
+                    {{post.writerName}} <!-- 작성자 이름 -->
                 </div>
                 <div class="text-muted">
                     <span class="mr-2">
@@ -42,7 +42,7 @@
                         조회 {{post.hit}} <!-- 조회수 -->
                     </span>
                     <span>
-                        댓글 <span class="comment-count">{{post.commentCount}}</span> <!-- 댓글수 -->
+                        댓글 <span class="comments-count">{{post.commentsCount}}</span> <!-- 댓글수 -->
                     </span>
                 {{/post.isModified}}
                 </div>
@@ -52,7 +52,7 @@
                         조회 {{post.hit}} <!-- 조회수 -->
                     </span>
                     <span>
-                        댓글 <span class="comment-count">{{post.commentCount}}</span> <!-- 댓글수 -->
+                        댓글 <span class="comments-count">{{post.commentsCount}}</span> <!-- 댓글수 -->
                     </span>
                 {{/post.isModified}}
                 {{#post.isModified}} <!-- 수정 이력이 있으면 수정일을 출력 -->
@@ -72,7 +72,7 @@
 
 <!----------------------------------------- 댓글 관련 ------------------------------------------------->
     <div class="container-comments px-2">
-        <h5><span class="badge badge-pill badge-dark py-2">댓글 <span class="comment-count">{{post.commentCount}}</span></span></h5>
+        <h5><span class="badge badge-pill badge-dark py-2">댓글 <span class="comments-count">{{post.commentsCount}}</span></span></h5>
         <div class="comment-list">
 <!--------------------- 댓글 출력 --------------------->
         {{#post.comments}}
@@ -90,13 +90,13 @@
                 {{/isVisible}}
                 {{#isVisible}}
                     <div class="comment-profile">
-                        {{#profile}}<img src="{{profile}}" class="rounded-circle mr-2" width="50" height="50" alt="profile">{{/profile}}
-                        {{^profile}}<img src="/images/blank_profile.png" class="rounded-circle mr-2" width="50" height="50" alt="blank_profile">{{/profile}}
+                        {{#profilePicture}}<img src="{{profilePicture}}" class="rounded-circle mr-2" width="50" height="50" alt="profile">{{/profilePicture}}
+                        {{^profilePicture}}<img src="/images/blank_profile.png" class="rounded-circle mr-2" width="50" height="50" alt="blank_profile">{{/profilePicture}}
                     </div>
                     <div class="flex-grow-1">
                         <div class="comment-info row mx-0">
                             <div class="col-sm-auto px-0 mr-1">
-                                <span class="font-weight-bold comment-writer">{{writer}}</span> <!-- 작성자 이름 -->
+                                <span class="font-weight-bold comment-writer">{{writerName}}</span> <!-- 작성자 이름 -->
                                 {{#equalsPostWriter}}<span class="badge badge-pill badge-danger">작성자</span>{{/equalsPostWriter}} <!-- 작성자 여부 -->
                                 <span class="text-muted-comment">{{modifiedDate}}</span> <!-- 수정일 -->
                                 {{#isModified}}<span class="text-muted-comment">수정됨</span>{{/isModified}} <!-- 수정 여부 -->
@@ -123,7 +123,7 @@
         </div>
         <nav class="comments-pagination" aria-label="Comments page navigation">
             <ul class="pagination pagination-sm justify-content-center mt-3">
-            {{^post.comments.empty}}
+            {{^post.comments.isEmpty}}
                 <li class="page-item{{^post.pageMaker.firstPage}} disabled{{/post.pageMaker.firstPage}}" data-toggle="tooltip" title="처음">
                     <a class="page-link" href="1" aria-label="First">
                         <span aria-hidden="true">&laquo;</span>
@@ -135,9 +135,9 @@
                     </a>
                 </li>
                 {{#post.pageMaker.pages}}
-                <li class="page-item{{#current}} active" aria-current="page{{/current}}">
-                    {{#current}}<span class="page-link">{{page}}</span>{{/current}}
-                    {{^current}}<a class="page-link" href="{{page}}">{{page}}</a>{{/current}}
+                <li class="page-item{{#isCurrentPage}} active" aria-current="page{{/isCurrentPage}}">
+                    {{#isCurrentPage}}<span class="page-link">{{page}}</span>{{/isCurrentPage}}
+                    {{^isCurrentPage}}<a class="page-link" href="{{page}}">{{page}}</a>{{/isCurrentPage}}
                 </li>
                 {{/post.pageMaker.pages}}
                 <li class="page-item disabled" data-toggle="tooltip" title="다음">
@@ -150,7 +150,7 @@
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
-            {{/post.comments.empty}}
+            {{/post.comments.isEmpty}}
             </ul>
         </nav>
         <div class="input-comment">

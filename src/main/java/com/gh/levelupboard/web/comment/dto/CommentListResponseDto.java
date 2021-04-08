@@ -2,17 +2,14 @@ package com.gh.levelupboard.web.comment.dto;
 
 import com.gh.levelupboard.config.auth.dto.SessionUser;
 import com.gh.levelupboard.domain.comment.Comment;
-import com.gh.levelupboard.domain.user.Role;
 import com.gh.levelupboard.domain.user.User;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Getter
-@NoArgsConstructor
 public class CommentListResponseDto {
 
     private boolean isMyComment; // 본인 댓글 여부
@@ -21,8 +18,8 @@ public class CommentListResponseDto {
     private Long parentId; // 부모 댓글 번호
     private Long groupId;
 
-    private String profile; // 작성자 프로필 사진
-    private String writer; // 작성자 이름
+    private String profilePicture; // 작성자 프로필 사진
+    private String writerName; // 작성자 이름
     private boolean equalsPostWriter; // 댓글 작성자 equals 게시글 작성자
     private String modifiedDate; // 최종 수정일
     private boolean isModified; // 수정 여부
@@ -34,7 +31,6 @@ public class CommentListResponseDto {
 
     private boolean isVisible; // 비밀 댓글 공개 여부
 
-    // json 파싱 시에 boolean 타입의 key값에 'is'가 생략되는 문제를 해결
     public boolean getIsMyComment() {
         return isMyComment;
     }
@@ -51,14 +47,13 @@ public class CommentListResponseDto {
         return isVisible;
     }
 
-
     public CommentListResponseDto(Comment entity, SessionUser loginUser) {
         isSecret = entity.isSecret();
         isVisible = !isSecret; // 비밀 여부에 따른 공개 여부
 
-        User postWriter = entity.getPost().getUser();
         User commentWriter = entity.getUser();
-        equalsPostWriter = postWriter.equals(commentWriter);
+        User postWriter = entity.getPost().getUser();
+        equalsPostWriter = commentWriter.equals(postWriter);
 
         isMyComment = commentWriter.getId().equals(loginUser.getId());
         if (!isVisible) { // 댓글 작성자, 게시글 작성자, 관리자에게는 비밀 댓글 공개
@@ -74,14 +69,13 @@ public class CommentListResponseDto {
                 replyTo = parent.getUser().getName();
             }
             if (!isVisible) { // 답글의 수신자에게는 공개
-                boolean isReplyTo = parent.getUser().getId().equals(loginUser.getId());
-                isVisible = isReplyTo;
+                isVisible = parent.getUser().getId().equals(loginUser.getId());
             }
         }
         groupId = entity.getGroupId();
 
-        profile = commentWriter.getPicture();
-        writer = commentWriter.getName();
+        profilePicture = commentWriter.getPicture();
+        writerName = commentWriter.getName();
 
         LocalDateTime modifiedDate = entity.getModifiedDate(); // 수정일만 꺼내서 쓰고
         isModified = !modifiedDate.isEqual(entity.getCreatedDate()); // 작성일과 비교

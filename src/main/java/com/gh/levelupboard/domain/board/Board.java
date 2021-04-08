@@ -16,14 +16,16 @@ public class Board extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
     private Long id;
+
     private String name;
 
     @Enumerated(EnumType.STRING)
     private Role createPermission; // 작성 권한
 
 
+
     public Board(String name) {
-        this(name, null);
+        this(name, Role.USER);
     }
 
     public Board(String name, Role createPermission) {

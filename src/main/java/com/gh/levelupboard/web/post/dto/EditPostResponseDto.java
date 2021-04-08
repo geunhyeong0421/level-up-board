@@ -1,6 +1,5 @@
 package com.gh.levelupboard.web.post.dto;
 
-
 import com.gh.levelupboard.domain.post.Post;
 import lombok.Getter;
 

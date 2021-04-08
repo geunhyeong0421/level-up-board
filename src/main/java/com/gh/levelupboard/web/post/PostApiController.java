@@ -15,7 +15,6 @@ public class PostApiController {
 
     private final PostService postService;
 
-
     // 등록
     @PostMapping("/api/v1/posts")
     public Long addPost(@LoginUser SessionUser user, @RequestBody PostSaveRequestDto requestDto) {

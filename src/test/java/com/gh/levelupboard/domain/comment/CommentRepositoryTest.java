@@ -1,116 +1,98 @@
 package com.gh.levelupboard.domain.comment;
 
+import com.gh.levelupboard.config.QuerydslConfig;
 import com.gh.levelupboard.domain.post.Post;
 import com.gh.levelupboard.domain.user.User;
+import com.gh.levelupboard.web.pagination.Pagination;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
+@Import(QuerydslConfig.class)
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
 class CommentRepositoryTest {
 
     @Autowired
-    CommentRepository commentRepository;
-    @Autowired
     TestEntityManager em;
+    @Autowired
+    CommentRepository commentRepository;
 
-
+    @DisplayName("댓글 페이징")
     @Test
-    public void findByPostId() {
+    public void findByPostIdWithPagination() {
         //given
-        User testUser = User.builder().build();
-        em.persist(testUser);
-        Post testPost = new Post(null, null, testUser, "댓글 잘 달리나", "테스트 중");
-        em.persist(testPost);
-        int count = 0;
-        for (int i = 1; i <= 10; i++) {
-            Comment parent = Comment.builder()
-                    .post(testPost)
-                    .user(testUser)
-                    .content(i + "번째 댓글")
+        User user = User.builder().build();
+        em.persist(user);
+        Post post = Post.builder().build();
+        em.persist(post);
+        for (int i = 1; i <= 100; i++) {
+            Comment comment = Comment.builder()
+                    .post(post)
+                    .user(user)
+                    .content("댓글 페이징 테스트 " + i)
                     .build();
-            em.persist(parent); // 댓글 등록
-            em.flush(); // @PostPersist 변경 내용 적용 - update 쿼리 발생
-            count++;
-            if (i % 2 == 0) {
-                continue; // 짝수번째 댓글에는 대댓글을 달지 않음
-            }
-            for (int j = 0; j < i; j++) { // 댓글의 순번만큼 반복
-                Comment child = Comment.builder()
-                        .post(testPost)
-                        .user(testUser)
-                        .content(parent.getId() + "번 댓글의 대댓글: " + j)
-                        .build();
-                child.setParent(parent);
-                em.persist(child); // 대댓글 등록
-                count++;
-            }
+            em.persist(comment);
         }
-        System.out.println("\n\n======================== 입력 끝 =========================\n\n");
 
         //when
-        List<Comment> comments = commentRepository.findByPostId(testPost.getId());
+        int requestPage = 3; // 3번째 페이지 요청
+        PageRequest pageRequest = PageRequest.of(requestPage - 1, Pagination.COMMENT.getSize());
+        Page<Comment> result = commentRepository.findByPostIdWithPagination(post.getId(), pageRequest);
 
         //then
-        assertThat(comments.size()).isEqualTo(count);
-        for (Comment comment : comments) {
-            System.out.printf("groupId:%d\tid: %d\tcontent: %s\n", comment.getGroupId(), comment.getId(), comment.getContent());
-        }
+        List<Comment> comments = result.getContent();
+        Pageable pageable = result.getPageable();
+        int firstCommentNumber = pageable.getPageNumber() * pageable.getPageSize() + 1; // 2 * 20 + 1 = 41
+        int lastCommentNumber = requestPage * pageable.getPageSize(); // 3 * 20 = 60
+
+        assertThat(result.getTotalElements()).isEqualTo(100);
+        assertThat(result.getTotalPages()).isEqualTo(5);
+        assertThat(comments.get(0).getContent()).isEqualTo("댓글 페이징 테스트 " + firstCommentNumber);
+        assertThat(comments.get(comments.size() - 1).getContent()).isEqualTo("댓글 페이징 테스트 " + lastCommentNumber);
     }
 
     @Test
-    public void findByPostId2() {
-        User testUser = User.builder().build();
-        em.persist(testUser);
-        Post testPost = new Post(null, null, testUser, "댓글 잘 달리나", "테스트 중");
-        em.persist(testPost);
-        int count = 0;
-        for (int i = 1; i <= 10; i++) {
-            Comment parent = Comment.builder()
-                    .post(testPost)
-                    .user(testUser)
-                    .content(i + "번째 댓글")
+    public void bulkSetPostNull() {
+        //given
+        Post post = Post.builder().build();
+        em.persist(post);
+        for (int i = 0; i < 10; i++) {
+            Comment comment = Comment.builder()
+                    .post(post)
                     .build();
-            em.persist(parent); // 댓글 등록
-            em.flush(); // @PostPersist 변경 내용 적용 - update 쿼리 발생
-            count++;
-            if (i % 2 == 0) {
-                continue; // 짝수번째 댓글에는 대댓글을 달지 않음
-            }
-            for (int j = 0; j < i; j++) { // 댓글의 순번만큼 반복
-                Comment child = Comment.builder()
-                        .post(testPost)
-                        .user(testUser)
-                        .content(parent.getId() + "번 댓글의 대댓글: " + j)
-                        .build();
-                child.setParent(parent);
-                em.persist(child); // 대댓글 등록
-                count++;
-            }
+            em.persist(comment);
         }
-        System.out.println("\n\n======================== 입력 끝 =========================\n\n");
+        List<Comment> comments = commentRepository.findAll();
+        for (Comment comment : comments) {
+            assertThat(comment.getPost()).isEqualTo(post);
+        }
 
         //when
-        PageRequest pageRequest = PageRequest.of(2, 10);
-        Page<Comment> result = commentRepository.findByPostIdWithPagination(testPost.getId(), pageRequest);
+        int resultCount = commentRepository.bulkSetPostNull(post.getId());
 
         //then
-        assertThat(result.getTotalElements()).isEqualTo(count);
-        result.getContent().forEach(c -> System.out.println(c.getContent()));
+        assertThat(resultCount).isEqualTo(comments.size());
+
+        em.clear();
+        comments = commentRepository.findAll();
+        for (Comment comment : comments) {
+            assertThat(comment.getPost()).isNull();
+        }
     }
 
 

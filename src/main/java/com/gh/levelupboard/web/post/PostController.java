@@ -21,9 +21,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class PostController {
 
-    private final PostService postService;
     private final BoardService boardService;
-
+    private final PostService postService;
 
     // 로그인 화면
     @GetMapping("/login")
@@ -48,7 +47,7 @@ public class PostController {
         if (user != null) { model.addAttribute("loginUser", user); }
         model.addAttribute("boards", boardService.getList(boardId));
         model.addAttribute("boardName", boardService.get(boardId).getName());
-        model.addAttribute("adminOnly", boardService.get(boardId).getCreatePermission()).equals(Role.ADMIN);
+        model.addAttribute("adminOnly", boardService.get(boardId).getCreatePermission().equals(Role.ADMIN));
 
         Page<PostListResponseDto> pageResult = postService.getList(boardId, cri);
         model.addAttribute("posts", pageResult.getContent());
@@ -69,7 +68,7 @@ public class PostController {
     @GetMapping("/boards/{boardId}/posts/new")
     public String createPost(Model model, @LoginUser SessionUser user, @ModelAttribute("cri") Criteria cri,
                                     @PathVariable Long boardId) {
-        if (!user.isAdmin() && boardService.get(boardId).getCreatePermission() != null) {
+        if (boardService.get(boardId).getCreatePermission().equals(Role.ADMIN) && !user.isAdmin()) {
             return "forbidden";
         }
         model.addAttribute("loginUser", user);
@@ -132,7 +131,7 @@ public class PostController {
     public String replyPost(Model model, @LoginUser SessionUser user, @ModelAttribute("cri") Criteria cri,
                             @PathVariable Long id) {
         ReplyPostResponseDto dto = postService.getForReply(id);
-        if (dto.getCreatePermission() != null && !user.isAdmin()) {
+        if (dto.isAdminOnly() && !user.isAdmin()) {
             return "forbidden";
         }
         model.addAttribute("post", dto);
@@ -146,7 +145,7 @@ public class PostController {
     public String replyPost(Model model, @LoginUser SessionUser user, @ModelAttribute("cri") Criteria cri,
                             @PathVariable Long boardId, @PathVariable Long id) {
         ReplyPostResponseDto dto = postService.getForReply(id);
-        if (dto.getCreatePermission() != null && !user.isAdmin()) {
+        if (dto.isAdminOnly() && !user.isAdmin()) {
             return "forbidden";
         }
         model.addAttribute("post", dto);

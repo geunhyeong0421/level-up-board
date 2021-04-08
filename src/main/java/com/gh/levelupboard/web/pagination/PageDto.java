@@ -3,11 +3,11 @@ package com.gh.levelupboard.web.pagination;
 public class PageDto {
 
     private int page;
-    private boolean current;
+    private boolean isCurrentPage;
 
-    public PageDto(int page, boolean current) {
+    public PageDto(int page, boolean isCurrentPage) {
         this.page = page;
-        this.current = current;
+        this.isCurrentPage = isCurrentPage;
     }
 
 }

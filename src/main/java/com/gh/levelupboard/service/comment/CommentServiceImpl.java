@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Transactional
 @RequiredArgsConstructor
@@ -69,7 +68,7 @@ public class CommentServiceImpl implements CommentService {
 
         List<Long> commentIdList = commentRepository.findIdByPostId(comment.getPost().getId());
         if (comment.getChildren().size() != 0) { // 답글이 있으면
-            comment.delete(); // 삭제 상태로 변경
+            comment.setDeleted(); // 삭제 상태로 변경
 
             return new CommentResultDto(id, commentIdList.indexOf(id) + 1);
         } else { // 답글이 없으면
@@ -101,13 +100,13 @@ public class CommentServiceImpl implements CommentService {
         }
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<CommentListResponseDto> getList(Long postId, SessionUser loginUser) {
-        return commentRepository.findByPostId(postId).stream()
-                .map(comment -> new CommentListResponseDto(comment, loginUser))
-                .collect(Collectors.toList());
-    }
+//    @Transactional(readOnly = true)
+//    @Override
+//    public List<CommentListResponseDto> getList(Long postId, SessionUser loginUser) {
+//        return commentRepository.findByPostId(postId).stream()
+//                .map(comment -> new CommentListResponseDto(comment, loginUser))
+//                .collect(Collectors.toList());
+//    }
 
     @Transactional(readOnly = true)
     @Override

@@ -72,7 +72,7 @@ public class PostServiceImpl implements PostService{
             Post parent = post.getParent();
 
             // 원글이 삭제 상태인데 마지막 답글이 삭제됐다면
-            while (parent != null && parent.getIsDeleted() && parent.getChildren().isEmpty()) {
+            while (parent != null && parent.isDeleted() && parent.getChildren().isEmpty()) {
                 delete(parent);
                 parent = parent.getParent();
             }

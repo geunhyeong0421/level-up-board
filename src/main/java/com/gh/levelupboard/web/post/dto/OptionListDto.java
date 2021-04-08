@@ -8,15 +8,15 @@ public class OptionListDto {
     private String value;
     private String name;
 
-    private boolean selected;
+    private boolean isSelected;
 
     public OptionListDto(String value, String name) {
         this.value = value;
         this.name = name;
     }
 
-    public void select() {
-        selected = true;
+    public void setSelected() {
+        isSelected = true;
     }
 
 }

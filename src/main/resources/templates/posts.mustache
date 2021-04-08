@@ -8,9 +8,9 @@
             <a href="./posts/new" role="button" class="posts btn btn-primary">글쓰기</a>
         {{/adminOnly}}
         {{#adminOnly}}
-            {{#loginUser.admin}}
+            {{#loginUser.isAdmin}}
                 <a href="./posts/new" role="button" class="posts btn btn-primary">글쓰기</a>
-            {{/loginUser.admin}}
+            {{/loginUser.isAdmin}}
         {{/adminOnly}}
     </div>
     <form action="" method="get" id="form-criteria">
@@ -18,7 +18,7 @@
             <select id="search-type" class="mr-1 mt-1">
                 {{#cri.type}}
                     {{#cri.typeOptions}}
-                        <option value="{{value}}"{{#selected}} selected{{/selected}}>{{name}}</option>
+                        <option value="{{value}}"{{#isSelected}} selected{{/isSelected}}>{{name}}</option>
                     {{/cri.typeOptions}}
                 {{/cri.type}}
                 {{^cri.type}}
@@ -38,27 +38,27 @@
             <h4 class="m-0 pl-1">Total: {{pageMaker.total}}</h4>
             <select name="size" class="ml-auto">
                 {{#cri.sizeOptions}}
-                    <option value="{{value}}"{{#selected}} selected{{/selected}}>{{name}}</option>
+                    <option value="{{value}}"{{#isSelected}} selected{{/isSelected}}>{{name}}</option>
                 {{/cri.sizeOptions}}
             </select>
         </div>
     </form>
     <!--목록 출력 영역-->
-    {{#posts.empty}}
+    {{#posts.isEmpty}}
         <hr><h5 class="text-center py-5 my-5">등록된 게시글이 없습니다.</h5><hr>
         <div class="d-flex">
             {{^adminOnly}}
                 <a href="./posts/new" role="button" class="posts btn btn-primary">글쓰기</a>
             {{/adminOnly}}
             {{#adminOnly}}
-                {{#loginUser.admin}}
+                {{#loginUser.isAdmin}}
                     <a href="./posts/new" role="button" class="posts btn btn-primary">글쓰기</a>
-                {{/loginUser.admin}}
+                {{/loginUser.isAdmin}}
             {{/adminOnly}}
             <button type="button" class="btn btn-info ml-auto" onclick="$('.navbar')[0].scrollIntoView();">위로</button>
         </div>
-    {{/posts.empty}}
-    {{^posts.empty}}
+    {{/posts.isEmpty}}
+    {{^posts.isEmpty}}
         <table class="table table-sm table-hover table-bordered">
             <thead>
             <tr>
@@ -72,34 +72,34 @@
             </thead>
             <tbody id="tbody">
             {{#posts}}
-                {{#deleted}}
+                {{#isDeleted}}
                     <tr>
                         <td class="text-muted">{{boardName}}</td>
                         <td></td>
                         <td>
                             {{#depth}}<span class="px-2"></span>{{/depth}}
-                            {{^depth.empty}}<span>└</span>{{/depth.empty}}
+                            {{^depth.isEmpty}}<span>└</span>{{/depth.isEmpty}}
                             <span class="font-weight-bold text-muted">삭제된 글입니다.</span>
                         </td>
                         <td></td>
                         <td></td>
                         <td></td>
                     </tr>
-                {{/deleted}}
-                {{^deleted}}
+                {{/isDeleted}}
+                {{^isDeleted}}
                     <tr>
                         <td class="text-muted">{{boardName}}</td>
                         <td>{{id}}</td>
                         <td>
                             {{#depth}}<span class="px-2"></span>{{/depth}}
-                            {{^depth.empty}}<span>└</span>{{/depth.empty}}
-                            <a class="posts" href="./posts/{{id}}">{{title}}</a><span class="font-weight-bold pl-1">[{{commentCount}}]</span>
+                            {{^depth.isEmpty}}<span>└</span>{{/depth.isEmpty}}
+                            <a class="posts" href="./posts/{{id}}">{{title}}</a><span class="font-weight-bold pl-1">[{{commentsCount}}]</span>
                         </td>
-                        <td>{{writer}}</td>
+                        <td>{{writerName}}</td>
                         <td>{{createdDate}}</td>
                         <td>{{hit}}</td>
                     </tr>
-                {{/deleted}}
+                {{/isDeleted}}
             {{/posts}}
             </tbody>
         </table>
@@ -108,9 +108,9 @@
                 <a href="./posts/new" role="button" class="posts btn btn-primary">글쓰기</a>
             {{/adminOnly}}
             {{#adminOnly}}
-                {{#loginUser.admin}}
+                {{#loginUser.isAdmin}}
                     <a href="./posts/new" role="button" class="posts btn btn-primary">글쓰기</a>
-                {{/loginUser.admin}}
+                {{/loginUser.isAdmin}}
             {{/adminOnly}}
             <button type="button" class="btn btn-info ml-auto" onclick="$('.navbar')[0].scrollIntoView();">위로</button>
         </div>
@@ -127,9 +127,9 @@
                     </a>
                 </li>
                 {{#pageMaker.pages}}
-                    <li class="page-item{{#current}} active" aria-current="page{{/current}}">
-                        {{#current}}<span class="page-link">{{page}}</span>{{/current}}
-                        {{^current}}<a class="posts page-link" href="./posts" data-page="{{page}}">{{page}}</a>{{/current}}
+                    <li class="page-item{{#isCurrentPage}} active" aria-current="page{{/isCurrentPage}}">
+                        {{#isCurrentPage}}<span class="page-link">{{page}}</span>{{/isCurrentPage}}
+                        {{^isCurrentPage}}<a class="posts page-link" href="./posts" data-page="{{page}}">{{page}}</a>{{/isCurrentPage}}
                     </li>
                 {{/pageMaker.pages}}
                 <li class="page-item{{^pageMaker.nextPage}} disabled{{/pageMaker.nextPage}}" data-toggle="tooltip" title="다음">
@@ -144,7 +144,7 @@
                 </li>
             </ul>
         </nav>
-    {{/posts.empty}}
+    {{/posts.isEmpty}}
 </div>
 
 

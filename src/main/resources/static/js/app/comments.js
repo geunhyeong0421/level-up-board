@@ -221,7 +221,7 @@ var comments = {
     },
     getList : function(page) {
         if(!page) {
-            $('.comment-count').text(0);
+            $('.comments-count').text(0);
             $('.comment-list').empty();
             $('.comments-pagination').find('ul').empty();
             return;
@@ -264,16 +264,16 @@ var comments = {
                                  + '</div>';
                 } else {
                     commentList += '<div class="comment-profile">';
-                    if(!dto.profile) {
+                    if(!dto.profilePicture) {
                         commentList += '<img src="/images/blank_profile.png" class="rounded-circle mr-2" width="50" height="50" alt="blank_profile">';
                     } else {
-                        commentList += '<img src="' + dto.profile + '" class="rounded-circle mr-2" width="50" height="50" alt="profile">';
+                        commentList += '<img src="' + dto.profilePicture + '" class="rounded-circle mr-2" width="50" height="50" alt="profile">';
                     }
                     commentList += '</div>'
                                  + '<div class="flex-grow-1">'
                                  + '    <div class="comment-info row mx-0">'
                                  + '        <div class="col-sm-auto px-0 mr-1">'
-                                 + '            <span class="font-weight-bold comment-writer">' + dto.writer + '</span>'
+                                 + '            <span class="font-weight-bold comment-writer">' + dto.writerName + '</span>'
                                  + (dto.equalsPostWriter ? ' <span class="badge badge-pill badge-danger">작성자</span>' : '')
                                  + '            <span class="text-muted-comment">' + dto.modifiedDate + '</span>'
                                  + (dto.isModified ? ' <span class="text-muted-comment">수정됨</span>' : '')
@@ -296,7 +296,7 @@ var comments = {
             } // isNotDeleted-end
             commentList += '</div>';
         }); // each-end
-        $('.comment-count').text(pageResult.totalElements);
+        $('.comments-count').text(pageResult.totalElements);
         $('.comment-list').empty().append(commentList);
 
 
@@ -327,11 +327,11 @@ var comments = {
         +           '<span aria-hidden="true">&lsaquo;</span>'
         +       '</a>'
         +   '</li>';
-        for(var i = startPage; i <= endPage; i++) {
+        for(var page = startPage; page <= endPage; page++) {
             refreshPagination +=
-                '<li class="page-item' + (i == currentPage ? ' active" aria-current="page' : '') + '">'
-            + (i == currentPage ? '<span class="page-link">' + i + '</span>'
-                                : '<a class="page-link" href="' + i + '">' + i + '</a>')
+                '<li class="page-item' + (page == currentPage ? ' active" aria-current="page' : '') + '">'
+            + (page == currentPage ? '<span class="page-link">' + page + '</span>'
+                                : '<a class="page-link" href="' + page + '">' + page + '</a>')
             +   '</li>';
         }
         refreshPagination +=

@@ -34,8 +34,8 @@ public class PaginationDto {
             nextPage = currentNav < totalNavs ? endPage + 1 : null;
             lastPage = !pageResult.isLast() ? totalPages : null;
 
-            for (int i = startPage; i <= endPage; i++) {
-                pages.add(new PageDto(i, i == currentPage));
+            for (int page = startPage; page <= endPage; page++) {
+                pages.add(new PageDto(page, page == currentPage));
             }
         } // if-END
     }

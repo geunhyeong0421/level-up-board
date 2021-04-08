@@ -30,42 +30,46 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Comment parent;
+    @OneToMany(mappedBy = "parent") // 단순 조회용
+    private List<Comment> children = new ArrayList<>();
 
-    private Long groupId; // 조회 쿼리의 order by에 사용(페이징을 위해)
+    private Long groupId; // 조회 쿼리의 order by에 사용
 
+    @Column(length = 500)
     private String content;
-    private boolean isSecret;
-    private boolean isDeleted;
+
+    private boolean isSecret; // 비밀 여부
+    private boolean isDeleted; // 삭제 여부
 
     @Column(updatable = false)
     private LocalDateTime createdDate; // 작성일
     private LocalDateTime modifiedDate; // 최종 수정일
 
-    @OneToMany(mappedBy = "parent") // 단순 조회용
-    private List<Comment> children = new ArrayList<>();
 
     @Transient
     private boolean isGroupIdUpdated;
 
 
     @Builder
-    public Comment(Long id, Post post, User user, String content, boolean isSecret, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public Comment(Long id, Post post, User user, String content, boolean isSecret, LocalDateTime createdDate) {
         this.id = id;
+
         this.post = post;
         this.user = user;
+
         this.content = content;
         this.isSecret = isSecret;
-        this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
+
+        this.modifiedDate = this.createdDate = createdDate;
     }
 
 
 //=========================== JPA 관련 설정 ======================================
 /*
-    GenerationType.IDENTITY 설정 때문에 영속성 컨텍스트 포함에 필요한 id 값을 insert 쿼리로 얻어온다. 실행 순서는
+    GenerationType.IDENTITY 설정으로 영속성 컨텍스트 포함에 필요한 id 값을 insert 쿼리로 얻어온다. 실행 순서는
     @PrePersist -> insert 쿼리 -> @PostPersist -> Dirty Checking에 의한 update 쿼리(테스트에선 em.flush() 사용)
  */
-    @PrePersist // 직후에 insert 쿼리
+    @PrePersist // insert 쿼리 직전
     public void prePersist() {
         modifiedDate = createdDate = LocalDateTime.now();
     }
@@ -100,8 +104,8 @@ public class Comment {
         this.isSecret = isSecret;
     }
 
-    // 삭제 상태로 변경(대댓글이 있는 경우)
-    public void delete() {
+    // 삭제 상태로 변경(답글이 있는 경우)
+    public void setDeleted() {
         this.isDeleted = true;
     }
 

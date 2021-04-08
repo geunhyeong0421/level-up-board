@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
@@ -16,7 +15,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     @Query("select p from Post p join fetch p.board where p.id = :id")
     Optional<Post> findByIdForReply(@Param("id") Long id);
 
-
     @Modifying
     @Query("update Post p set p.groupOrder = p.groupOrder + 1 where p.groupId = :groupId and p.groupOrder >= :groupOrder")
     int bulkGroupOrderPlus(@Param("groupId") Long groupId, @Param("groupOrder") int groupOrder);
@@ -24,13 +22,5 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     @Modifying
     @Query("update Post p set p.groupOrder = p.groupOrder - 1 where p.groupId = :groupId and p.groupOrder > :groupOrder")
     int bulkGroupOrderMinus(@Param("groupId") Long groupId, @Param("groupOrder") int groupOrder);
-
-
-    @Query("select p from Post p join fetch p.board join fetch p.user order by p.groupId desc, p.groupOrder asc")
-    List<Post> findAllDesc();
-
-    @Query("select p from Post p join fetch p.board b join fetch p.user where b.id = :boardId order by p.groupId desc, p.groupOrder asc")
-    List<Post> findByBoardId(@Param("boardId") Long boardId);
-
 
 }

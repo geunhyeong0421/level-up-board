@@ -12,25 +12,25 @@
         <div class="form-group">
             <select class="form-control"{{#allPosts}} autofocus{{/allPosts}}{{^allPosts}} disabled{{/allPosts}}>
                 {{#allPosts}}
-                    <option value="">선택</option>
-                    {{#loginUser.admin}}
+                    <option value="">-- 선택 --</option>
+                    {{#loginUser.isAdmin}}
                         {{#boards}}
                             <option value="{{id}}">{{name}}</option>
                         {{/boards}}
-                    {{/loginUser.admin}}
-                    {{^loginUser.admin}}
+                    {{/loginUser.isAdmin}}
+                    {{^loginUser.isAdmin}}
                         {{#boards}}
-                            {{^createPermission}}
+                            {{^adminOnly}}
                                 <option value="{{id}}">{{name}}</option>
-                            {{/createPermission}}
+                            {{/adminOnly}}
                         {{/boards}}
-                    {{/loginUser.admin}}
+                    {{/loginUser.isAdmin}}
                 {{/allPosts}}
                 {{^allPosts}}
                     {{#boards}}
-                        {{#current}}
+                        {{#isCurrentBoard}}
                             <option value="{{id}}">{{name}}</option>
-                        {{/current}}
+                        {{/isCurrentBoard}}
                     {{/boards}}
                 {{/allPosts}}
             </select>

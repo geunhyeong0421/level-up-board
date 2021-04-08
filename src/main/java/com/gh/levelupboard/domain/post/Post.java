@@ -29,29 +29,27 @@ public class Post {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
-    private Post parent;
-
+    private Post parent; // 답글일 경우 원글
     @OneToMany(mappedBy = "parent") // 단순 조회용(삭제 시에 사용)
-    private List<Post> children = new ArrayList<>();
+    private List<Post> children = new ArrayList<>(); // 답글들
 
     private Long groupId; // 계층형 게시판 구현
     private int groupOrder; // 그룹내 순서(0부터 시작)
     private int depth; // 답글 깊이(0부터 시작)
 
     private String title; // 제목
+    @Lob
     private String content; // 내용
 
     private int hit; // 조회수
     private int commentsCount; // 댓글수
 
+    private boolean isDeleted; // 삭제 여부
+
     @Column(updatable = false)
     private LocalDateTime createdDate; // 작성일
     private LocalDateTime modifiedDate; // 최종 수정일
 
-    private boolean isDeleted; // 삭제 여부
-    public boolean getIsDeleted() {
-        return isDeleted;
-    }
 
     @Transient
     private int previousHit; // 조회수 변동 여부 확인용
@@ -128,21 +126,17 @@ public class Post {
         this.isDeleted = true;
     }
 
-    // 작성자와 이용자의 일치 여부에 따른 조회수 증가
-    public boolean isMyPost(Long loginUserId) {
-        boolean isMyPost = this.user.getId().equals(loginUserId);
-        if (!isMyPost) { // 본인 글이 아니면
-            this.hit++; // 조회수 +1
-        }
-        return isMyPost; // 일치 여부를 반환
+    // 조회수 + 1
+    public void increaseHit() {
+        hit++;
     }
 
-    // 댓글수 +1
+    // 댓글수 + 1
     public void increaseCommentsCount() {
         commentsCount++;
     }
 
-    // 댓글수 -1
+    // 댓글수 - 1
     public void decreaseCommentsCount() {
         commentsCount--;
     }

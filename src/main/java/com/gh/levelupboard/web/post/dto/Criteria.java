@@ -46,16 +46,16 @@ public class Criteria {
 
         if (size <= 10) {
             size = 10;
-            sizeOptions.get(0).select();
+            sizeOptions.get(0).setSelected();;
         } else if (size <= 20) {
             size = 20;
-            sizeOptions.get(1).select();
+            sizeOptions.get(1).setSelected();
         } else if (size <= 30) {
             size = 30;
-            sizeOptions.get(2).select();
+            sizeOptions.get(2).setSelected();
         } else {
             size = 50;
-            sizeOptions.get(3).select();
+            sizeOptions.get(3).setSelected();
         }
 
         return PageRequest.of(page - 1, size); // (실제 페이지 - 1)의 값을 사용
@@ -63,15 +63,15 @@ public class Criteria {
 
     public String getTypeAfterSet() {
         if (StringUtils.hasText(keyword)) {
-            boolean selected = false;
+            boolean hasSelected = false;
             for (OptionListDto typeOption : typeOptions) {
                 if (typeOption.getValue().equals(type)) {
-                    typeOption.select();
-                    selected = true;
+                    typeOption.setSelected();
+                    hasSelected = true;
                     break;
                 }
             }
-            if (!selected) {
+            if (!hasSelected) {
                 type = "TC"; // 기본값으로 설정
             }
         } else {

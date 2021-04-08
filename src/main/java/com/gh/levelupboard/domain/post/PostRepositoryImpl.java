@@ -1,16 +1,16 @@
 package com.gh.levelupboard.domain.post;
 
 import com.gh.levelupboard.web.post.dto.Criteria;
-import com.gh.levelupboard.web.post.dto.OptionListDto;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.util.StringUtils;
 
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.gh.levelupboard.domain.board.QBoard.*;
@@ -55,15 +55,21 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             return null;
         }
 
+        String[] keywordSegments = keyword.split("\\s+");
+        String likeKeyword = "%";
+        for (String keywordSegment : keywordSegments) {
+            likeKeyword += keywordSegment + "%";
+        }
+
         BooleanExpression expression = null;
         if (type.contains("T")) {
-            expression = post.title.contains(keyword);
+            expression = post.title.like(likeKeyword);
         }
         if (type.contains("C")) {
-            expression = expression != null ? expression.or(post.content.contains(keyword)) : post.content.contains(keyword);
+            expression = expression != null ? expression.or(post.content.like(likeKeyword)) : post.content.like(likeKeyword);
         }
         if (type.contains("W")) {
-            expression = expression != null ? expression.or(user.name.contains(keyword)) : user.name.contains(keyword);
+            expression = expression != null ? expression.or(user.name.like(likeKeyword)) : user.name.like(likeKeyword);
         }
         return expression;
     }

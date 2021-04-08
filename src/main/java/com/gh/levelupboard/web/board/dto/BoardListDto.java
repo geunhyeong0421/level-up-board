@@ -7,15 +7,18 @@ public class BoardListDto {
 
     private Long id;
     private String name;
-    private boolean current;
     private Role createPermission;
+    private boolean adminOnly;
 
+    private boolean isCurrentBoard;
 
-    public BoardListDto(Board board, Long currentBoardId) {
+    public BoardListDto(Board board, Long boardId) {
         id = board.getId();
         name = board.getName();
-        current = id.equals(currentBoardId);
         createPermission = board.getCreatePermission();
+        adminOnly = createPermission.equals(Role.ADMIN);
+
+        isCurrentBoard = id.equals(boardId);
     }
 
 }

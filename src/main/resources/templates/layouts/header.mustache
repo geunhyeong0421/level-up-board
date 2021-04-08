@@ -60,7 +60,7 @@
                     <a class="nav-link" href="/posts">전체글</a>
                 </li>
                 {{#boards}}
-                <li class="nav-item{{#current}} active{{/current}}">
+                <li class="nav-item{{#isCurrentBoard}} active{{/isCurrentBoard}}">
                     <a class="nav-link" href="/boards/{{id}}/posts">{{name}}</a>
                 </li>
                 {{/boards}}

@@ -10,17 +10,14 @@ import com.gh.levelupboard.web.comment.dto.CommentUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 public class CommentApiController {
 
     private final CommentService commentService;
-
 
     // 등록
     @PostMapping("/api/v1/comments")
@@ -42,12 +39,12 @@ public class CommentApiController {
     }
 
     // 조회
-    @GetMapping("/api/v1/posts/{postId}/comments")
-    public List<CommentListResponseDto> getCommentList(@LoginUser SessionUser user, @PathVariable Long postId) {
-        return commentService.getList(postId, user);
-    }
+//    @GetMapping("/api/v1/posts/{postId}/comments")
+//    public List<CommentListResponseDto> getCommentList(@LoginUser SessionUser user, @PathVariable Long postId) {
+//        return commentService.getList(postId, user);
+//    }
 
-    // 조회 + 페이징
+    // 조회(페이징)
     @GetMapping("/api/v2/posts/{postId}/comments")
     public Page<CommentListResponseDto> getCommentListWithPagination(@LoginUser SessionUser user, @PathVariable Long postId,
                                                                      Pageable pageable) {
