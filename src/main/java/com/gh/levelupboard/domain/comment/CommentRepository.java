@@ -12,7 +12,7 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     // 페이징 적용
-    @Query(value = "select c from Comment c join fetch c.post p join fetch c.user where p.id = :postId order by c.groupId, c.id"
+    @Query(value = "select c from Comment c join fetch c.post p left join fetch c.user where p.id = :postId order by c.groupId, c.id"
             , countQuery = "select count(c) from Comment c join c.post p where p.id = :postId")
     Page<Comment> findByPostIdWithPagination(@Param("postId") Long postId, Pageable pageable);
 
