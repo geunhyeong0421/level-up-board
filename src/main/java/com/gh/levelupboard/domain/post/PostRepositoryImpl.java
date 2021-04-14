@@ -55,20 +55,20 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             return null;
         }
 
-        String[] keywordSegments = keyword.split("\\s+");
+        String[] keywordSegments = keyword.split("\\s+"); // (연속)띄어쓰기를 기준으로 검색어를 나누어 구분한다
         String likeKeyword = "%";
-        for (String keywordSegment : keywordSegments) {
+        for (String keywordSegment : keywordSegments) { // 쿼리용 keyword를 조합한다
             likeKeyword += keywordSegment + "%";
         }
 
         BooleanExpression expression = null;
-        if (type.contains("T")) {
+        if (type.contains("T")) { // type에 제목 포함
             expression = post.title.like(likeKeyword);
         }
-        if (type.contains("C")) {
+        if (type.contains("C")) { // type에 내용 포함, 연결이 필요하면 or로 연결
             expression = expression != null ? expression.or(post.content.like(likeKeyword)) : post.content.like(likeKeyword);
         }
-        if (type.contains("W")) {
+        if (type.contains("W")) { // type에 작성자 포함, 연결이 필요하면 or로 연결
             expression = expression != null ? expression.or(user.name.like(likeKeyword)) : user.name.like(likeKeyword);
         }
         return expression;

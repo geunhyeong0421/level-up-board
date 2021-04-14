@@ -67,19 +67,13 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + id));
 
         List<Long> commentIdList = commentRepository.findIdByPostId(comment.getPost().getId());
-        if (comment.getChildren().size() != 0) { // 답글이 있으면
-            comment.setDeleted(); // 삭제 상태로 변경
-
-            return new CommentResultDto(id, commentIdList.indexOf(id) + 1);
-        } else { // 답글이 없으면
-            commentRepository.delete(comment); // DB에서 삭제
-            comment.getPost().decreaseCommentsCount(); // 댓글수 -1
+        if (comment.getChildren().isEmpty()) { // 답글이 없으면
+            delete(comment);
 
             Comment parent = comment.getParent();
-            // 부모 댓글이 삭제 상태인데 마지막 답글이 삭제됐다면
+            // 게시글의 경우와 같지만 JPA의 쓰기 지연으로 DB에 delete 쿼리가 나가지 않았음을 감안해서 로직을 작성
             while (parent != null && parent.isDeleted() && parent.getChildren().size() == 1) {
-                commentRepository.delete(parent); // 부모 댓글을 DB에서 삭제
-                parent.getPost().decreaseCommentsCount(); // 댓글수 -1
+                delete(parent);
                 commentIdList.remove(parent.getId()); // 목록에서 제거
 
                 parent = parent.getParent();
@@ -97,8 +91,13 @@ public class CommentServiceImpl implements CommentService {
             }
 
             return new CommentResultDto(targetId, targetRownum);
+        } else { // 답글이 있으면
+            comment.setDeleted(); // 삭제 상태로 변경
+
+            return new CommentResultDto(id, commentIdList.indexOf(id) + 1);
         }
     }
+
 
 //    @Transactional(readOnly = true)
 //    @Override
@@ -113,6 +112,12 @@ public class CommentServiceImpl implements CommentService {
     public Page<CommentListResponseDto> getListWithPagination(Long postId, SessionUser loginUser, Pageable pageable) {
         return commentRepository.findByPostIdWithPagination(postId, pageable)
                 .map(comment -> new CommentListResponseDto(comment, loginUser));
+    }
+
+
+    private void delete(Comment comment) {
+        commentRepository.delete(comment); // DB에서 삭제
+        comment.getPost().decreaseCommentsCount(); // 댓글수 -1
     }
 
 }

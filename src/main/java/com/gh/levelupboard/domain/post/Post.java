@@ -34,8 +34,8 @@ public class Post {
     private List<Post> children = new ArrayList<>(); // 답글들
 
     private Long groupId; // 계층형 게시판 구현
-    private int groupOrder; // 그룹내 순서(0부터 시작)
-    private int depth; // 답글 깊이(0부터 시작)
+    private int groupOrder; // 그룹내 순번
+    private int depth; // 답글의 깊이
 
     private String title; // 제목
     @Lob
@@ -69,8 +69,8 @@ public class Post {
     }
 
 //==================== JPA 관련 설정 ============================
-    @PostLoad
-    public void postLoad() {
+    @PostLoad // Entity가 영속성 컨텍스트에 조회된 직후
+    public void postLoad() { // 로직 수행 전의 조회수와 댓글수를 기록
         previousHit = hit;
         previousCommentsCount = commentsCount;
     }
@@ -85,13 +85,13 @@ public class Post {
             isGroupIdUpdated = true;
         }
     }
-    @PreUpdate
-    public void preUpdate() { // 조회수 또는 댓글수 변동시에는 수정일을 변경하지 않음
+    @PreUpdate // update 쿼리 발생 직전
+    public void preUpdate() { // 조회수 또는 댓글수 변동 시에는 수정일을 변경하지 않음
         if (previousHit != hit || previousCommentsCount != commentsCount || isGroupIdUpdated) {
             isGroupIdUpdated = false; // 초기화
             return;
         }
-        modifiedDate = LocalDateTime.now();
+        modifiedDate = LocalDateTime.now(); // 제목 또는 내용 변경 시에는 수정일을 변경
     }
 //=============================================================
 
@@ -99,11 +99,11 @@ public class Post {
     //== 연관 관계 메서드 ==//
     public void setParent(Post parent) {
         this.parent = parent;
-        this.groupId = parent.groupId; // 부모의 그룹으로 그룹 설정
-        this.depth = parent.depth + 1;
+        this.groupId = parent.groupId; // 부모글과 같은 그룹으로 설정
+        this.depth = parent.depth + 1; // 부모글의 깊이 + 1
         parent.children.add(this);
 
-        this.groupOrder = parent.groupOrder; // 원글의 순번으로 초기 설정
+        this.groupOrder = parent.groupOrder; // 부모글의 순번으로 초기 설정
         calculateGroupOrder(parent.children); // 재귀함수를 호출해서 최종 설정
     }
 

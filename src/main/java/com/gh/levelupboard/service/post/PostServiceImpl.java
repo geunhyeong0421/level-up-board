@@ -44,7 +44,7 @@ public class PostServiceImpl implements PostService{
                 : null;
 
         Post post = requestDto.toEntity(board, user, parent);
-        if (post.getGroupId() != null) { // 답글인 경우에만 실행
+        if (parent != null) { // 답글인 경우에만 실행
             postRepository.bulkGroupOrderPlus(post.getGroupId(), post.getGroupOrder());
         }
         return postRepository.save(post).getId();
@@ -65,19 +65,17 @@ public class PostServiceImpl implements PostService{
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
 
-        if (post.getChildren().size() != 0) { // 답글이 있으면 삭제 상태로 변경
-            post.setDeleted();
-        } else { // 답글이 없으면 DB에서 삭제
+        if (post.getChildren().isEmpty()) { // 답글이 없으면 DB에서 삭제
             delete(post);
             Post parent = post.getParent();
-
-            // 원글이 삭제 상태인데 마지막 답글이 삭제됐다면
+            // 부모글이 삭제 상태인데 마지막 답글이 삭제됐다면 연쇄적으로 삭제
             while (parent != null && parent.isDeleted() && parent.getChildren().isEmpty()) {
                 delete(parent);
                 parent = parent.getParent();
             }
+        } else { // 답글이 있으면 삭제 상태로 변경
+            post.setDeleted();
         }
-
         return id;
     }
 

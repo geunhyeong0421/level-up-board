@@ -26,12 +26,13 @@ public class BoardServiceImpl implements BoardService {
     @Transactional
     @PostConstruct
     public void init() {
-        if(boardRepository.count() == 0) {
+        boards = boardRepository.findAll(Sort.by("id"));
+        if(boards.isEmpty()) {
             boardRepository.save(new Board("자유게시판")); // 1L
             boardRepository.save(new Board("테스트게시판", Role.ADMIN)); // 2L
             boardRepository.save(new Board("공지사항", Role.ADMIN)); // 3L
+            boards = boardRepository.findAll(Sort.by("id"));
         }
-        boards = boardRepository.findAll(Sort.by("id"));
 
 //        if (postRepository.count() == 0) {
 //            String[] foods = {"중독족발", "금계찜닭", "새천년육회", "장어의꿈", "호두갈비"};
