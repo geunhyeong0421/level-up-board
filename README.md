@@ -1,5 +1,5 @@
 # level-up-board
-[게시판 키우기](http://ec2-3-34-226-97.ap-northeast-2.compute.amazonaws.com/){:target="_blank"}
+http://ec2-3-34-226-97.ap-northeast-2.compute.amazonaws.com/
 
 ![슬라이드1](https://user-images.githubusercontent.com/65955752/115844850-3bf7b200-a45b-11eb-9023-0de2d5b635f8.PNG)
 ![슬라이드2](https://user-images.githubusercontent.com/65955752/115844853-3d28df00-a45b-11eb-9b82-ceecec67abd0.PNG)
